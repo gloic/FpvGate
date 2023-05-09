@@ -7,23 +7,21 @@
 class EspBase
 {  
   public:  
-    EspBase() : server(80), _version("1.0.b") {};
+    EspBase() : webServer(80), _version("1.0.b") {};
     void init(String ssid, String pwd);
     void setupBase();
-	
-    void setupAPWifi();
+	  void setupAPWifi();
 	  void setupWifi();	
-	
+	  String getVersion();
+    String getParamFromRequest(String paramName, AsyncWebServerRequest * request);
+    AsyncWebServer server();    
+  protected:
     void setupWebController();
     void startWebServer();
-    
-    String getVersion();
-    String getParamFromRequest(String paramName, AsyncWebServerRequest * request);
-    
-    AsyncWebServer server;
+    void setupGPIO();
   private:
-    String _ssid, _pwd, _version;
-    
+    String _version;
+    AsyncWebServer webServer;
 };
 
 #endif

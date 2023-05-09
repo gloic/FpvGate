@@ -11,6 +11,8 @@
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 
+String _ssid, _pwd;
+
 void EspBase::init(String ssid, String pwd) {
   _ssid = ssid;
   _pwd = pwd;
@@ -32,6 +34,7 @@ void EspBase::setupAPWifi() {
 	Serial.print("AP IP address: ");
 	Serial.println(WiFi.softAPIP());
 }
+
 void EspBase::setupWifi() {
 	Serial.println("Setting wifi");
 	#if defined(ESP8266)
@@ -54,18 +57,22 @@ void EspBase::setupWifi() {
 }
 
 void EspBase::setupWebController() {  
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+  webServer.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(200, "text/plain", "I'am alive");
   });
 
-  server.on("/restart", HTTP_GET, [](AsyncWebServerRequest * request) {
+  webServer.on("/restart", HTTP_GET, [](AsyncWebServerRequest * request) {
       ESP.restart();
   });
 }
 
+void EspBase::setupGPIO() {
+  
+}
+
 void EspBase::startWebServer() {
-  AsyncElegantOTA.begin(&server);
-  server.begin();
+  AsyncElegantOTA.begin(&webServer);
+  webServer.begin();
   Serial.println("Device ready!");
 }
 
@@ -78,4 +85,8 @@ String EspBase::getParamFromRequest(String paramName, AsyncWebServerRequest * re
     return request->getParam(paramName)->value();
   }
   return "";
+}
+
+AsyncWebServer EspBase::server() {
+  return webServer;
 }
