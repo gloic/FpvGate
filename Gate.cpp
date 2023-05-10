@@ -5,14 +5,11 @@
 #define echoPin 25
 #define ledPin 32
 
-
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-WiFiClient wifiClient;
-HTTPClient http;
+bool isListening;
 String ipStarter;
 String id;
-bool isListening = false;
 
 int thresholdDistance = 30;
 int minThreshold = 2 * thresholdDistance / 0.034;
@@ -21,31 +18,45 @@ void Gate::setup() {
   this->setupWifi();
   this->setupWebController();
   this->setupGPIO();
-  
-  // Notify Starter
-  this.register();
+
+  EspBase::startWebServer();
+  isListening = false;
 }
 
 void Gate::setupWifi() {
-	EspBase::setupWifi(SECRET_SSID, SECRET_PASS); 
-	ipStarter = WiFi.gatewayIP().toString();
+  EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
+  // Notify Starter
+  this->doRegister(WiFi.gatewayIP().toString());
+}
+
+void Gate::setupWebController() {
+  EspBase::setupWebController();
+  Serial.println("Gate::setupWebController");
+  this->webServer.on("/api/gate/start", HTTP_POST, &Gate::onStart);
+  this->webServer.on("/api/gate/stop", HTTP_POST, &Gate::onStop);
+  this->webServer.on("/api/gate/led", HTTP_POST, &Gate::onLed);
 }
 
 void Gate::setupGPIO() {
-  pinMode(trigPin, OUTPUT);  
+  /*
+  Serial.println("setup GPIO");
+  pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  
+
   pinMode(ledPin, OUTPUT);
+  */
 }
 
-void Gate::register() {
+void Gate::doRegister(String ip) {
+  Serial.println("Registering gate to Starter");
   char url[100];
-  snprintf(url, sizeof(url), "http://%s/api/gate/register", ipStarter.c_str());
-  http.begin(wifiClient, url.c_str());
+  snprintf(url, sizeof(url), "http://%s/api/gate/register", ip.c_str());
+  http.begin(wifiClient, url);
   int httpCode = http.POST("");
   if (httpCode == HTTP_CODE_OK) {
-    String responseBody = http.getString();    
+    String responseBody = http.getString();
     id = responseBody.toInt();
+    ipStarter = ip;
     Serial.print("id received = ");
     Serial.println(id);
   }
@@ -53,39 +64,34 @@ void Gate::register() {
 }
 
 void Gate::notifyPass() {
+  Serial.println("Notify pass to Starter");
   char url[100];
-  snprintf(url, sizeof(url), "http://%s/api/gate/%d/passed", ipStarter.c_str(), id);
-  http.begin(wifiClient, url.c_str());
+  snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str(), id);
+  http.begin(wifiClient, url);
   http.POST("");
   http.end();
 }
 
-void Gate::setupWebController() {
-  EspBase::setupWebController();
-  this->server().on("/api/gate/start", HTTP_POST, onStart);
-  this->server().on("/api/gate/stop", HTTP_POST, onStop);
-  this->server().on("/api/gate/led", HTTP_POST, onLed);
-  EspBase::startWebServer();
+void Gate::onStart(AsyncWebServerRequest* request) {
+  isListening = true;
+  request->send(200, "text/plain", "started");
 }
 
-void Gate::onStart(AsyncWebServerRequest * request) {
-	isListening = true;
-    request->send(200, "text/plain", "started");
+void Gate::onStop(AsyncWebServerRequest* request) {
+  isListening = false;
+  request->send(200, "text/plain", "stopped");
 }
 
-void Gate::onStop(AsyncWebServerRequest * request) {
-	isListening = false;
-    request->send(200, "text/plain", "stopped");
-}
-
-void Gate::onLed(AsyncWebServerRequest * request) {
-	// TODO
-	Serial.println("LED");
-    request->send(200, "text/plain", "led");
+void Gate::onLed(AsyncWebServerRequest* request) {
+  // TODO
+  Serial.println("LED");
+  request->send(200, "text/plain", "led");
 }
 
 void Gate::checkPass() {
-  if(!isListening) return;
+  if (!isListening) return;
+  Serial.println("Checking pass");
+
   // trigger the sensor by sending a 10us pulse to the trig pin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -98,11 +104,7 @@ void Gate::checkPass() {
   // check if something is within the threshold of the sensor
   // float distance = duration * 0.034 / 2;
   if (duration < minThreshold) {
-	  // Something passed
-	  notifyPass();
+    // Something passed
+    notifyPass();
   }
-}
-
-AsyncWebServer Gate::server() {
-  return EspBase::server();
 }

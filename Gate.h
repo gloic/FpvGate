@@ -6,22 +6,25 @@
 #include <HTTPClient.h>
 #include <ESPAsyncWebServer.h>
 
-class Gate : public EspBase {  
-  public:
-    void setup();
-    void checkPass();
-  protected:    
-    void setupWifi();
-    void setupWebController();
-    void setupGPIO();
-	void register();
-    void notifyPass();
-	//void setListening(bool value);
-	AsyncWebServer server();
-  private:
-	void onStart(AsyncWebServerRequest * request);
-	void onStop(AsyncWebServerRequest * request);
-	void onLed(AsyncWebServerRequest * request);
+class Gate : public EspBase {
+public:
+  void setup();
+  void checkPass();
+protected:
+  WiFiClient wifiClient;
+  HTTPClient http;
+
+  void setupWebController();
+  void setupGPIO();
+  void doRegister(String ip);
+  void notifyPass();
+  //void setListening(bool value);
+  
+private:
+  void setupWifi();
+  static void onStart(AsyncWebServerRequest* request);
+  static void onStop(AsyncWebServerRequest* request);
+  static void onLed(AsyncWebServerRequest* request);
 };
 
 #endif

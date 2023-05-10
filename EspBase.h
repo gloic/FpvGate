@@ -4,24 +4,27 @@
 #include "Arduino.h"
 #include <ESPAsyncWebServer.h>
 
-class EspBase
-{  
-  public:  
-    EspBase() : webServer(80), _version("1.0.b") {};
-	void setupAPWifi(String ssid, String pwd);
-	void setupWifi(String ssid, String pwd);	
-    String getParamFromRequest(String paramName, AsyncWebServerRequest * request);    
-	void onVersion(AsyncWebServerRequest * request);
-	void onRestart(AsyncWebServerRequest * request);
-	AsyncWebServer server();	
-  protected:	
-    void setupWebController();
-    void startWebServer();
-    virtual void setupGPIO();
-  private:
-	String getVersion();
-    String _version;
-    AsyncWebServer webServer;
+class EspBase {
+public:
+  AsyncWebServer webServer;
+
+  EspBase() : webServer(80), _version("1.0.c"){};
+  void setup(String ssid, String pwd);
+  void setupAPWifi(String ssid, String pwd);
+  void setupWifi(String ssid, String pwd);
+  String getParamFromRequest(String paramName, AsyncWebServerRequest* request);
+  static void onVersion(AsyncWebServerRequest* request);
+  static void onRestart(AsyncWebServerRequest* request);
+  
+protected:
+  AsyncWebServer server();
+  void setupWebController();
+  void startWebServer();
+  void setupGPIO();
+private:
+  String getVersion();
+  String _version;
+  
 };
 
 #endif
