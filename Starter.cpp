@@ -3,6 +3,18 @@
 
 Starter* Starter::instance = nullptr;
 
+/* 
+
+Led RGB status : 
+- RED = IDLE
+- BLUE = TRACK MODE
+- GREEN = RACE MODE
+
+Button reset :
+- Press = Reset race (in race mode)
+- Long press = Reset track (set race mode)
+*/
+
 struct GateClient {
   String ip;
   int id;

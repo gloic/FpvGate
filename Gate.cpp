@@ -5,6 +5,15 @@
 #define echoPin 25
 #define ledPin 32
 
+/*
+  Led status :
+   - ON = Detecting
+   - OFF = not detecting
+  
+  Potentiometer : detection threshold = 10cm <-> 50cm
+*/
+
+
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
 bool isListening;
