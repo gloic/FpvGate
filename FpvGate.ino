@@ -13,6 +13,8 @@ Gate *gate;
 #define CLOCK_PIN 22
 
 void setup() {
+  Serial.begin(115200);
+  
   pinMode(starterPin, INPUT);
   bool isStarter = digitalRead(starterPin);
   

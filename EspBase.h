@@ -8,18 +8,18 @@ class EspBase
 {  
   public:  
     EspBase() : webServer(80), _version("1.0.b") {};
-    void init(String ssid, String pwd);
-    void setupBase();
-	  void setupAPWifi();
-	  void setupWifi();	
-	  String getVersion();
-    String getParamFromRequest(String paramName, AsyncWebServerRequest * request);
-    AsyncWebServer server();    
-  protected:
+	void setupAPWifi(String ssid, String pwd);
+	void setupWifi(String ssid, String pwd);	
+    String getParamFromRequest(String paramName, AsyncWebServerRequest * request);    
+	void onVersion(AsyncWebServerRequest * request);
+	void onRestart(AsyncWebServerRequest * request);
+	AsyncWebServer server();	
+  protected:	
     void setupWebController();
     void startWebServer();
-    void setupGPIO();
+    virtual void setupGPIO();
   private:
+	String getVersion();
     String _version;
     AsyncWebServer webServer;
 };

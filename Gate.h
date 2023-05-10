@@ -9,13 +9,19 @@
 class Gate : public EspBase {  
   public:
     void setup();
-    void notifyStarter();
-    void notifyPass();
     void checkPass();
-    AsyncWebServer server();
   protected:    
+    void setupWifi();
     void setupWebController();
     void setupGPIO();
+	void register();
+    void notifyPass();
+	//void setListening(bool value);
+	AsyncWebServer server();
+  private:
+	void onStart(AsyncWebServerRequest * request);
+	void onStop(AsyncWebServerRequest * request);
+	void onLed(AsyncWebServerRequest * request);
 };
 
 #endif

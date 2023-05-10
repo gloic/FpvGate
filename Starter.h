@@ -4,13 +4,19 @@
 #include "Gate.h"
 
 class Starter : public Gate {
-  
-  protected:
+  public:
+  protected:	
+	void setupWifi();
     void setupWebController();
-    void setupGPIO();
+    void setupGPIO();	
+	void notifyPass();
   private:
-    void onNotify(AsyncWebServerRequest * request);
     int registerGate(String ip);
+	void startListening(Gate * gate)
+	void stopListening(Gate * gate);
+	
+	void onTrackMode(AsyncWebServerRequest * request);
+	void onRaceMode(AsyncWebServerRequest * request);
 };
 
 #endif
