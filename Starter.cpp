@@ -1,7 +1,13 @@
 #include "Starter.h"
 #include <vector>
+#include <OneButton.h>
+
+#define resetPin 12
 
 Starter* Starter::instance = nullptr;
+
+enum Mode { INIT, TRACK, RACE };
+Mode currentMode;
 
 /* 
 
@@ -20,18 +26,24 @@ struct GateClient {
   int id;
 };
 
+// Vector containing all registered gates on the network
 std::vector<GateClient> gates;
-//#define resetPin 12
+// Vector containing gates for track mode
+std::vector<GateClient> trackGates;
+
+OneButton buttonReset(resetPin, true);
 
 void Starter::setup() {
   Serial.println("Setup Starter");
   this->setupWifi();
   this->setupWebController();
-  //this->setupGPIO();
-  Serial.println("End of setup setupWebController");
-  //isListening = false;
+  this->setupGPIO();
+  
   EspBase::startWebServer();
-  Serial.println("End of setup startWebServer");
+  
+  currentMode = Mode::INIT;
+  //isListening = false;
+  
   Serial.println("End of setup Starter");
 }
 
@@ -53,6 +65,8 @@ void Starter::setupWebController() {
 void Starter::setupGPIO() {
   Gate::setupGPIO();
   //pinMode(resetPin, INPUT);
+  buttonReset.attachClick(&Starter::onButtonResetPress);
+  buttonReset.attachLongPressStart(&Starter::onButtonResetLongPress);
 }
 
 /**
@@ -61,7 +75,7 @@ void Starter::setupGPIO() {
 int Starter::registerGate(String ip) {
   Serial.println("Registering a gate");
   int id = gates.size();
-  gates.push_back(GateClient{ ip, id });
+  gates.push_back(GateClient{ip, id});
   Serial.print("Gate registered : ");
   Serial.print(ip);
   Serial.print(" with id = ");
@@ -98,6 +112,7 @@ void Starter::stopListening(String ip, String id) {
 
 void Starter::onTrackMode(AsyncWebServerRequest* request) {
   Serial.println("Starting track mode");
+  this->enableTrackMode();
 }
 
 void Starter::onRaceMode(AsyncWebServerRequest* request) {
@@ -110,9 +125,41 @@ void Starter::onGatePassed(AsyncWebServerRequest* request) {
   //request->pathArg(0);
   Serial.print("id=");
   Serial.println(id);
+
+  if(currentMode == Mode::TRACK) {
+    // Either build a GateClient from request's information (ip and id)
+    // Or retrieve the corresponding gate from the vector "gates" from its id.
+  }
   request->send(200, "text/plain", "OK");
 }
 
-void Starter::checkPass() {
-  //Gate::checkPass();
+void Starter::loop() {
+  buttonReset.tick();
+  if(currentMode == Mode::TRACK) {    
+    boolean passed = Gate::checkPass();
+    // TODO : define if the track mode is starting or ending
+  }  
+}
+
+void Starter::onButtonResetPress() {
+  Serial.println("onButtonResetPress");
+  // if (currentMode == Mode::RACE) {
+  //   reinit current lap
+  // }
+}
+
+void Starter::onButtonResetLongPress() {
+  Serial.println("onButtonResetLongPress");
+  this->enableTrackMode();
+}
+
+void Starter::enableTrackMode() {
+  currentMode = Mode::TRACK;
+  // LED = BLUE
+  
+  // Notify all gate to start listening
+  for (const auto& gate : gates) {
+    this->startListening(gate.ip, gate.id);
+  }
+  
 }

@@ -72,15 +72,6 @@ void Gate::doRegister(String ip) {
   http.end();
 }
 
-void Gate::notifyPass() {
-  Serial.println("Notify pass to Starter");
-  char url[100];
-  snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str(), id);
-  http.begin(wifiClient, url);
-  http.POST("");
-  http.end();
-}
-
 void Gate::onStart(AsyncWebServerRequest* request) {
   isListening = true;
   request->send(200, "text/plain", "started");
@@ -97,8 +88,15 @@ void Gate::onLed(AsyncWebServerRequest* request) {
   request->send(200, "text/plain", "led");
 }
 
-void Gate::checkPass() {
-  if (!isListening) return;
+void Gate::loop() {
+  if (isListening) {
+    if(this->checkPass()) {
+     this->notifyPass(); 
+    }
+  }
+}
+
+boolean Gate::checkPass() {
   Serial.println("Checking pass");
 
   // trigger the sensor by sending a 10us pulse to the trig pin
@@ -112,8 +110,14 @@ void Gate::checkPass() {
   long duration = pulseIn(echoPin, HIGH);
   // check if something is within the threshold of the sensor
   // float distance = duration * 0.034 / 2;
-  if (duration < minThreshold) {
-    // Something passed
-    notifyPass();
-  }
+  return duration < minThreshold;
+}
+
+void Gate::notifyPass() {
+  Serial.println("Notify pass to Starter");
+  char url[100];
+  snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str(), id);
+  http.begin(wifiClient, url);
+  http.POST("");
+  http.end();
 }

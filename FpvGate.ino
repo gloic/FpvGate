@@ -1,6 +1,5 @@
 
 #include "Starter.h"
-
 #include <ESPAsyncWebServer.h>
 
 #define starterPin 13
@@ -33,6 +32,6 @@ void setup() {
 }
 
 void loop() {
-  //gate->checkPass();
+  gate->loop();
   //delay(50);
 }

@@ -6,8 +6,8 @@
 class Starter : public Gate {
 public:
   Starter() {instance = this;}
-  void setup();
-  void checkPass();
+  void setup() override;
+  void loop() override;
 protected:
   void notifyPass();
 private:
@@ -20,11 +20,15 @@ private:
   int registerGate(String ip);
   void startListening(String ip, String id);
   void stopListening(String ip, String id);
+  void enableTrackMode();
 
   static void onRegisterGate(AsyncWebServerRequest* request);
   static void onGatePassed(AsyncWebServerRequest* request);
   static void onTrackMode(AsyncWebServerRequest* request);
   static void onRaceMode(AsyncWebServerRequest* request);
+
+  static void onButtonResetPress();
+  static void onButtonResetLongPress();
 };
 
 #endif

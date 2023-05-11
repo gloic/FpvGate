@@ -11,11 +11,13 @@
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 
+/*
 void EspBase::setup(String ssid, String pwd) {
   this->setupWifi(ssid, pwd);
   this->setupWebController();
   this->startWebServer();
 }
+*/
 
 void EspBase::setupAPWifi(String ssid, String pwd) {
   Serial.println("Setting wifi as AP");

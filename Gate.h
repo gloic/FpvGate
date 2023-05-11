@@ -8,8 +8,8 @@
 
 class Gate : public EspBase {
 public:
-  void setup();
-  void checkPass();
+  void setup() override;
+  void loop() override;
 protected:
   WiFiClient wifiClient;
   HTTPClient http;
@@ -17,9 +17,8 @@ protected:
   void setupWebController();
   void setupGPIO();
   void doRegister(String ip);
-  void notifyPass();
-  //void setListening(bool value);
-  
+  boolean checkPass();
+  void notifyPass();  
 private:
   void setupWifi();
   static void onStart(AsyncWebServerRequest* request);
