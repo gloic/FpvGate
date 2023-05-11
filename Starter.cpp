@@ -10,7 +10,6 @@ enum Mode { INIT, TRACK, RACE };
 Mode currentMode;
 
 /* 
-
 Led RGB status : 
 - RED = IDLE
 - BLUE = TRACK MODE
@@ -121,21 +120,27 @@ void Starter::onRaceMode(AsyncWebServerRequest* request) {
 
 void Starter::onGatePassed(AsyncWebServerRequest* request) {
   Serial.println("Gate passed !");
-  String id = "0"; 
-  //request->pathArg(0);
+  String id = EspBase::getParamFromRequest("id", req);
   Serial.print("id=");
   Serial.println(id);
-
-  if(currentMode == Mode::TRACK) {
-    // Either build a GateClient from request's information (ip and id)
-    // Or retrieve the corresponding gate from the vector "gates" from its id.
+  if(this->isMode(Mode::TRACK) && trackGates.size() == 0) {
+	  Serial.println("");
+    // build a GateClient from request's information (ip and id)
+    //   or retrieve the corresponding gate from the vector "gates" from its id
+	for (const auto& gate : gates) {
+		if (gate.id == id) {
+			trackGates.push_back(gate);
+			break;
+		}
+	}
+	
   }
   request->send(200, "text/plain", "OK");
 }
 
 void Starter::loop() {
   buttonReset.tick();
-  if(currentMode == Mode::TRACK) {    
+  if(this->isMode(Mode::TRACK)) {    
     boolean passed = Gate::checkPass();
     // TODO : define if the track mode is starting or ending
   }  
@@ -160,6 +165,9 @@ void Starter::enableTrackMode() {
   // Notify all gate to start listening
   for (const auto& gate : gates) {
     this->startListening(gate.ip, gate.id);
-  }
-  
+  }  
+}
+
+bool Starter::isMode(Mode mode) {
+	return currentMode = mode;
 }

@@ -21,6 +21,7 @@ private:
   void startListening(String ip, String id);
   void stopListening(String ip, String id);
   void enableTrackMode();
+  void isMode(Mode mode);
 
   static void onRegisterGate(AsyncWebServerRequest* request);
   static void onGatePassed(AsyncWebServerRequest* request);
@@ -28,7 +29,7 @@ private:
   static void onRaceMode(AsyncWebServerRequest* request);
 
   static void onButtonResetPress();
-  static void onButtonResetLongPress();
+  static void onButtonResetLongPress();  
 };
 
 #endif
