@@ -2,6 +2,7 @@
 #define Starter_H
 
 #include "Gate.h"
+#include "Mode.h"
 
 class Starter : public Gate {
 public:
@@ -12,23 +13,24 @@ protected:
   void notifyPass();
 private:
   static Starter* instance;
-
+  
   void setupWifi();
   void setupWebController();
   void setupGPIO();
   void doRegister(String ip);
   int registerGate(String ip);
-  void startListening(String ip, String id);
-  void stopListening(String ip, String id);
+  void startListening(String ip, int id);
+  void stopListening(String ip, int id);
   void enableTrackMode();
-  void isMode(Mode mode);
+  void enableRaceMode();
+  bool isMode(Mode mode);
 
   static void onRegisterGate(AsyncWebServerRequest* request);
   static void onGatePassed(AsyncWebServerRequest* request);
   static void onTrackMode(AsyncWebServerRequest* request);
   static void onRaceMode(AsyncWebServerRequest* request);
 
-  static void onButtonResetPress();
+  static void onButtonResetPressed();
   static void onButtonResetLongPress();  
 };
 

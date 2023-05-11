@@ -19,11 +19,14 @@ protected:
   void doRegister(String ip);
   boolean checkPass();
   void notifyPass();  
+  void led(bool state);
+  void blinkLed();
 private:
   void setupWifi();
   static void onStart(AsyncWebServerRequest* request);
   static void onStop(AsyncWebServerRequest* request);
   static void onLed(AsyncWebServerRequest* request);
+  
 };
 
 #endif

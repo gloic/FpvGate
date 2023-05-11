@@ -6,14 +6,18 @@
 #define ledPin 32
 
 /*
+
+LEDS I2C (for FastLED)
+  #define NUM_LEDS 4
+  #define DATA_PIN 23
+  #define CLOCK_PIN 22
+
   Led status :
    - ON = Detecting
    - OFF = not detecting
   
   Potentiometer : detection threshold = 10cm <-> 50cm
 */
-
-
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
 bool isListening;
@@ -24,6 +28,7 @@ int thresholdDistance = 30;
 int minThreshold = 2 * thresholdDistance / 0.034;
 
 void Gate::setup() {
+  EspBase::setup();
   this->setupWifi();
   this->setupWebController();
   this->setupGPIO();
@@ -50,10 +55,9 @@ void Gate::setupGPIO() {
   /*
   Serial.println("setup GPIO");
   pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-
-  pinMode(ledPin, OUTPUT);
+  pinMode(echoPin, INPUT); 
   */
+  pinMode(ledPin, OUTPUT);
 }
 
 void Gate::doRegister(String ip) {
@@ -89,6 +93,7 @@ void Gate::onLed(AsyncWebServerRequest* request) {
 }
 
 void Gate::loop() {
+  EspBase::loop();
   if (isListening) {
     if(this->checkPass()) {
      this->notifyPass(); 
@@ -97,8 +102,6 @@ void Gate::loop() {
 }
 
 boolean Gate::checkPass() {
-  Serial.println("Checking pass");
-
   // trigger the sensor by sending a 10us pulse to the trig pin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -120,4 +123,14 @@ void Gate::notifyPass() {
   http.begin(wifiClient, url);
   http.POST("");
   http.end();
+}
+
+void Gate::led(bool state) {
+  digitalWrite(ledPin, (state) ? HIGH : LOW);
+}
+
+void Gate::blinkLed() {
+  this->led(true);
+  delay(100);
+  this->led(false);
 }
