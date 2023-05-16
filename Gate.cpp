@@ -6,21 +6,21 @@
 #define ledPin 32
 
 /*
-
-LEDS I2C (for FastLED)
-  #define NUM_LEDS 4
-  #define DATA_PIN 23
-  #define CLOCK_PIN 22
-
   Led status :
    - ON = Detecting
    - OFF = not detecting
   
   Potentiometer : detection threshold = 10cm <-> 50cm
+
+  // LEDS I2C (for FastLED)
+  //#define NUM_LEDS 4
+  //#define DATA_PIN 23
+  //#define CLOCK_PIN 22
 */
+
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-bool isListening;
+Gate* Gate::instance = nullptr;
 String ipStarter;
 String id;
 
@@ -28,7 +28,6 @@ int thresholdDistance = 30;
 int minThreshold = 2 * thresholdDistance / 0.034;
 
 void Gate::setup() {
-  EspBase::setup();
   this->setupWifi();
   this->setupWebController();
   this->setupGPIO();
@@ -55,9 +54,10 @@ void Gate::setupGPIO() {
   /*
   Serial.println("setup GPIO");
   pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT); 
-  */
+  pinMode(echoPin, INPUT);
+
   pinMode(ledPin, OUTPUT);
+  */
 }
 
 void Gate::doRegister(String ip) {
@@ -77,12 +77,12 @@ void Gate::doRegister(String ip) {
 }
 
 void Gate::onStart(AsyncWebServerRequest* request) {
-  isListening = true;
+  instance->isListening = true;
   request->send(200, "text/plain", "started");
 }
 
 void Gate::onStop(AsyncWebServerRequest* request) {
-  isListening = false;
+  instance->isListening = false;
   request->send(200, "text/plain", "stopped");
 }
 
@@ -93,7 +93,6 @@ void Gate::onLed(AsyncWebServerRequest* request) {
 }
 
 void Gate::loop() {
-  EspBase::loop();
   if (isListening) {
     if(this->checkPass()) {
      this->notifyPass(); 
@@ -102,6 +101,8 @@ void Gate::loop() {
 }
 
 boolean Gate::checkPass() {
+  Serial.println("Checking pass");
+
   // trigger the sensor by sending a 10us pulse to the trig pin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -119,18 +120,11 @@ boolean Gate::checkPass() {
 void Gate::notifyPass() {
   Serial.println("Notify pass to Starter");
   char url[100];
-  snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str(), id);
+  snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str());
   http.begin(wifiClient, url);
-  http.POST("");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  
+  String payload = "id=" + id;
+  http.POST(payload);
   http.end();
-}
-
-void Gate::led(bool state) {
-  digitalWrite(ledPin, (state) ? HIGH : LOW);
-}
-
-void Gate::blinkLed() {
-  this->led(true);
-  delay(100);
-  this->led(false);
 }
