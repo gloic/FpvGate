@@ -78,6 +78,7 @@ void Gate::doRegister(String ip) {
 
 void Gate::onStart(AsyncWebServerRequest* request) {
   instance->isListening = true;
+  // TODO : add arg "stop listening once passed"
   request->send(200, "text/plain", "started");
 }
 
