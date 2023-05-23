@@ -1,10 +1,6 @@
 #include "Gate.h"
-
-/** PIN DEFINITONS **/
-#define trigPin 33
-#define echoPin 25
-#define ledPin 32
-
+#include "SonicSensor.h"
+#include "Leds.h"
 /*
   Led status :
    - ON = Detecting
@@ -20,12 +16,13 @@
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
+SonicSensor sonicSensor = SonicSensor(33, 25);
+Leds leds = Leds(1, 32);
+
+
 Gate* Gate::instance = nullptr;
 String ipStarter;
 String id;
-
-int thresholdDistance = 30;
-int minThreshold = 2 * thresholdDistance / 0.034;
 
 void Gate::setup() {
   this->setupWifi();
@@ -51,11 +48,8 @@ void Gate::setupWebController() {
 }
 
 void Gate::setupGPIO() {
+  sonicSensor.setup();
   /*
-  Serial.println("setup GPIO");
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-
   pinMode(ledPin, OUTPUT);
   */
 }
@@ -103,19 +97,7 @@ void Gate::loop() {
 
 boolean Gate::checkPass() {
   Serial.println("Checking pass");
-
-  // trigger the sensor by sending a 10us pulse to the trig pin
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  // measure the time it takes for the echo pin to go from HIGH to LOW
-  long duration = pulseIn(echoPin, HIGH);
-  // check if something is within the threshold of the sensor
-  // float distance = duration * 0.034 / 2;
-  return duration < minThreshold;
+  return sonicSensor.checkPass();
 }
 
 void Gate::notifyPass() {
