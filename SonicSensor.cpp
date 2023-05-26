@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 int thresholdDistance = 30;
-int minThreshold = 2 * thresholdDistance / 0.034;
+//int minThreshold = 2 * thresholdDistance / 0.034;
 
 SonicSensor::SonicSensor(int triggerPin, int echoPin) {
   this->triggerPin = triggerPin;
@@ -24,6 +24,12 @@ bool SonicSensor::checkPass() {
   // measure the time it takes for the echo pin to go from HIGH to LOW
   long duration = pulseIn(this->echoPin, HIGH);
   // check if something is within the threshold of the sensor
-  // float distance = duration * 0.034 / 2;
-  return duration < minThreshold;
+  float distance = duration * 0.034 / 2;
+  //bool activated = duration < minThreshold;
+  bool activated = distance < thresholdDistance;
+  if(activated) {
+    Serial.println("Passed !");
+    delay(1000);
+  }
+  return activated;
 }

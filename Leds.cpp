@@ -8,7 +8,7 @@ Leds::Leds(int numLeds, int dataPin) {
 }
 
 void Leds::setup() {
-  FastLED.addLeds<APA102>(leds, this->numLeds);
+  //FastLED.addLeds<APA102>(&leds, this->numLeds);
 }
 
 void Leds::blink() {

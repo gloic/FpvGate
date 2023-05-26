@@ -1,6 +1,6 @@
 #include "Gate.h"
 #include "SonicSensor.h"
-#include "Leds.h"
+//#include "Leds.h"
 /*
   Led status :
    - ON = Detecting
@@ -17,7 +17,7 @@
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
 SonicSensor sonicSensor = SonicSensor(33, 25);
-Leds leds = Leds(1, 32);
+//Leds ledsService = Leds(1, 32);
 
 
 Gate* Gate::instance = nullptr;
@@ -96,7 +96,7 @@ void Gate::loop() {
 }
 
 boolean Gate::checkPass() {
-  Serial.println("Checking pass");
+  //Serial.println("Checking pass");
   return sonicSensor.checkPass();
 }
 

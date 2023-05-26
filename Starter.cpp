@@ -97,9 +97,10 @@ void Starter::onGatePassed(AsyncWebServerRequest* request) {
     }
   } else if (instance->isMode(Mode::RACE) && id == nextGateIndex) {
     GateClient* gateClient = &trackGates[id];
-    // TODO will be deleted once "stop listening once passed" will be implemented on Gate's side
+    // TODO will be deleted when "stop listening once passed" will be implemented on Gate's side
     instance->stopListening(gateClient);
-    if (nextGateIndex < trackGates.size() - 1) {
+    bool gatesLeft = nextGateIndex < trackGates.size() - 1;
+    if (gatesLeft) {
       // notify next gate to listen
       instance->startListening(&trackGates[nextGateIndex++]);
     } else {
@@ -124,22 +125,21 @@ int Starter::registerGate(String ip) {
 void Starter::loop() {
   buttonReset.tick();
 
-  boolean passed = false;
-  if (instance->isListening) {
-    passed = Gate::checkPass();
+  bool passed = false;
+  if (this->isListening) {
+    passed = Gate::checkPass();    
   }
 
   if (!passed) {
     return;
   }
 
+  Serial.println("Started passed !");
   if (this->isMode(Mode::TRACK)) {
     if (trackGates.size() > 0) {
       Serial.println("Track mode finished, starting race mode");
-      this->enableRaceMode();
-      //} else {
-      // No gate passed in track mode excepted Starter -> should not happens
-      // do nothing
+      this->isListening = false;
+      this->enableRaceMode();      
     }
   } else if (this->isMode(Mode::RACE)) {
     if (startTime = 0) {
@@ -160,17 +160,19 @@ void Starter::onButtonResetPress() {
 }
 
 void Starter::enableTrackMode() {
+  Serial.println("enableTrackMode");
   currentMode = Mode::TRACK;
   trackGates.clear();
 
   // LED = BLUE
   this->startListeningAll();
+  this->isListening = true;
 }
 
 void Starter::enableRaceMode() {
   currentMode = Mode::RACE;
   // Only Starter must listen
-  instance->isListening = true;
+  this->isListening = true;
 }
 
 void Starter::startListeningAll() {
@@ -211,8 +213,13 @@ void Starter::resetLap() {
 
 void Starter::startLap() {
   startTime = millis();
+  nextGateIndex++;
 }
 
 void Starter::stopLap() {
   elapsedTime = millis() - startTime;
+  Serial.print("Lap finished in ");
+  Serial.print(elapsedTime / 1000);
+  Serial.println("s");
+  startTime = 0;
 }

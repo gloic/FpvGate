@@ -11,7 +11,7 @@ void setup() {
 
   pinMode(starterPin, INPUT);
 
-  gate = new Starter();
+  //gate = new Starter();
   
   if (digitalRead(starterPin) == HIGH) {
     gate = new Starter();
