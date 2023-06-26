@@ -139,24 +139,25 @@ void Starter::loop() {
     if (trackGates.size() > 0) {
       Serial.println("Track mode finished, starting race mode");
       this->isListening = false;
+      
+      // Workaround, a delay is necessary to avoid instant end of race mode
+      delay(5000);
       this->enableRaceMode();      
     }
   } else if (this->isMode(Mode::RACE)) {
-    if (startTime = 0) {
+    if (startTime == 0) {
       this->startLap();
     } else {
       this->stopLap();
     }
   }
-
 }
 
 void Starter::onButtonResetPress() {
   Serial.println("onButtonResetPress");
-  // if (currentMode == Mode::RACE) {
-  //   reinit current lap
-  //    this.resetLap();
-  // }
+  if (instance->isMode(Mode::RACE)) {
+    instance->resetLap();
+  }
 }
 
 void Starter::enableTrackMode() {
@@ -170,6 +171,7 @@ void Starter::enableTrackMode() {
 }
 
 void Starter::enableRaceMode() {
+  Serial.println("GO");
   currentMode = Mode::RACE;
   // Only Starter must listen
   this->isListening = true;
@@ -203,12 +205,14 @@ void Starter::stopListening(const GateClient* gate) {
 }
 
 bool Starter::isMode(Mode mode) {
-  return currentMode = mode;
+  return currentMode == mode;
 }
 
 void Starter::resetLap() {
+  Serial.println("Lap reset");
   startTime = 0;
   elapsedTime = 0;
+  nextGateIndex= 0;
 }
 
 void Starter::startLap() {

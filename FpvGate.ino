@@ -4,20 +4,20 @@
 
 #define starterPin 13
 
-Gate* gate;
+Starter* gate;
 
 void setup() {
   Serial.begin(115200);
 
   pinMode(starterPin, INPUT);
 
-  //gate = new Starter();
+  gate = new Starter();
   
   if (digitalRead(starterPin) == HIGH) {
     gate = new Starter();
     Serial.println("Device is the starter");
   } else {
-    gate = new Gate();
+    //gate = new Gate();
     Serial.println("Device is a gate");
   }
   
