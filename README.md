@@ -66,3 +66,11 @@ Others **Gates** can :
 ## License
 
 FPVGate is licensed under the MIT License.
+
+## Acknowledgements
+
+External resources, libraries, or individuals that contributed to the development of this library.
+
+- EspBase : https://github.com/gloic/EspBase
+- OneButton : https://github.com/mathertel/OneButton
+- FastLED : https://github.com/FastLED/FastLED

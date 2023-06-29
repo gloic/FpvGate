@@ -52,11 +52,11 @@ void Starter::setupWebController() {
   Gate::setupWebController();
   Serial.println("Starter::setupWebController");
 
-  this->webServer.on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
-  this->webServer.on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
+  this->server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
+  this->server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
 
-  this->webServer.on("/api/test/track", HTTP_GET, &Starter::onTrackMode);
-  this->webServer.on("/api/test/race", HTTP_GET, &Starter::onRaceMode);
+  this->server().on("/api/test/track", HTTP_GET, &Starter::onTrackMode);
+  this->server().on("/api/test/race", HTTP_GET, &Starter::onRaceMode);
 }
 
 void Starter::setupGPIO() {

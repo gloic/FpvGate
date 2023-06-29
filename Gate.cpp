@@ -42,9 +42,9 @@ void Gate::setupWifi() {
 void Gate::setupWebController() {
   EspBase::setupWebController();
   Serial.println("Gate::setupWebController");
-  this->webServer.on("/api/gate/start", HTTP_POST, &Gate::onStart);
-  this->webServer.on("/api/gate/stop", HTTP_POST, &Gate::onStop);
-  this->webServer.on("/api/gate/led", HTTP_POST, &Gate::onLed);
+  this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
+  this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
+  this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
 }
 
 void Gate::setupGPIO() {
