@@ -1,5 +1,7 @@
 #include "Gate.h"
 #include "SonicSensor.h"
+#include "LedStatut.h"
+
 //#include "Leds.h"
 /*
   Led status :
@@ -16,7 +18,9 @@
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-SonicSensor sonicSensor = SonicSensor(33, 25);
+auto sonicSensor = SonicSensor(33, 25);
+auto ledStatut = LedStatut();
+
 //Leds ledsService = Leds(1, 32);
 
 
@@ -31,6 +35,8 @@ void Gate::setup() {
 
   EspBase::startWebServer();
   isListening = false;
+
+  ledStatut.setup();
 }
 
 void Gate::setupWifi() {
@@ -93,6 +99,7 @@ void Gate::loop() {
      this->notifyPass(); 
     }
   }
+  ledStatut.loop();
 }
 
 boolean Gate::checkPass() {

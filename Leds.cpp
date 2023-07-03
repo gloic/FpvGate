@@ -1,6 +1,7 @@
 #include "Leds.h"
 #include <FastLED.h>
 
+
 CRGB leds[5];
 Leds::Leds(int numLeds, int dataPin) {
   this->numLeds = numLeds;
