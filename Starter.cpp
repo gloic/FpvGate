@@ -52,6 +52,13 @@ void Starter::setupWebController() {
   Gate::setupWebController();
   Serial.println("Starter::setupWebController");
 
+/*
+  this->server().on("/test/reset", HTTP_GET, [](AsyncWebServerRequest* request) {
+    instance->resetLap();    
+    request->send(200, "text/plain", "OK");
+  });
+  */
+
   this->server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
   this->server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
 

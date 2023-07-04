@@ -49,8 +49,11 @@ void Gate::setupWebController() {
   EspBase::setupWebController();
   Serial.println("Gate::setupWebController");
   this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
+  Serial.println("onStart");
   this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
+  Serial.println("onStop");
   this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
+  Serial.println("onLed");
 }
 
 void Gate::setupGPIO() {
