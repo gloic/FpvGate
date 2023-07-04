@@ -83,11 +83,13 @@ void Starter::onRegisterGate(AsyncWebServerRequest* request) {
 
 void Starter::onTrackMode(AsyncWebServerRequest* request) {
   Serial.println("Starting track mode");
+  instance->stateLed.setMode(1);
   instance->enableTrackMode();
 }
 
 void Starter::onRaceMode(AsyncWebServerRequest* request) {
   Serial.println("Starting race mode");
+  instance->stateLed.setMode(2);
 }
 
 void Starter::onGatePassed(AsyncWebServerRequest* request) {
@@ -152,6 +154,10 @@ void Starter::loop() {
       this->enableRaceMode();      
     }
   } else if (this->isMode(Mode::RACE)) {
+
+    // DANGER - NOT SURE
+    this->isListening = false;
+    
     if (startTime == 0) {
       this->startLap();
     } else {

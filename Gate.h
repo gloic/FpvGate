@@ -3,6 +3,7 @@
 
 #include "EspBase.h"
 #include "Secrets.h"
+#include "StateLed.h"
 
 #include <HTTPClient.h>
 #include <ESPAsyncWebServer.h>
@@ -16,7 +17,8 @@ class Gate : public EspBase {
   protected:
     WiFiClient wifiClient;
     HTTPClient http;   
-
+    StateLed stateLed;
+    
     bool isListening;
     void setupWebController();
     void setupGPIO();
@@ -25,7 +27,7 @@ class Gate : public EspBase {
     void notifyPass();
     void led(bool state);
     void blinkLed();
-
+    
   private:
     static Gate* instance;
     void setupWifi();

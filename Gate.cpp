@@ -1,6 +1,6 @@
 #include "Gate.h"
 #include "SonicSensor.h"
-#include "LedStatut.h"
+
 
 //#include "Leds.h"
 /*
@@ -18,11 +18,7 @@
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-auto sonicSensor = SonicSensor(33, 25);
-auto ledStatut = LedStatut();
-
-//Leds ledsService = Leds(1, 32);
-
+SonicSensor sonicSensor = SonicSensor(33, 25);
 
 Gate* Gate::instance = nullptr;
 String ipStarter;
@@ -35,8 +31,6 @@ void Gate::setup() {
 
   EspBase::startWebServer();
   isListening = false;
-
-  ledStatut.setup();
 }
 
 void Gate::setupWifi() {
@@ -58,9 +52,7 @@ void Gate::setupWebController() {
 
 void Gate::setupGPIO() {
   sonicSensor.setup();
-  /*
-  pinMode(ledPin, OUTPUT);
-  */
+  this->stateLed.setup();
 }
 
 void Gate::doRegister(String ip) {
@@ -102,7 +94,7 @@ void Gate::loop() {
      this->notifyPass(); 
     }
   }
-  ledStatut.loop();
+  this->stateLed.loop();
 }
 
 boolean Gate::checkPass() {
