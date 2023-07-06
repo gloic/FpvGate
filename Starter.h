@@ -14,7 +14,8 @@ protected:
   void notifyPass();
 private:
   static Starter* instance;
-
+  long lastLapTime;
+  
   void setupWifi();
   void setupWebController();
   void setupGPIO();

@@ -25,6 +25,7 @@ std::vector<GateClient> trackGates;
 
 unsigned long startTime = 0;
 unsigned long elapsedTime = 0;
+
 int nextGateIndex = -1;
 
 OneButton buttonReset(resetPin, true);
@@ -34,7 +35,6 @@ void Starter::setup() {
   this->setupWifi();
   this->setupWebController();
   this->setupGPIO();
-
   EspBase::startWebServer();
 
   currentMode = Mode::INIT;
@@ -64,6 +64,13 @@ void Starter::setupWebController() {
 
   this->server().on("/api/test/track", HTTP_GET, &Starter::onTrackMode);
   this->server().on("/api/test/race", HTTP_GET, &Starter::onRaceMode);
+
+  this->server().on("/test/laptime", HTTP_POST, [](AsyncWebServerRequest* request) {
+    request->send(200, "text/plain", String(instance->lastLapTime));
+  });
+  this->server().on("/test/bestlap", HTTP_POST, [](AsyncWebServerRequest* request) {
+    request->send(200, "text/plain", String(instance->bestLapTime));
+  });
 }
 
 void Starter::setupGPIO() {
@@ -78,18 +85,20 @@ void Starter::onRegisterGate(AsyncWebServerRequest* request) {
   Serial.println("onRegisterGate");
   String clientIP = request->client()->remoteIP().toString();
   int id = instance->registerGate(clientIP);
+
+  AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Hello World!");
+  response->addHeader("test","Test");
   request->send(200, "text/plain", String(id));
 }
 
 void Starter::onTrackMode(AsyncWebServerRequest* request) {
   Serial.println("Starting track mode");
-  instance->stateLed.setMode(1);
   instance->enableTrackMode();
 }
 
 void Starter::onRaceMode(AsyncWebServerRequest* request) {
   Serial.println("Starting race mode");
-  instance->stateLed.setMode(2);
+  instance->enableRaceMode();
 }
 
 void Starter::onGatePassed(AsyncWebServerRequest* request) {
@@ -97,7 +106,14 @@ void Starter::onGatePassed(AsyncWebServerRequest* request) {
   int id = instance->getParamFromRequest("id", request).toInt();
   Serial.print("id=");
   Serial.println(id);
+
+  // WHY THIS CHECK ON THE SIZE ? is it for dev ?
   if (instance->isMode(Mode::TRACK) && trackGates.size() == 0) {
+
+    if(trackGates.size() == 0) {
+      // First gate passed, starter can listen to close track
+      instance->isListening = true;
+    }
     for (const auto& gate : gates) {
       if (gate.id == id) {
         trackGates.push_back(gate);
@@ -106,16 +122,26 @@ void Starter::onGatePassed(AsyncWebServerRequest* request) {
     }
   } else if (instance->isMode(Mode::RACE) && id == nextGateIndex) {
     GateClient* gateClient = &trackGates[id];
-    // TODO will be deleted when "stop listening once passed" will be implemented on Gate's side
-    instance->stopListening(gateClient);
+
     bool gatesLeft = nextGateIndex < trackGates.size() - 1;
     if (gatesLeft) {
+      nextGateIndex++;
+      Serial.print("notify next gate to listen : ");
+      Serial.println(nextGateIndex);
+
       // notify next gate to listen
-      instance->startListening(&trackGates[nextGateIndex++]);
+      instance->startListening(&trackGates[nextGateIndex]);
     } else {
+      Serial.println("no next gate, Starter is next : start listening");
       // no next gate, Starter is next
       instance->isListening = true;
     }
+  } else {
+    Serial.println("Another gate was passed !");
+    Serial.print("passed=");
+    Serial.println(id);
+    Serial.print("expected=");
+    Serial.println(nextGateIndex);
   }
   request->send(200, "text/plain", "OK");
 }
@@ -133,6 +159,7 @@ int Starter::registerGate(String ip) {
 
 void Starter::loop() {
   buttonReset.tick();
+  this->stateLed.loop();
 
   bool passed = false;
   if (this->isListening) {
@@ -154,11 +181,9 @@ void Starter::loop() {
       this->enableRaceMode();      
     }
   } else if (this->isMode(Mode::RACE)) {
-
-    // DANGER - NOT SURE
-    this->isListening = false;
-    
     if (startTime == 0) {
+      // DANGER - NOT SURE
+      this->isListening = false;
       this->startLap();
     } else {
       this->stopLap();
@@ -175,16 +200,17 @@ void Starter::onButtonResetPress() {
 
 void Starter::enableTrackMode() {
   Serial.println("enableTrackMode");
+  instance->stateLed.setMode(2);
   currentMode = Mode::TRACK;
   trackGates.clear();
 
   // LED = BLUE
   this->startListeningAll();
-  this->isListening = true;
 }
 
 void Starter::enableRaceMode() {
   Serial.println("GO");
+  instance->stateLed.setMode(1);
   currentMode = Mode::RACE;
   // Only Starter must listen
   this->isListening = true;
@@ -198,23 +224,30 @@ void Starter::startListeningAll() {
 }
 
 void Starter::startListening(const GateClient* gate) {
+  return;
+  /*
   Serial.print("Send start listening to ");
   Serial.println(gate->id);
   char url[100];
   snprintf(url, sizeof(url), "http://%s/api/gate/start", gate->ip.c_str());
   http.begin(wifiClient, url);
+  // TODO Add timeout
   http.POST("");
   http.end();
+  */
 }
 
 void Starter::stopListening(const GateClient* gate) {
+  /*
   Serial.print("Send stop listening to ");
   Serial.println(gate->id);
   char url[100];
   snprintf(url, sizeof(url), "http://%s/api/gate/stop", gate->ip.c_str());
   http.begin(wifiClient, url);
+  // TODO Add timeout
   http.POST("");
   http.end();
+  */
 }
 
 bool Starter::isMode(Mode mode) {
@@ -225,7 +258,9 @@ void Starter::resetLap() {
   Serial.println("Lap reset");
   startTime = 0;
   elapsedTime = 0;
-  nextGateIndex= 0;
+  nextGateIndex = 0;
+  // notify next gate to listen
+  instance->startListening(&trackGates[nextGateIndex]);  
 }
 
 void Starter::startLap() {
@@ -234,9 +269,16 @@ void Starter::startLap() {
 }
 
 void Starter::stopLap() {
-  elapsedTime = millis() - startTime;
+  elapsedTime = (millis() - startTime) / 1000;
   Serial.print("Lap finished in ");
-  Serial.print(elapsedTime / 1000);
+  Serial.print(elapsedTime);
   Serial.println("s");
-  startTime = 0;
+  // Update last time
+  this->lastLapTime = elapsedTime;
+  if(elapsedTime < this->bestLapTime) {
+    this->bestLapTime = elapsedTime;
+  }
+
+  this->isListening = false;
+  this->resetLap();
 }

@@ -5,7 +5,6 @@ StateLed::StateLed() {
 }
 
 void StateLed::setup() {
-  
   this->_ledMode = 0;
 }
 
