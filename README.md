@@ -36,6 +36,7 @@ To use FPVGate, the following components are required:
 Common:
    - Ultrasonic sensor TRIGGER : 33
    - Ultrasonic sensor ECHO : 25
+   - State led : 2 (built-in pin)
    - LED DATA : 23
    - LED CLOCK : 22
 
@@ -74,3 +75,4 @@ External resources, libraries, or individuals that contributed to the developmen
 - EspBase : https://github.com/gloic/EspBase
 - OneButton : https://github.com/mathertel/OneButton
 - FastLED : https://github.com/FastLED/FastLED
+- Led : https://github.com/meirarc/Led
