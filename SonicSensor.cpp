@@ -9,7 +9,7 @@ float distance;
 SonicSensor::SonicSensor(int triggerPin, int echoPin) {
   this->triggerPin = triggerPin;
   this->echoPin = echoPin;
-  this->thresholdDistance = 30.0;
+  this->thresholdDistance = 40.0;
 }
 
 void SonicSensor::setup() {

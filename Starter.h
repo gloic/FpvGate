@@ -15,7 +15,8 @@ protected:
 private:
   static Starter* instance;
   long lastLapTime;
-  
+  long bestLapTime;
+
   void setupWifi();
   void setupWebController();
   void setupGPIO();

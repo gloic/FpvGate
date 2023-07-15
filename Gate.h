@@ -27,7 +27,7 @@ class Gate : public EspBase {
     void notifyPass();
     void led(bool state);
     void blinkLed();
-    
+    void beep();
   private:
     static Gate* instance;
     void setupWifi();

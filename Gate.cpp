@@ -1,8 +1,7 @@
 #include "Gate.h"
 #include "SonicSensor.h"
+#include "GateBuzzer.h"
 
-
-//#include "Leds.h"
 /*
   Led status :
    - ON = Detecting
@@ -19,6 +18,7 @@
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
 SonicSensor sonicSensor = SonicSensor(33, 25);
+GateBuzzer buzzer = GateBuzzer(26);
 
 Gate* Gate::instance = nullptr;
 String ipStarter;
@@ -50,6 +50,7 @@ void Gate::setupWebController() {
 void Gate::setupGPIO() {
   sonicSensor.setup();
   this->stateLed.setup();
+  buzzer.setup();
 }
 
 void Gate::doRegister(String ip) {
@@ -110,4 +111,8 @@ void Gate::notifyPass() {
   String payload = "id=" + id;
   http.POST(payload);
   http.end();
+}
+
+void Gate::beep() {
+  buzzer.beep();  
 }

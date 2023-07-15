@@ -200,6 +200,7 @@ void Starter::onButtonResetPress() {
 
 void Starter::enableTrackMode() {
   Serial.println("enableTrackMode");
+  Gate::beep();
   instance->stateLed.setMode(2);
   currentMode = Mode::TRACK;
   trackGates.clear();
@@ -210,6 +211,8 @@ void Starter::enableTrackMode() {
 
 void Starter::enableRaceMode() {
   Serial.println("GO");
+  Gate::beep();
+  Gate::beep();
   instance->stateLed.setMode(1);
   currentMode = Mode::RACE;
   // Only Starter must listen
@@ -256,7 +259,7 @@ bool Starter::isMode(Mode mode) {
 
 void Starter::resetLap() {
   Serial.println("Lap reset");
-  startTime = 0;
+  startTime = millis();
   elapsedTime = 0;
   nextGateIndex = 0;
   // notify next gate to listen
@@ -264,6 +267,7 @@ void Starter::resetLap() {
 }
 
 void Starter::startLap() {
+  Serial.println("Start lap");
   startTime = millis();
   nextGateIndex++;
 }
@@ -276,7 +280,13 @@ void Starter::stopLap() {
   // Update last time
   this->lastLapTime = elapsedTime;
   if(elapsedTime < this->bestLapTime) {
+    Serial.println("new record");
     this->bestLapTime = elapsedTime;
+    Gate::beep();
+    Gate::beep();
+  } else {
+    Serial.println("lap done");
+    Gate::beep();
   }
 
   this->isListening = false;
