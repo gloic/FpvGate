@@ -1,22 +1,10 @@
 #include "Starter.h"
 #include <vector>
 #include <OneButton.h>
-
-#define resetPin 12
+#include "GateConfig.h"
 
 Starter* Starter::instance = nullptr;
 Mode currentMode;
-
-/*
-  Led RGB status :
-  - RED = IDLE
-  - BLUE = TRACK MODE
-  - GREEN = RACE MODE
-
-  Button reset :
-  - Press = Reset race (in race mode)
-  - Long press = Reset track (set race mode)
-*/
 
 // Vector containing all registered gates on the network
 std::vector<GateClient> gates;
@@ -28,7 +16,7 @@ unsigned long elapsedTime = 0;
 
 int nextGateIndex = -1;
 
-OneButton buttonReset(resetPin, true);
+OneButton buttonReset(PIN_RESET, true);
 
 void Starter::setup() {
   Serial.println("Setup Starter");

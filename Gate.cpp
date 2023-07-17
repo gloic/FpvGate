@@ -1,28 +1,20 @@
 #include "Gate.h"
-#include "SonicSensor.h"
-#include "GateBuzzer.h"
-
-/*
-  Led status :
-   - ON = Detecting
-   - OFF = not detecting
-  
-  Potentiometer : detection threshold = 10cm <-> 50cm
-
-  // LEDS I2C (for FastLED)
-  //#define NUM_LEDS 4
-  //#define DATA_PIN 23
-  //#define CLOCK_PIN 22
-*/
+#include "modules/SonicSensor.h"
+#include "modules/GateBuzzer.h"
+#include "GateConfig.h"
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-SonicSensor sonicSensor = SonicSensor(33, 25);
-GateBuzzer buzzer = GateBuzzer(26);
+SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
+GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
 
 Gate* Gate::instance = nullptr;
 String ipStarter;
 String id;
+
+void Gate::Gate() {
+    instance = this;
+}
 
 void Gate::setup() {
   this->setupWifi();
@@ -49,6 +41,7 @@ void Gate::setupWebController() {
 
 void Gate::setupGPIO() {
   sonicSensor.setup();
+  this->stateLed = StateLed(PIN_STATE_LED)
   this->stateLed.setup();
   buzzer.setup();
 }

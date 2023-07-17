@@ -2,8 +2,8 @@
 #define Starter_H
 
 #include "Gate.h"
-#include "GateClient.h"
-#include "Mode.h"
+#include "brol/GateClient.h"
+#include "brol/Mode.h"
 
 class Starter : public Gate {
 public:

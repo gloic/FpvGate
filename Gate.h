@@ -3,14 +3,15 @@
 
 #include "EspBase.h"
 #include "Secrets.h"
-#include "StateLed.h"
+#include "modules/StateLed.h"
 
 #include <HTTPClient.h>
 #include <ESPAsyncWebServer.h>
 
 class Gate : public EspBase {
   public:
-    Gate() {instance = this;}
+    //Gate() {instance = this;}
+    Gate();
     void setup() override;
     void loop() override;
 
