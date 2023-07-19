@@ -68,6 +68,7 @@ if (NOT ARDUINO_SDK_PATH)
         set(SDK_PATH_HINTS "C:\\Program Files\\Arduino"
                 "C:\\Program Files (x86)\\Arduino"
                 "D:\\perso\\Tools\\arduino-1.8.19"
+                "C:\\Users\\grispin\\AppData\\Local\\Arduino15\\packages"
                 )
     endif ()
     list(SORT SDK_PATH_HINTS)

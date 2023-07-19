@@ -1,12 +1,16 @@
 #ifndef GateBuzzer_H
 #define GateBuzzer_H
-    
+
 class GateBuzzer {
-  public:
+public:
     GateBuzzer(int buzzerpin);
+
     void setup();
+
     void beep();
-  private:
+
+private:
     int _buzzerPin;
 };
+
 #endif

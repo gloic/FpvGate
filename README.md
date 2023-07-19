@@ -2,14 +2,17 @@
 
 ![FPVGate Logo](./images/fpv_gate_logo.png)
 
-FPVGate is a project that aims to create a gate system for detecting the passage of objects, such as drones or RC helicopters, using ultrasonic sensors. The gate system is designed for FPV (First Person View) racing and can be used as a starting and finishing line for races.
+FPVGate is a project that aims to create a gate system for detecting the passage of objects, such as drones or RC
+helicopters, using ultrasonic sensors. The gate system is designed for FPV (First Person View) racing and can be used as
+a starting and finishing line for races.
 
 ## Features
 
 - Gate detection: Ultrasonic sensors are used to detect the passage of objects through the gates.
 - Configurable threshold distance: The threshold distance can be adjusted to fine-tune the detection sensitivity.
 - Starter functionality: One gate is designated as the starter gate, which initiates the race and records the lap times.
-- Web-based user interface: Provides a user-friendly interface for configuring and monitoring the gate system (not implemented yet).
+- Web-based user interface: Provides a user-friendly interface for configuring and monitoring the gate system (not
+  implemented yet).
 - Supporting OTA
 
 ## Requirements
@@ -34,23 +37,27 @@ To use FPVGate, the following components are required:
 **(Hard coded)**
 
 Common:
-   - Ultrasonic sensor TRIGGER : 33
-   - Ultrasonic sensor ECHO : 25
-   - State led : 2 (built-in pin)
-   - LED DATA : 23
-   - LED CLOCK : 22
 
-Starter : 
-  - reset button : 12
+- Ultrasonic sensor TRIGGER : 33
+- Ultrasonic sensor ECHO : 25
+- State led : 2 (built-in pin)
+- LED DATA : 23
+- LED CLOCK : 22
+
+Starter :
+
+- reset button : 12
 
 ## Project
 
 One gate must be the **Starter** gate, it will :
+
 - create a wifi access point
 - receive information when a gate detects a passage
 - orchestrate others gates
 
 Others **Gates** can :
+
 - access to the Starter's wifi access point
 - register when joining network
 - notify **Starter** when detecting object's passage
@@ -58,8 +65,10 @@ Others **Gates** can :
 ## Configuration
 
 **Starter Gate** has 3 modes : NONE, TRACK and RACE.
+
 - NONE : default mode when starting devices (does nothing)
-- TRACK MODE : all registered gates are listening. When the drone pass a gate, **Starter** is notified and gates order is kept in memory.
+- TRACK MODE : all registered gates are listening. When the drone pass a gate, **Starter** is notified and gates order
+  is kept in memory.
 - RACE MODE : once **Starter** is passed, RACE mode is activated.
 
 *NONE* -> Long press on reset -> *TRACK* -> define track by passing gates -> pass Starter -> *RACE*

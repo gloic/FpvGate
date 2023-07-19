@@ -3,12 +3,13 @@
 #include <ESPAsyncWebServer.h>
 
 #include "GateConfig.h"
+#include <Arduino.h>
 
 
 Starter *gate;
 
 void setup() {
-    if (DEV_MODE) {
+    if (DEV_MODE == 1) {
         Serial.begin(115200);
     }
     gate = new Starter();
