@@ -57,10 +57,10 @@ void Starter::setupWebController() {
     this->server().on("/api/test/race", HTTP_GET, &Starter::onRaceMode);
 
     this->server().on("/test/laptime", HTTP_POST, [](AsyncWebServerRequest *request) {
-        request->send(200, "text/plain", String(instance->lastLapTime));
+        request->send(200, "text/plain", String(instance->trackHandler.getLastLapTime()));
     });
     this->server().on("/test/bestlap", HTTP_POST, [](AsyncWebServerRequest *request) {
-        request->send(200, "text/plain", String(instance->bestLapTime));
+        request->send(200, "text/plain", String(instance->trackHandler.getBestLapTime()));
     });
 }
 
@@ -252,7 +252,7 @@ bool Starter::isMode(Mode mode) {
 void Starter::resetLap() {
     Serial.println("Lap reset");
     startTime = millis();
-    elapsedTime = 0;
+    //elapsedTime = 0;
     nextGateIndex = 0;
     // notify next gate to listen
     instance->startListening(&trackGates[nextGateIndex]);
@@ -269,17 +269,15 @@ void Starter::stopLap() {
     Serial.print("Lap finished in ");
     Serial.print(elapsedTime);
     Serial.println("s");
+
     // Update last time
-    this->lastLapTime = elapsedTime;
-    if (elapsedTime < this->bestLapTime) {
-        Serial.println("new record");
-        this->bestLapTime = elapsedTime;
-        Gate::beep();
-        Gate::beep();
-    } else {
-        Serial.println("lap done");
+    bool newRecord = this->trackHandler.setLapTime(elapsedTime);
+    if(newRecord) {
+        Serial.println("New record");
         Gate::beep();
     }
+    Gate::beep();
+    Serial.println("Lap done");
 
     this->isListening = false;
     this->resetLap();

@@ -3,7 +3,6 @@
 
 #include "Gate.h"
 #include "brol/GateClient.h"
-#include "modules/starter/Mode.h"
 #include "modules/starter/TrackHandler.h"
 
 class Starter : public Gate {
@@ -18,9 +17,6 @@ private:
     static Starter *instance;
     TrackHandler trackHandler;
     
-    long lastLapTime;
-    long bestLapTime;
-
     void setupWifi();
     void setupWebController();
     void setupGPIO();

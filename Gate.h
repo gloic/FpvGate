@@ -11,7 +11,6 @@
 
 class Gate : public EspBase {
 public:
-    //Gate() {instance = this;}
     Gate();
     void setup() override;
     void loop() override;

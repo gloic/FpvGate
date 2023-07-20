@@ -8,12 +8,20 @@ public:
     TrackHandler() {}
 
     void setMode(Mode mode);
-    Mode getMode();
     bool isTrackMode();
     bool isRaceMode();
 
+    long getLastLapTime();
+    void setLastLapTime(long time);
+    long getBestLapTime();
+    void setBestLapTime(long time);
+
+    bool setLapTime(long time);
+
 private:
     Mode mode;
+    long lastLapTime;
+    long bestLapTime;
 
     bool isMode(Mode mode);
 };

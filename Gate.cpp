@@ -5,17 +5,16 @@
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-SonicSensor sonicSensor = SonicSensor( PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
-GateBuzzer buzzer = GateBuzzer( PIN_BUZZER
+SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
+GateBuzzer buzzer = GateBuzzer(PIN_BUZZER
 );
 
 Gate *Gate::instance = nullptr;
 String ipStarter;
 String id;
 
-Gate::Gate() {
+Gate::Gate() : stateLed(PIN_STATE_LED){
     instance = this;
-    stateLed = StateLed(PIN_STATE_LED);
 }
 
 void Gate::setup() {
@@ -33,7 +32,7 @@ void Gate::setupWifi() {
     if (DEV_MODE == 1) {
         this->doRegister(WiFi.gatewayIP().toString());
     } else {
-        this->doRegister( DEV_IP_STARTER);
+        this->doRegister(DEV_IP_STARTER);
     }
 }
 
