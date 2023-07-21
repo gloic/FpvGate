@@ -13,10 +13,10 @@ set(${PROJECT_NAME}_SKETCH FpvGate.ino)
 
 ### Add project directories into the build
 include_directories("${PROJECT_SOURCE_DIR}/brol/")
-include_directories("${PROJECT_SOURCE_DIR}/modules/")
+include_directories("${PROJECT_SOURCE_DIR}/includes/")
 
 #add_subdirectory("brol")
-#add_subdirectory("modules")
+#add_subdirectory("includes")
 
     #add_subdirectory("C:\\Users\\ grispin\\Documents\\Arduino\\libraries")
     #add_subdirectory("D:\\perso\\Tools\\arduino-1.8.19\\hardware")

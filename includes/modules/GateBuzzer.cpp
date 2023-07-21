@@ -1,4 +1,4 @@
-#include "GateBuzzer.h"
+#include "../headers/GateBuzzer.h"
 #include "Arduino.h"
 
 #define NOTE_C4  880

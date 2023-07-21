@@ -1,7 +1,7 @@
-#include "StateLed.h"
+#include "../headers/StateLed.h"
 
-StateLed::StateLed() {
-  _led = new Led(2);  
+StateLed::StateLed(int pin) {
+  _led = new Led(pin);
 }
 
 void StateLed::setup() {

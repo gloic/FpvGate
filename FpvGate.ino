@@ -1,8 +1,8 @@
 
-#include "Starter.h"
+#include "includes/headers/Starter.h"
 #include <ESPAsyncWebServer.h>
 
-#include "GateConfig.h"
+#include "includes/GateConfig.h"
 #include <Arduino.h>
 
 
