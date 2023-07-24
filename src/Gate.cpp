@@ -1,20 +1,21 @@
-#include "Gate.h"
-//#include "modules/SonicSensor.h"
-//#include "modules/GateBuzzer.h"
-#include "includes/GateConfig.h"
+#include "headers/Gate.h"
+
+#include "headers/modules/SonicSensor.h"
+#include "headers/modules/GateBuzzer.h"
+#include "headers/GateConfig.h"
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-//SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
-//GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
+SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
+GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
 
-Gate* Gate::instance = nullptr;
+Gate *Gate::instance = nullptr;
 String ipStarter;
 String id;
 
 //Gate::Gate() {
 //    instance = this;
-    //stateLed(PIN_STATE_LED)
+//stateLed(PIN_STATE_LED)
 //}
 
 void Gate::setup() {
@@ -39,15 +40,19 @@ void Gate::setupWifi() {
 void Gate::setupWebController() {
     EspBase::setupWebController();
     Serial.println("Gate::setupWebController");
+    this->server().on("/gate", HTTP_GET, [](AsyncWebServerRequest* request) {
+        request->send(200, "text/plain", "Gate");
+    });
+    Serial.println("/gate OK");
     this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
     this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
 //    this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
 }
 
 void Gate::setupGPIO() {
-//    sonicSensor.setup();
+    sonicSensor.setup();
+    buzzer.setup();
 //    this->stateLed.setup();
-//    buzzer.setup();
 }
 
 void Gate::doRegister(String ip) {
@@ -95,8 +100,7 @@ void Gate::loop() {
 }
 
 boolean Gate::checkPass() {
-    return false;
-//    return sonicSensor.checkPass();
+    return sonicSensor.checkPass();
 }
 
 void Gate::notifyPass() {
@@ -111,6 +115,6 @@ void Gate::notifyPass() {
     http.end();
 }
 
-//void Gate::beep() {
-//    buzzer.beep();
-//}
+void Gate::beep() {
+    buzzer.beep();
+}

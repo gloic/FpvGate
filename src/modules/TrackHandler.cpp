@@ -1,19 +1,25 @@
-#include "../headers/TrackHandler.h"
+#include "headers/modules/TrackHandler.h"
 
-void TrackHandler::setMode(Mode mode) {
+#include "headers/structs/GateMode.h"
+
+void TrackHandler::setMode(GateMode mode) {
     this->mode = mode;
 }
 
 bool TrackHandler::isTrackMode() {
-    return isMode(Mode::TRACK);
+    return isMode(GateMode::TRACK);
 }
 
 bool TrackHandler::isRaceMode() {
-    return isMode(Mode::RACE);
+    return isMode(GateMode::RACE);
 }
 
-bool TrackHandler::isMode(Mode mode) {
-    return this.mode == mode;
+bool TrackHandler::isMode(GateMode mode) {
+    return this->mode == mode;
+}
+
+GateMode TrackHandler::getMode() {
+    return this->mode;
 }
 
 long TrackHandler::getLastLapTime() {

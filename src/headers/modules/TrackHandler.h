@@ -1,15 +1,16 @@
 #ifndef TrackHandler_H
 #define TrackHandler_H
 
-#include "../../structs/Mode.h"
+#include "headers/structs/GateMode.h"
 
 class TrackHandler {
 public:
     TrackHandler() {}
 
-    void setMode(Mode mode);
+    void setMode(GateMode mode);
     bool isTrackMode();
     bool isRaceMode();
+    GateMode getMode();
 
     long getLastLapTime();
     void setLastLapTime(long time);
@@ -19,11 +20,11 @@ public:
     bool setLapTime(long time);
 
 private:
-    Mode mode;
+    GateMode mode;
     long lastLapTime;
     long bestLapTime;
 
-    bool isMode(Mode mode);
+    bool isMode(GateMode mode);
 };
 
-#endif TrackHandler_H
+#endif

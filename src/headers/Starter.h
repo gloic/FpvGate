@@ -1,21 +1,21 @@
 #ifndef Starter_H
 #define Starter_H
 
-#include "../Gate.h"
-#include "structs/GateClient.h"
-//#include "../modules/headers/TrackHandler.h"
+#include "Gate.h"
+#include "headers/structs/GateClient.h"
+#include "headers/modules/TrackHandler.h"
 
 class Starter : public Gate {
 public:
     Starter() { instance = this; }
-    void setup() override;
-    void loop() override;
+    void setup();
+    void loop();
 protected:
     void notifyPass();
 
 private:
     static Starter *instance;
-//    TrackHandler trackHandler;
+    TrackHandler trackHandler {};
     
     void setupWifi();
     void setupWebController();
@@ -27,7 +27,7 @@ private:
     void startListeningAll();
     void enableTrackMode();
     void enableRaceMode();
-//    bool isMode(Mode mode);
+//    bool isMode(GateMode mode);
     void startLap();
     void stopLap();
     void resetLap();

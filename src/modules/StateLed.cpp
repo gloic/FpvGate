@@ -1,7 +1,7 @@
-#include "../headers/StateLed.h"
+#include "headers/modules/StateLed.h"
 
 StateLed::StateLed(int pin) {
-  _led = new Led(pin);
+//  _led = new Led(pin);
 }
 
 void StateLed::setup() {
@@ -11,13 +11,13 @@ void StateLed::setup() {
 void StateLed::loop() {
   switch(this->_ledMode) {
     case 0:
-      _led->off();
+//      _led->off();
       break;
     case 1:
-      _led->on();
+//      _led->on();
       break;
    case 2:
-      _led->blink(200);
+//      _led->blink(200);
       break;
    default:
       break;

@@ -1,13 +1,12 @@
 #ifndef Gate_H
 #define Gate_H
 
-// #include <Arduino.h> HA LENCULE C'EST CE PUTAIN DIMPORT DE MERDE J'EN SUIS SUR
 #include "EspBase.h"
-#include "../Secrets.h"
-//#include "modules/StateLed.h"
+#include "Secrets.h"
+#include "headers/modules/StateLed.h"
 
 #include <HTTPClient.h>
-#include <ESPAsyncWebServer.h>
+#include "ESPAsyncWebServer.h"
 
 class Gate : public EspBase {
 public:
@@ -19,7 +18,7 @@ protected:
     WiFiClient wifiClient;
     HTTPClient http;
 //    StateLed stateLed;
-    bool isListening;
+    bool isListening{};
 
     void setupWebController();
     void setupGPIO();
@@ -28,7 +27,7 @@ protected:
     void notifyPass();
 //    void led(bool state);
 //    void blinkLed();
-//    void beep();
+    static void beep();
 
 private:
     static Gate *instance;
@@ -36,6 +35,6 @@ private:
     void setupWifi();
     static void onStart(AsyncWebServerRequest *request);
     static void onStop(AsyncWebServerRequest *request);
-    //static void onLed(AsyncWebServerRequest *request);};
-
+    //static void onLed(AsyncWebServerRequest *request);
+};
 #endif
