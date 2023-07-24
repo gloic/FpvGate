@@ -1,5 +1,5 @@
-#include "../headers/SonicSensor.h"
-//#include "Arduino.h"
+#include "Arduino.h"
+#include "headers/modules/SonicSensor.h"
 
 float thresholdDistance;
 //int minThreshold = 2 * thresholdDistance / 0.034;
