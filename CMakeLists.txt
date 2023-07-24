@@ -3,7 +3,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/ArduinoToolchain.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_NAME FPVGate)
 
-set(${PROJECT_NAME}_BOARD d3)
+set(${PROJECT_NAME}_BOARD lolin32)
 project(${PROJECT_NAME})
 
 ### Additional static libraries to include in the target.
@@ -12,11 +12,10 @@ project(${PROJECT_NAME})
 set(${PROJECT_NAME}_SKETCH FpvGate.ino)
 
 ### Add project directories into the build
-include_directories("${PROJECT_SOURCE_DIR}/brol/")
-include_directories("${PROJECT_SOURCE_DIR}/includes/")
+include_directories("${PROJECT_SOURCE_DIR}/pauvrecon/")
 
 #add_subdirectory("brol")
-#add_subdirectory("includes")
+#add_subdirectory("pauvrecon")
 
     #add_subdirectory("C:\\Users\\ grispin\\Documents\\Arduino\\libraries")
     #add_subdirectory("D:\\perso\\Tools\\arduino-1.8.19\\hardware")
