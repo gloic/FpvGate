@@ -5,7 +5,7 @@
 
 class StateLed {
   public:
-    StateLed(int pin);
+    StateLed();
     void setup();
     void loop();
     void setMode(int mode);  

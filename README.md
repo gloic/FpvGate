@@ -15,6 +15,9 @@ a starting and finishing line for races.
   implemented yet).
 - Supporting OTA
 
+# TODO 
+ - 
+
 ## Requirements
 
 To use FPVGate, the following components are required:

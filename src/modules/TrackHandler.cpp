@@ -39,7 +39,7 @@ void TrackHandler::setBestLapTime(long time) {
 }
 
 /**
- * Update lastTime and bestLapTime is needed
+ * Update lastTime and bestLapTime if needed
  * @param time
  * @return true if bestLapTime updated too.
  */

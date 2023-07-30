@@ -3,7 +3,6 @@
 
 #include "EspBase.h"
 #include "Secrets.h"
-#include "headers/modules/StateLed.h"
 
 #include <HTTPClient.h>
 #include "ESPAsyncWebServer.h"
@@ -17,7 +16,6 @@ public:
 protected:
     WiFiClient wifiClient;
     HTTPClient http;
-//    StateLed stateLed;
     bool isListening{};
 
     void setupWebController();
@@ -25,16 +23,15 @@ protected:
     void doRegister(String ip);
     boolean checkPass();
     void notifyPass();
-//    void led(bool state);
-//    void blinkLed();
+    void led(bool state);
+    void blinkLed();
     static void beep();
 
 private:
     static Gate *instance;
-
     void setupWifi();
     static void onStart(AsyncWebServerRequest *request);
     static void onStop(AsyncWebServerRequest *request);
-    //static void onLed(AsyncWebServerRequest *request);
+    static void onLed(AsyncWebServerRequest *request);
 };
 #endif

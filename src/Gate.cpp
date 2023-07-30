@@ -1,18 +1,19 @@
 #include "headers/Gate.h"
-
+#include "headers/modules/StateLed.h"
 #include "headers/modules/SonicSensor.h"
 #include "headers/modules/GateBuzzer.h"
 #include "headers/GateConfig.h"
+#include "services/headers/RestWebController.h"
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
 SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
 GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
-
+StateLed stateLed;
 Gate *Gate::instance = nullptr;
 String ipStarter;
 String id;
-
+auto webController = new RestWebController();
 //Gate::Gate() {
 //    instance = this;
 //stateLed(PIN_STATE_LED)
@@ -46,13 +47,13 @@ void Gate::setupWebController() {
     Serial.println("/gate OK");
     this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
     this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
-//    this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
+   this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
 }
 
 void Gate::setupGPIO() {
     sonicSensor.setup();
     buzzer.setup();
-//    this->stateLed.setup();
+    stateLed.setup();
 }
 
 void Gate::doRegister(String ip) {
@@ -72,6 +73,7 @@ void Gate::doRegister(String ip) {
 }
 
 void Gate::onStart(AsyncWebServerRequest *request) {
+    //webController.start();
     instance->isListening = true;
 //    instance->stateLed.setMode(2);
     request->send(200, "text/plain", "started");
@@ -83,11 +85,11 @@ void Gate::onStop(AsyncWebServerRequest *request) {
     request->send(200, "text/plain", "stopped");
 }
 
-//void Gate::onLed(AsyncWebServerRequest *request) {
-//    // TODO
-//    Serial.println("LED");
-//    request->send(200, "text/plain", "led");
-//}
+void Gate::onLed(AsyncWebServerRequest *request) {
+   // TODO
+   Serial.println("LED");
+   request->send(200, "text/plain", "led");
+}
 
 void Gate::loop() {
     if (isListening) {
@@ -96,7 +98,7 @@ void Gate::loop() {
             this->notifyPass();
         }
     }
-//    this->stateLed.loop();
+   stateLed.loop();
 }
 
 boolean Gate::checkPass() {
