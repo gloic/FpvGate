@@ -22,8 +22,7 @@ private:
     void setupGPIO();
     void doRegister(String ip);
     int registerGate(String ip);
-    void startListening(const GateClient *gate);
-    void stopListening(const GateClient *gate);
+
     void startListeningAll();
     void enableTrackMode();
     void enableRaceMode();
@@ -31,6 +30,9 @@ private:
     void startLap();
     void stopLap();
     void resetLap();
+
+    void gateStartListening(const GateClient *gate);
+    void gateStopListening(const GateClient *gate);
     
     static void onRegisterGate(AsyncWebServerRequest *request);
     static void onGatePassed(AsyncWebServerRequest *request);

@@ -4,7 +4,8 @@
 class WebController {
 public:
     virtual void setup();
-virtual void start();
+    virtual void start();
+    virtual void notifyPass();
 };
 
 #endif

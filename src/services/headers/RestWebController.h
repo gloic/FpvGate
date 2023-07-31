@@ -8,6 +8,7 @@ public:
     RestWebController() {};
     void setup();
     void start();
+    void notifyPass();
 };
 
 #endif

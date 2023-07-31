@@ -25,7 +25,7 @@ void Gate::setup() {
     this->setupGPIO();
 
     EspBase::startWebServer();
-    isListening = false;
+    this->stopListening();
 }
 
 void Gate::setupWifi() {
@@ -41,10 +41,6 @@ void Gate::setupWifi() {
 void Gate::setupWebController() {
     EspBase::setupWebController();
     Serial.println("Gate::setupWebController");
-    this->server().on("/gate", HTTP_GET, [](AsyncWebServerRequest* request) {
-        request->send(200, "text/plain", "Gate");
-    });
-    Serial.println("/gate OK");
     this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
     this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
    this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
@@ -73,14 +69,13 @@ void Gate::doRegister(String ip) {
 }
 
 void Gate::onStart(AsyncWebServerRequest *request) {
-    //webController.start();
-    instance->isListening = true;
+    instance->startListening();
 //    instance->stateLed.setMode(2);
     request->send(200, "text/plain", "started");
 }
 
 void Gate::onStop(AsyncWebServerRequest *request) {
-    instance->isListening = false;
+    instance->stopListening();
 //    instance->stateLed.setMode(1);
     request->send(200, "text/plain", "stopped");
 }
@@ -92,9 +87,9 @@ void Gate::onLed(AsyncWebServerRequest *request) {
 }
 
 void Gate::loop() {
-    if (isListening) {
+    if (this->isListening()) {
         if (this->checkPass()) {
-            instance->isListening = false;
+            this->stopListening();
             this->notifyPass();
         }
     }
@@ -109,6 +104,7 @@ void Gate::notifyPass() {
     Serial.println("Notify pass to Starter");
     char url[100];
     snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str());
+    
     http.begin(wifiClient, url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 

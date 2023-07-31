@@ -1,7 +1,7 @@
 #ifndef Gate_H
 #define Gate_H
 
-#include "EspBase.h"
+#include <EspBase.h>
 #include "Secrets.h"
 
 #include <HTTPClient.h>
@@ -16,7 +16,7 @@ public:
 protected:
     WiFiClient wifiClient;
     HTTPClient http;
-    bool isListening{};
+    
 
     void setupWebController();
     void setupGPIO();
@@ -27,8 +27,14 @@ protected:
     void blinkLed();
     static void beep();
 
+    static bool isListening() { return instance->listening; };
+    static void startListening() { instance->listening = true; };
+    static void stopListening() { instance->listening = false; };
+
 private:
     static Gate *instance;
+    bool listening;
+
     void setupWifi();
     static void onStart(AsyncWebServerRequest *request);
     static void onStop(AsyncWebServerRequest *request);

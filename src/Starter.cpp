@@ -1,7 +1,7 @@
 #include "headers/Starter.h"
 
-#include <Arduino.h>
 #include <vector>
+#include <Arduino.h>
 #include "OneButton.h"
 #include "headers/GateConfig.h"
 #include "headers/structs/GateMode.h"
@@ -29,7 +29,7 @@ void Starter::setup() {
     EspBase::startWebServer();
 
     trackHandler.setMode(GateMode::INIT);
-    instance->isListening = false;
+    instance->stopListening();
 
     Serial.println("End of setup Starter");
 }
@@ -114,7 +114,7 @@ void Starter::onGatePassed(AsyncWebServerRequest *request) {
 
         if (trackGates.size() == 0) {
             // First gate passed, starter can listen to close track
-            instance->isListening = true;
+            instance->startListening();
         }
         for (const auto &gate: gates) {
             if (gate.id == id) {
@@ -132,11 +132,11 @@ void Starter::onGatePassed(AsyncWebServerRequest *request) {
             Serial.print("notify next gate to listen : ");
             Serial.println(nextGateIndex);
             // notify next gate to listen
-            instance->startListening(&trackGates[nextGateIndex]);
+            instance->gateStartListening(&trackGates[nextGateIndex]);
         } else {
             Serial.println("no next gate, Starter is next : start listening");
             // no next gate, Starter is next
-            instance->isListening = true;
+            instance->startListening();
         }
     } else {
         Serial.println("Another gate was passed !");
@@ -164,7 +164,7 @@ void Starter::loop() {
 //    this->stateLed.loop();
 
     bool passed = false;
-    if (this->isListening) {
+    if (Gate::isListening()) {
         passed = Gate::checkPass();
     }
 
@@ -176,7 +176,7 @@ void Starter::loop() {
     if (instance->trackHandler.isTrackMode()) {
         if (trackGates.size() > 0) {
             Serial.println("Track mode finished, starting race mode");
-            this->isListening = false;
+            Gate::stopListening();
 
             // Workaround, a delay is necessary to avoid instant end of race mode
             delay(5000);
@@ -185,7 +185,7 @@ void Starter::loop() {
     } else if (instance->trackHandler.isRaceMode()) {
         if (startTime == 0) {
             // DANGER - NOT SURE
-            this->isListening = false;
+            Gate::stopListening();
             this->startLap();
         } else {
             this->stopLap();
@@ -216,17 +216,17 @@ void Starter::enableRaceMode() {
 //    instance->stateLed.setMode(1);
     instance->trackHandler.setMode(GateMode::RACE);
     // Only Starter should listen
-    this->isListening = true;
+    this->startListening();
 }
 
 void Starter::startListeningAll() {
     // Notify all gates to start listening
     for (const auto &gate: gates) {
-        this->startListening(&gate);
+        this->gateStartListening(&gate);
     }
 }
 
-void Starter::startListening(const GateClient *gate) {
+void Starter::gateStartListening(const GateClient *gate) {
     if (DEV_MODE == 1) {
         return;
     } else {
@@ -241,7 +241,7 @@ void Starter::startListening(const GateClient *gate) {
     }
 }
 
-void Starter::stopListening(const GateClient *gate) {
+void Starter::gateStopListening(const GateClient *gate) {
     if (DEV_MODE == 1) {
         return;
     } else {
@@ -266,7 +266,7 @@ void Starter::resetLap() {
     //elapsedTime = 0;
     nextGateIndex = 0;
     // notify next gate to listen
-    instance->startListening(&trackGates[nextGateIndex]);
+    instance->gateStartListening(&trackGates[nextGateIndex]);
 }
 
 void Starter::startLap() {
@@ -290,6 +290,6 @@ void Starter::stopLap() {
     Gate::beep();
     Serial.println("Lap done");
 
-    this->isListening = false;
+    this->stopListening();
     this->resetLap();
 }
