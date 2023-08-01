@@ -31,9 +31,11 @@ private:
     void stopLap();
     void resetLap();
 
+    void handleGatePassed(int id);
+    
     void gateStartListening(const GateClient *gate);
     void gateStopListening(const GateClient *gate);
-    
+
     static void onRegisterGate(AsyncWebServerRequest *request);
     static void onGatePassed(AsyncWebServerRequest *request);
     static void onTrackMode(AsyncWebServerRequest *request);

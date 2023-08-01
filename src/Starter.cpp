@@ -1,8 +1,8 @@
 #include "headers/Starter.h"
 
-#include <vector>
 #include <Arduino.h>
 #include "OneButton.h"
+#include <vector>
 #include "headers/GateConfig.h"
 #include "headers/structs/GateMode.h"
 
@@ -11,13 +11,6 @@ Starter *Starter::instance = nullptr;
 
 // Vector containing all registered gates on the network
 std::vector <GateClient> gates;
-// Vector containing gates for track mode
-std::vector <GateClient> trackGates;
-
-unsigned long startTime = 0;
-unsigned long elapsedTime = 0;
-
-int nextGateIndex = -1;
 
 OneButton buttonReset(PIN_RESET, true);
 
@@ -97,42 +90,47 @@ void Starter::onRaceMode(AsyncWebServerRequest *request) {
 void Starter::onGatePassed(AsyncWebServerRequest *request) {
     Serial.println("Gate passed !");
     int id = instance->getParamFromRequest("id", request).toInt();
+    instance->handleGatePassed(id);
+    request->send(200, "text/plain", "OK");
+}
+
+void Starter::handleGatePassed(int id) {
     Serial.print("id=");
     Serial.println(id);
 
-    Serial.print("nextGateIndex=");
-    Serial.println(nextGateIndex);
+    // Serial.print("nextGateIndex=");
+    // Serial.println(nextGateIndex);
 
-    Serial.print("trackGates size=");
-    Serial.println(trackGates.size());
+    // Serial.print("trackGates size=");
+    // Serial.println(trackGates.size());
 
     Serial.print("trackmode=");
-    Serial.println(instance->trackHandler.getMode());
+    Serial.println(this->trackHandler.getMode());
 
     // WHY THIS CHECK ON THE SIZE ? is it for dev ?
-    if (instance->trackHandler.isTrackMode() && trackGates.size() == 0) {
+    if (this->trackHandler.isTrackMode() && this->trackHandler.getTrackGateSize() == 0) {
 
-        if (trackGates.size() == 0) {
+        if (this->trackHandler.getTrackGateSize() == 0) {
             // First gate passed, starter can listen to close track
             instance->startListening();
         }
         for (const auto &gate: gates) {
             if (gate.id == id) {
-                trackGates.push_back(gate);
+                this->trackHandler.addGateToTrack(gate);
                 break;
             }
         }
         // CPT - CEST PAS JUSTE DU TOUT NEXTGATEINDEX == ID
-    } else if (instance->trackHandler.isRaceMode() && id == nextGateIndex) {
-        GateClient *gateClient = &trackGates[id];
+    } else if (instance->trackHandler.isRaceMode() /*&& id == nextGateIndex*/) {
+        GateClient *gateClient = this->trackHandler.getNextGate();
 
-        bool gatesLeft = nextGateIndex < trackGates.size() - 1;
+        bool gatesLeft = this->trackHandler.hasNextGate();
         if (gatesLeft) {
-            nextGateIndex++;
-            Serial.print("notify next gate to listen : ");
-            Serial.println(nextGateIndex);
+            this->trackHandler.incrementNextGateIndex();
+            // Serial.print("notify next gate to listen : ");
+            // Serial.println(nextGateIndex);
             // notify next gate to listen
-            instance->gateStartListening(&trackGates[nextGateIndex]);
+            instance->gateStartListening(&this->trackHandler.getNextGate());
         } else {
             Serial.println("no next gate, Starter is next : start listening");
             // no next gate, Starter is next
@@ -142,10 +140,9 @@ void Starter::onGatePassed(AsyncWebServerRequest *request) {
         Serial.println("Another gate was passed !");
         Serial.print("passed=");
         Serial.println(id);
-        Serial.print("expected=");
-        Serial.println(nextGateIndex);
+        // Serial.print("expected=");
+        // Serial.println(nextGateIndex);
     }
-    request->send(200, "text/plain", "OK");
 }
 
 int Starter::registerGate(String ip) {
@@ -173,8 +170,8 @@ void Starter::loop() {
     }
 
     Serial.println("Started passed !");
-    if (instance->trackHandler.isTrackMode()) {
-        if (trackGates.size() > 0) {
+    if (this->trackHandler.isTrackMode()) {
+        if (this->trackHandler.getTrackGateSize() > 0) {
             Serial.println("Track mode finished, starting race mode");
             Gate::stopListening();
 
@@ -183,7 +180,7 @@ void Starter::loop() {
             this->enableRaceMode();
         }
     } else if (instance->trackHandler.isRaceMode()) {
-        if (startTime == 0) {
+        if (this->trackHandler.getStartTime() == 0) {
             // DANGER - NOT SURE
             Gate::stopListening();
             this->startLap();
@@ -205,7 +202,7 @@ void Starter::enableTrackMode() {
 //    Gate::beep();
 //    instance->stateLed.setMode(2);
     instance->trackHandler.setMode(GateMode::TRACK);
-    trackGates.clear();
+    // instance->trackHandler.clearTrackGates();
     this->startListeningAll();
 }
 
@@ -256,40 +253,19 @@ void Starter::gateStopListening(const GateClient *gate) {
     }
 }
 
-//bool Starter::isMode(GateMode mode) {
-//    return currentMode == mode;
-//}
-
 void Starter::resetLap() {
-    Serial.println("Lap reset");
-    startTime = millis();
-    //elapsedTime = 0;
-    nextGateIndex = 0;
-    // notify next gate to listen
-    instance->gateStartListening(&trackGates[nextGateIndex]);
+    this->trackHandler.resetLap();
+    instance->gateStartListening(this->trackHandler.getNextGate());
 }
 
 void Starter::startLap() {
-    Serial.println("Start lap");
-    startTime = millis();
-    nextGateIndex++;
+    this->trackHandler.startLap();
 }
 
 void Starter::stopLap() {
-    elapsedTime = (millis() - startTime) / 1000;
-    Serial.print("Lap finished in ");
-    Serial.print(elapsedTime);
-    Serial.println("s");
-
-//     Update last time
-    bool newRecord = instance->trackHandler.setLapTime(elapsedTime);
-    if(newRecord) {
-        Serial.println("New record");
-        Gate::beep();
-    }
-    Gate::beep();
     Serial.println("Lap done");
-
+    this->trackHandler.stopLap();
+    Gate::beep();
     this->stopListening();
-    this->resetLap();
+    
 }
