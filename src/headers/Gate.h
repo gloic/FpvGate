@@ -17,7 +17,6 @@ protected:
     WiFiClient wifiClient;
     HTTPClient http;
     
-
     void setupWebController();
     void setupGPIO();
     void doRegister(String ip);

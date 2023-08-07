@@ -3,16 +3,19 @@
 
 class SonicSensor {
   public:
-    SonicSensor(int triggerPin, int echoPin);
+    SonicSensor(int triggerPin, int echoPin, int potPin);
     void setup();
     bool checkPass();
     
   protected:
   
   private:
-    int triggerPin;
-    int echoPin;
-    int thresholdDistance;
+    int _triggerPin;
+    int _echoPin;
+    int _potPin;
+    int _thresholdDistance;
+
+    void refreshDistance();
 };
 
 #endif
