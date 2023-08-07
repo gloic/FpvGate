@@ -19,23 +19,23 @@ void StateLed::setup() {
 void StateLed::loop() {
   switch(this->_ledMode) {
     case ON:
-      analogWrite(_redPin, _red);
-      analogWrite(_greenPin, _green);
-      analogWrite(_bluePin, _blue);
+      analogWrite(_pinRed, _red);
+      analogWrite(_pinGreen, _green);
+      analogWrite(_pinBlue, _blue);
       break;
    case BLINK:
       // TODO
       break;
    case OFF:
    default:
-      digitalWrite(_redPin, LOW);
-      digitalWrite(_greenPin, LOW);
-      digitalWrite(_bluePin, LOW);
+      digitalWrite(_pinRed, LOW);
+      digitalWrite(_pinGreen, LOW);
+      digitalWrite(_pinBlue, LOW);
       break;
   }
 }
 
-void StateLed::setColor(uint8_t red, uint8_t green, uint8_t blue) {
+void StateLed::setColor(int red, int green, int blue) {
     _red = red;
     _green = green;
     _blue = blue;

@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include "OneButton.h"
-#include <vector>µ
+#include <vector>
 #include "headers/GateConfig.h"
 #include "headers/structs/GateMode.h"
 
@@ -121,7 +121,7 @@ void Starter::handleGatePassed(int id) {
         }
         // CPT - CEST PAS JUSTE DU TOUT NEXTGATEINDEX == ID
     } else if (instance->trackHandler.isRaceMode() /*&& id == nextGateIndex*/) {
-        GateClient *gateClient = this->trackHandler.getNextGate();
+        GateClient *gateClient = &this->trackHandler.getNextGate();
 
         bool gatesLeft = this->trackHandler.hasNextGate();
         if (gatesLeft) {
@@ -129,7 +129,7 @@ void Starter::handleGatePassed(int id) {
             // Serial.print("notify next gate to listen : ");
             // Serial.println(nextGateIndex);
             // notify next gate to listen
-            instance->gateStartListening(&this->trackHandler.getNextGate());
+            instance->gateStartListening(this->trackHandler.getNextGate());
         } else {
             Serial.println("no next gate, Starter is next : start listening");
             // no next gate, Starter is next

@@ -6,9 +6,11 @@
 #include "services/headers/RestWebController.h"
 #include "headers/structs/GateMode.h"
 
+#include "OneButton.h"
+
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
+SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_POT_RANGE);
 GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
 StateLed stateLed;
 
@@ -53,8 +55,8 @@ void Gate::setupGPIO() {
     buzzer.setup();
     stateLed.setup();
 
-    buttonReset.attachClick(instance->onButtonTestPress());
-    buttonTest.attachLongPressStart(instance->onButtonTestPress());
+    buttonReset.attachClick(&Gate::onButtonTestPress);
+    buttonTest.attachLongPressStart(&Gate::onButtonTestPress);
 }
 
 void Gate::doRegister(String ip) {

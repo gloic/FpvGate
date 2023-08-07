@@ -100,7 +100,7 @@ int TrackHandler::getTrackGateSize() {
     return this->trackGates.size();
 }
 
-GateClient& TrackHandler::getNextGate() {
+GateClient* TrackHandler::getNextGate() {
     return &this->trackGates[nextGateIndex];
 }
 

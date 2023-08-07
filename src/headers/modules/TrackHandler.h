@@ -25,9 +25,8 @@ public:
     void resetLap();
     void startLap();
     void stopLap();
-    long getStartTime();
     int getTrackGateSize();
-    GateClient& getNextGate();
+    GateClient* getNextGate();
     bool hasNextGate();
     void incrementNextGateIndex();
     void addGateToTrack(GateClient *gate);

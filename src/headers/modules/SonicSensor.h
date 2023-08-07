@@ -14,7 +14,7 @@ class SonicSensor {
     int _echoPin;
     int _potPin;
     int _thresholdDistance;
-
+    void sendPulse();
     void refreshDistance();
 };
 

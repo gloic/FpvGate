@@ -35,10 +35,10 @@ void SonicSensor::refreshDistance() {
   this->_thresholdDistance = map(analogRead(_potPin), 0, 4095, minDistance, maxDistance);
 }
 
-void sendPulse() {
+void SonicSensor::sendPulse() {
   digitalWrite(this->_triggerPin, LOW);
   delayMicroseconds(2);
-  digitalWrite(this->triggerPin, HIGH);
+  digitalWrite(this->_triggerPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(this->_triggerPin, LOW);
 }

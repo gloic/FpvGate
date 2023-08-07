@@ -11,7 +11,7 @@ class StateLed {
     void setup();
     void loop();
     void setMode(LedMode mode);
-    void setColor(uint8_t red, uint8_t green, uint8_t blue);
+    void setColor(int red, int green, int blue);
     //LedMode getMode();
     //LedColor getColor();
 
@@ -20,9 +20,9 @@ class StateLed {
     int _pinGreen;
     int _pinBlue;
     LedMode _ledMode;
-    uint8_t _red;
-    uint8_t _green;
-    uint8_t _blue;
+    int _red;
+    int _green;
+    int _blue;
 };
 
 #endif
