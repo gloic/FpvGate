@@ -27,6 +27,9 @@ protected:
     void blinkLed();
     static void beep();
 
+    void onButtonTestPress();
+    void onButtonTestLongPress();
+
     static bool isListening() { return instance->listening; };
     static void startListening() { instance->listening = true; };
     static void stopListening() { instance->listening = false; };

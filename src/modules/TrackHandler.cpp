@@ -9,7 +9,7 @@ unsigned long elapsedTime = 0;
 int nextGateIndex = -1;
 
 void TrackHandler::setMode(GateMode mode) {
-    this->mode = mode;
+    this->_mode = mode;
 }
 
 bool TrackHandler::isTrackMode() {
@@ -21,11 +21,11 @@ bool TrackHandler::isRaceMode() {
 }
 
 bool TrackHandler::isMode(GateMode mode) {
-    return this->mode == mode;
+    return this->_mode == mode;
 }
 
 GateMode TrackHandler::getMode() {
-    return this->mode;
+    return this->_mode;
 }
 
 long TrackHandler::getLastLapTime() {

@@ -1,29 +1,46 @@
-#include "headers/modules/StateLed.h"
+#include "../headers/modules/StateLed.h"
+
+#include <Arduino.h>
 
 StateLed::StateLed() {
- _led = new Led(2);
+// StateLed::StateLed(int pinRed, int pinGreen, int pinBlue) {
+    _pinRed = 2;
+    _pinGreen = 3;
+    _pinBlue = 4;
+    _ledMode = OFF;
 }
 
 void StateLed::setup() {
-  this->_ledMode = 0;
-}
+  pinMode(_pinRed, OUTPUT);
+  pinMode(_pinGreen, OUTPUT);
+  pinMode(_pinBlue, OUTPUT);
+} 
 
 void StateLed::loop() {
   switch(this->_ledMode) {
-    case 0:
-     _led->off();
+    case ON:
+      analogWrite(_redPin, _red);
+      analogWrite(_greenPin, _green);
+      analogWrite(_bluePin, _blue);
       break;
-    case 1:
-     _led->on();
+   case BLINK:
+      // TODO
       break;
-   case 2:
-     _led->blink(200);
-      break;
+   case OFF:
    default:
+      digitalWrite(_redPin, LOW);
+      digitalWrite(_greenPin, LOW);
+      digitalWrite(_bluePin, LOW);
       break;
   }
 }
 
-void StateLed::setMode(int mode) {
-  this->_ledMode = mode;
+void StateLed::setColor(uint8_t red, uint8_t green, uint8_t blue) {
+    _red = red;
+    _green = green;
+    _blue = blue;
+}
+
+void StateLed::setMode(LedMode mode) {
+    _ledMode = mode;
 }

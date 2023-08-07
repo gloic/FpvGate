@@ -2,12 +2,11 @@
 
 #include <Arduino.h>
 #include "OneButton.h"
-#include <vector>
+#include <vector>µ
 #include "headers/GateConfig.h"
 #include "headers/structs/GateMode.h"
 
 Starter *Starter::instance = nullptr;
-//GateMode currentMode;
 
 // Vector containing all registered gates on the network
 std::vector <GateClient> gates;

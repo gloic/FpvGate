@@ -8,6 +8,12 @@
 #define DEV_MODE 1
 #define DEV_IP_STARTER "192.168.0.84"
 
+// Gate
+#define PIN_BUTTON_TEST 14
+#define PIN_POT_RANGE 15
+
+
+// Starter
 #define PIN_STARTER 12
 #define PIN_RESET 12
 

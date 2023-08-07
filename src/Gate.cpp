@@ -4,20 +4,22 @@
 #include "headers/modules/GateBuzzer.h"
 #include "headers/GateConfig.h"
 #include "services/headers/RestWebController.h"
+#include "headers/structs/GateMode.h"
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
 SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO);
 GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
 StateLed stateLed;
+
+OneButton buttonTest(PIN_BUTTON_TEST, true);
+
 Gate *Gate::instance = nullptr;
+
 String ipStarter;
 String id;
+
 auto webController = new RestWebController();
-//Gate::Gate() {
-//    instance = this;
-//stateLed(PIN_STATE_LED)
-//}
 
 void Gate::setup() {
     this->setupWifi();
@@ -43,13 +45,16 @@ void Gate::setupWebController() {
     Serial.println("Gate::setupWebController");
     this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
     this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
-   this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
+    this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
 }
 
 void Gate::setupGPIO() {
     sonicSensor.setup();
     buzzer.setup();
     stateLed.setup();
+
+    buttonReset.attachClick(instance->onButtonTestPress());
+    buttonTest.attachLongPressStart(instance->onButtonTestPress());
 }
 
 void Gate::doRegister(String ip) {
@@ -94,6 +99,8 @@ void Gate::loop() {
         }
     }
    stateLed.loop();
+
+   buttonTest.tick();
 }
 
 boolean Gate::checkPass() {
@@ -115,4 +122,13 @@ void Gate::notifyPass() {
 
 void Gate::beep() {
     buzzer.beep();
+}
+
+
+void Gate::onButtonTestPress() {
+    // 
+}
+
+void Gate::onButtonTestLongPress() {
+
 }

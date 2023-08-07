@@ -33,7 +33,7 @@ public:
     void addGateToTrack(GateClient *gate);
 
 private:
-    GateMode mode;
+    GateMode _mode;
     long lastLapTime;
     long bestLapTime;
     long startTime;
