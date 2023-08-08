@@ -112,6 +112,6 @@ void TrackHandler::incrementNextGateIndex() {
     nextGateIndex++;
 }
 
-void TrackHandler::addGateToTrack(GateClient *gate) {
+void TrackHandler::addGateToTrack(GateClient &gate) {
     this->trackGates.push_back(gate);
 }

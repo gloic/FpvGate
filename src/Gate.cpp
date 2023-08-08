@@ -1,5 +1,4 @@
 #include "headers/Gate.h"
-#include "headers/modules/StateLed.h"
 #include "headers/modules/SonicSensor.h"
 #include "headers/modules/GateBuzzer.h"
 #include "headers/GateConfig.h"
@@ -10,9 +9,8 @@
 
 const String ENDPOINT_REGISTER = "/api/gate/register";
 
-SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_POT_RANGE);
+SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED);
 GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
-StateLed stateLed;
 
 OneButton buttonTest(PIN_BUTTON_TEST, true);
 
@@ -47,15 +45,15 @@ void Gate::setupWebController() {
     Serial.println("Gate::setupWebController");
     this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
     this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
-    this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
+    // this->server().on("/api/gate/led", HTTP_POST, &Gate::onLed);
 }
 
 void Gate::setupGPIO() {
     sonicSensor.setup();
     buzzer.setup();
-    stateLed.setup();
+    this->_stateLed.setup();
 
-    buttonReset.attachClick(&Gate::onButtonTestPress);
+    buttonTest.attachClick(&Gate::onButtonTestPress);
     buttonTest.attachLongPressStart(&Gate::onButtonTestPress);
 }
 
@@ -88,8 +86,11 @@ void Gate::onStop(AsyncWebServerRequest *request) {
 }
 
 void Gate::onLed(AsyncWebServerRequest *request) {
-   // TODO
    Serial.println("LED");
+   int state = instance->getParamFromRequest("state", request).toInt();
+//    instance->_stateLed.setMode();
+//    instance->stateLed.setColor();
+
    request->send(200, "text/plain", "led");
 }
 
@@ -100,7 +101,7 @@ void Gate::loop() {
             this->notifyPass();
         }
     }
-   stateLed.loop();
+   this->_stateLed.loop();
 
    buttonTest.tick();
 }

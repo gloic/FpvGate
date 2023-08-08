@@ -113,7 +113,7 @@ void Starter::handleGatePassed(int id) {
             // First gate passed, starter can listen to close track
             instance->startListening();
         }
-        for (const auto &gate: gates) {
+        for (auto &gate: gates) {
             if (gate.id == id) {
                 this->trackHandler.addGateToTrack(gate);
                 break;
@@ -121,7 +121,7 @@ void Starter::handleGatePassed(int id) {
         }
         // CPT - CEST PAS JUSTE DU TOUT NEXTGATEINDEX == ID
     } else if (instance->trackHandler.isRaceMode() /*&& id == nextGateIndex*/) {
-        GateClient *gateClient = &this->trackHandler.getNextGate();
+        GateClient *gateClient = this->trackHandler.getNextGate();
 
         bool gatesLeft = this->trackHandler.hasNextGate();
         if (gatesLeft) {

@@ -1,6 +1,7 @@
 #ifndef Gate_H
 #define Gate_H
 
+#include "headers/modules/StateLed.h"
 #include <EspBase.h>
 #include "Secrets.h"
 
@@ -35,6 +36,7 @@ protected:
 
 private:
     static Gate *instance;
+    StateLed _stateLed {};
     bool listening;
 
     void setupWifi();

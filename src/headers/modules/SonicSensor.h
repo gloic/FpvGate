@@ -3,7 +3,7 @@
 
 class SonicSensor {
   public:
-    SonicSensor(int triggerPin, int echoPin, int potPin);
+    SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin);
     void setup();
     bool checkPass();
     
@@ -13,9 +13,13 @@ class SonicSensor {
     int _triggerPin;
     int _echoPin;
     int _potPin;
+    int _ledPin;
     int _thresholdDistance;
     void sendPulse();
     void refreshDistance();
+
+    void ledOn();
+    void ledOff();
 };
 
 #endif

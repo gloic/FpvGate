@@ -29,7 +29,7 @@ public:
     GateClient* getNextGate();
     bool hasNextGate();
     void incrementNextGateIndex();
-    void addGateToTrack(GateClient *gate);
+    void addGateToTrack(GateClient &gate);
 
 private:
     GateMode _mode;
@@ -38,7 +38,7 @@ private:
     long startTime;
     
     // Vector containing gates for track mode
-    std::vector <GateClient> trackGates;
+    std::vector<GateClient> trackGates;
 
     bool isMode(GateMode mode);
 };
