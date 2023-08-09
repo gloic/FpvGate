@@ -38,7 +38,7 @@ void Starter::setupWebController() {
     Gate::setupWebController();
     Serial.println("Starter::setupWebController");
     /*
-  this->server().on("/test/reset", HTTP_GET, [](AsyncWebServerRequest* request) {
+    this->server().on("/test/reset", HTTP_GET, [](AsyncWebServerRequest* request) {
     instance->resetLap();    
     request->send(200, "text/plain", "OK");
   });
@@ -71,7 +71,7 @@ void Starter::onRegisterGate(AsyncWebServerRequest *request) {
     String clientIP = request->client()->remoteIP().toString();
     int id = instance->registerGate(clientIP);
 
-    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Hello World!");
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "");
     response->addHeader("test", "Test");
     request->send(200, "text/plain", String(id));
 }

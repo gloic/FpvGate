@@ -29,11 +29,11 @@ bool SonicSensor::checkPass() {
   duration = pulseIn(this->_echoPin, HIGH);
   distance = duration * 0.034 / 2;
 
-  bool isDetection = distance < this->_thresholdDistance;
-  if(isDetection) {
+  bool isDetected = distance < this->_thresholdDistance;
+  if(isDetected) {
     ledOff();
   }
-  return isDetection;
+  return isDetected;
 }
 
 void SonicSensor::refreshDistance() {

@@ -2,6 +2,8 @@
 #define Gate_H
 
 #include "headers/modules/StateLed.h"
+#include "headers/modules/GateWebController.h"
+
 #include <EspBase.h>
 #include "Secrets.h"
 
@@ -25,19 +27,23 @@ protected:
     void notifyPass();
     void led(bool state);
     void blinkLed();
+
     static void beep();
 
     static void onButtonTestPress();
     static void onButtonTestLongPress();
 
-    static bool isListening() { return instance->listening; };
-    static void startListening() { instance->listening = true; };
-    static void stopListening() { instance->listening = false; };
+    static bool isListening() { return instance->_listening; };
+    static void startListening() { instance->_listening = true; };
+    static void stopListening() { instance->_listening = false; };
 
 private:
     static Gate *instance;
     StateLed _stateLed {};
-    bool listening;
+    GateWebController webController;
+
+    bool _listening;
+    String _id;
 
     void setupWifi();
     static void onStart(AsyncWebServerRequest *request);

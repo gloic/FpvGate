@@ -2,7 +2,6 @@
 #include "headers/modules/SonicSensor.h"
 #include "headers/modules/GateBuzzer.h"
 #include "headers/GateConfig.h"
-#include "services/headers/RestWebController.h"
 #include "headers/structs/GateMode.h"
 
 #include "OneButton.h"
@@ -17,9 +16,6 @@ OneButton buttonTest(PIN_BUTTON_TEST, true);
 Gate *Gate::instance = nullptr;
 
 String ipStarter;
-String id;
-
-auto webController = new RestWebController();
 
 void Gate::setup() {
     this->setupWifi();
@@ -59,18 +55,7 @@ void Gate::setupGPIO() {
 
 void Gate::doRegister(String ip) {
     Serial.println("Registering gate to Starter");
-    char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/register", ip.c_str());
-    http.begin(wifiClient, url);
-    int httpCode = http.POST("");
-    if (httpCode == HTTP_CODE_OK) {
-        String responseBody = http.getString();
-        id = responseBody.toInt();
-        ipStarter = ip;
-        Serial.print("id received = ");
-        Serial.println(id);
-    }
-    http.end();
+    this->webController.registerOnStarter(ip.c_str());
 }
 
 void Gate::onStart(AsyncWebServerRequest *request) {
@@ -112,15 +97,7 @@ boolean Gate::checkPass() {
 
 void Gate::notifyPass() {
     Serial.println("Notify pass to Starter");
-    char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/passed", ipStarter.c_str());
-    
-    http.begin(wifiClient, url);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    String payload = "id=" + id;
-    http.POST(payload);
-    http.end();
+    this->webController.notifyPass(ipStarter.c_str(), _id);
 }
 
 void Gate::beep() {
