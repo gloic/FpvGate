@@ -55,7 +55,8 @@ void Gate::setupGPIO() {
 
 void Gate::doRegister(String ip) {
     Serial.println("Registering gate to Starter");
-    this->webController.registerOnStarter(ip.c_str());
+    this->webController.setIpStarter(ip.c_str());
+    this->_id = this->webController.registerOnStarter();
 }
 
 void Gate::onStart(AsyncWebServerRequest *request) {
@@ -75,7 +76,6 @@ void Gate::onLed(AsyncWebServerRequest *request) {
    int state = instance->getParamFromRequest("state", request).toInt();
 //    instance->_stateLed.setMode();
 //    instance->stateLed.setColor();
-
    request->send(200, "text/plain", "led");
 }
 
@@ -97,7 +97,7 @@ boolean Gate::checkPass() {
 
 void Gate::notifyPass() {
     Serial.println("Notify pass to Starter");
-    this->webController.notifyPass(ipStarter.c_str(), _id);
+    this->webController.notifyPass(this->_id);
 }
 
 void Gate::beep() {

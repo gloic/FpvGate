@@ -6,14 +6,16 @@
 
 class GateWebController {
     public:
-        int registerOnStarter(String ip);
-        void notifyPass(String ip, String id);
+        void setIpStarter(String ip);
+        int registerOnStarter();
+        void notifyPass(String id);
 
     private:
         WiFiClient wifiClient;
         HTTPClient http;
+        String _ipStarter;
 
-        HTTPClient* post(char* url, String payload);
+        // HTTPClient* post(char* url, String payload);
 
 };
 

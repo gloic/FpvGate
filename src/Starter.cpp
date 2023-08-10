@@ -217,38 +217,28 @@ void Starter::enableRaceMode() {
 
 void Starter::startListeningAll() {
     // Notify all gates to start listening
-    for (const auto &gate: gates) {
+    for (auto &gate: gates) {
         this->gateStartListening(&gate);
     }
 }
 
-void Starter::gateStartListening(const GateClient *gate) {
+void Starter::gateStartListening(GateClient *gate) {
     if (DEV_MODE == 1) {
         return;
     } else {
         Serial.print("Send start listening to ");
         Serial.println(gate->id);
-        char url[100];
-        snprintf(url, sizeof(url), "http://%s/api/gate/start", gate->ip.c_str());
-        http.begin(wifiClient, url);
-        http.setTimeout(5000); // should be 5 sec
-        http.POST("");
-        http.end();
+        this->webController.startListening(gate);
     }
 }
 
-void Starter::gateStopListening(const GateClient *gate) {
+void Starter::gateStopListening(GateClient *gate) {
     if (DEV_MODE == 1) {
         return;
     } else {
         Serial.print("Send stop listening to ");
         Serial.println(gate->id);
-        char url[100];
-        snprintf(url, sizeof(url), "http://%s/api/gate/stop", gate->ip.c_str());
-        http.begin(wifiClient, url);
-        http.setTimeout(5000); // should be 5 sec
-        http.POST("");
-        http.end();
+        this->webController.stopListening(gate);
     }
 }
 

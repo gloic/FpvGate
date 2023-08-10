@@ -1,9 +1,9 @@
 #include "../headers/modules/GateWebController.h"
 
-int GateWebController::registerOnStarter(String ip) {
+int GateWebController::registerOnStarter() {
     int result = -1;
     char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/register", ip.c_str());
+    snprintf(url, sizeof(url), "http://%s/api/gate/register", this->_ipStarter);
     
     http.begin(wifiClient, url);
     int httpCode = http.POST("");
@@ -15,10 +15,9 @@ int GateWebController::registerOnStarter(String ip) {
     return result;
 }
 
-
-void GateWebController::notifyPass(String ip, String id) {
+void GateWebController::notifyPass(String id) {
     char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/passed", ip);
+    snprintf(url, sizeof(url), "http://%s/api/gate/passed", this->_ipStarter);
     
     http.begin(wifiClient, url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -27,6 +26,11 @@ void GateWebController::notifyPass(String ip, String id) {
     http.POST(payload);
     http.end();
 }
+
+void GateWebController::setIpStarter(String ip) {
+    this->_ipStarter = ip;
+}
+
 
 // HTTPClient* GateWebController::post(char* url, String payload) {
 //     http.begin(wifiClient, url);

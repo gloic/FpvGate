@@ -4,6 +4,7 @@
 #include "Gate.h"
 #include "./structs/GateClient.h"
 #include "./modules/TrackHandler.h"
+#include "headers/modules/StarterWebController.h"
 
 class Starter : public Gate {
 public:
@@ -15,6 +16,7 @@ protected:
 
 private:
     static Starter *instance;
+    StarterWebController webController;
     TrackHandler trackHandler {};
     
     void setupWifi();
@@ -33,8 +35,8 @@ private:
 
     void handleGatePassed(int id);
     
-    void gateStartListening(const GateClient *gate);
-    void gateStopListening(const GateClient *gate);
+    void gateStartListening(GateClient *gate);
+    void gateStopListening(GateClient *gate);
 
     static void onRegisterGate(AsyncWebServerRequest *request);
     static void onGatePassed(AsyncWebServerRequest *request);
