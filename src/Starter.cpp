@@ -147,7 +147,6 @@ int Starter::registerGate(String ip) {
 
 void Starter::loop() {
     buttonReset.tick();
-//    this->stateLed.loop();
 
     bool passed = false;
     if (this->isListening()) {
@@ -197,8 +196,7 @@ void Starter::onButtonResetPress() {
 
 void Starter::enableTrackMode() {
     Serial.println("enableTrackMode");
-//    this->beep();
-//    this->stateLed.setMode(2);
+    this->beep();
     this->trackHandler.setTrackMode();
     this->trackHandler.clearTrackGates();
     this->startListeningAll();
@@ -208,7 +206,6 @@ void Starter::enableRaceMode() {
     Serial.println("GO");
     this->beep();
     this->beep();
-//    this->stateLed.setMode(1);
     this->trackHandler.setRaceMode();
     // Only Starter should listen
     this->startListening();

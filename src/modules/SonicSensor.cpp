@@ -15,14 +15,14 @@ SonicSensor::SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin) {
 void SonicSensor::setup() {
   Serial.println("SonicSensor setup");
 
-  Serial.print("triggerPin=");
-  Serial.println(this->_triggerPin);
-  Serial.print("echoPin=");
-  Serial.println(this->_echoPin);
-  Serial.print("potPin=");
-  Serial.println(this->_potPin);
-  Serial.print("ledPin=");
-  Serial.println(this->_ledPin);
+  // Serial.print("triggerPin=");
+  // Serial.println(this->_triggerPin);
+  // Serial.print("echoPin=");
+  // Serial.println(this->_echoPin);
+  // Serial.print("potPin=");
+  // Serial.println(this->_potPin);
+  // Serial.print("ledPin=");
+  // Serial.println(this->_ledPin);
 
   pinMode(this->_triggerPin, OUTPUT);
   pinMode(this->_echoPin, INPUT);
