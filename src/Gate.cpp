@@ -11,8 +11,6 @@ const String ENDPOINT_REGISTER = "/api/gate/register";
 SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED);
 GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
 
-OneButton buttonTest(PIN_BUTTON_TEST, true);
-
 Gate *Gate::instance = nullptr;
 
 String ipStarter;
@@ -45,12 +43,10 @@ void Gate::setupWebController() {
 }
 
 void Gate::setupGPIO() {
+    Serial.println("SonicGate setup GPIO");
     sonicSensor.setup();
     buzzer.setup();
     this->_stateLed.setup();
-
-    buttonTest.attachClick(&Gate::onButtonTestPress);
-    buttonTest.attachLongPressStart(&Gate::onButtonTestPress);
 }
 
 void Gate::doRegister(String ip) {
@@ -87,8 +83,6 @@ void Gate::loop() {
         }
     }
    this->_stateLed.loop();
-
-   buttonTest.tick();
 }
 
 boolean Gate::checkPass() {
@@ -102,13 +96,4 @@ void Gate::notifyPass() {
 
 void Gate::beep() {
     buzzer.beep();
-}
-
-
-void Gate::onButtonTestPress() {
-    // 
-}
-
-void Gate::onButtonTestLongPress() {
-
 }

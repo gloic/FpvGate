@@ -11,7 +11,7 @@ Starter *Starter::instance = nullptr;
 // Vector containing all registered gates on the network
 std::vector <GateClient> gates;
 
-OneButton buttonReset(PIN_RESET, true);
+OneButton buttonReset(PIN_STARTER_RESET, true);
 
 void Starter::setup() {
     Serial.println("Setup Starter");
@@ -120,7 +120,7 @@ void Starter::handleGatePassed(int id) {
             }
         }
         // CPT - CEST PAS JUSTE DU TOUT NEXTGATEINDEX == ID
-    } else if (instance->trackHandler.isRaceMode() /*&& id == nextGateIndex*/) {
+    } else if (instance->trackHandler.isRaceMode() && id == this->trackHandler.getNextGate()->id) {
         GateClient *gateClient = this->trackHandler.getNextGate();
 
         bool gatesLeft = this->trackHandler.hasNextGate();

@@ -1,6 +1,6 @@
-#include "headers/modules/TrackHandler.h"
+#include "../headers/modules/TrackHandler.h"
 
-#include <Arduino.h>
+// #include <Arduino.h>
 #include "headers/structs/GateMode.h"
 
 

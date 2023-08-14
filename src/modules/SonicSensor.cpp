@@ -1,9 +1,6 @@
 #include "Arduino.h"
 #include "headers/modules/SonicSensor.h"
 
-long duration;
-float distance;
-
 const float minDistance = 10.0;
 const float maxDistance = 300.0;
 
@@ -16,6 +13,17 @@ SonicSensor::SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin) {
 }
 
 void SonicSensor::setup() {
+  Serial.println("SonicSensor setup");
+
+  Serial.println("triggerPin=");
+  Serial.print(this->_triggerPin);
+  Serial.println("echoPin=");
+  Serial.print(this->_echoPin);
+  Serial.println("potPin=");
+  Serial.print(this->_potPin);
+  Serial.println("ledPin=");
+  Serial.print(this->_ledPin);
+
   pinMode(this->_triggerPin, OUTPUT);
   pinMode(this->_echoPin, INPUT);
   pinMode(this->_potPin, INPUT);
@@ -23,14 +31,24 @@ void SonicSensor::setup() {
 }
 
 bool SonicSensor::checkPass() {
-  ledOn();
-  refreshDistance();
-  sendPulse();  
-  duration = pulseIn(this->_echoPin, HIGH);
-  distance = duration * 0.034 / 2;
+  this->ledOn();
+  // refreshDistance();
+  this->sendPulse();  
 
-  bool isDetected = distance < this->_thresholdDistance;
+  long pulseDuration = pulseIn(this->_echoPin, HIGH);
+  float passDistance = pulseDuration * 0.034 / 2;
+
+  bool isDetected = passDistance < this->_thresholdDistance;
   if(isDetected) {
+    Serial.println("Passage detected");
+    
+    Serial.print("pulseDuration=");
+    Serial.println(pulseDuration);
+    Serial.print("passDistance=");
+    Serial.println(passDistance);
+    Serial.print("thresholdDistance=");
+    Serial.println(this->_thresholdDistance);
+    
     ledOff();
   }
   return isDetected;

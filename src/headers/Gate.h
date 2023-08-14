@@ -30,9 +30,6 @@ protected:
 
     static void beep();
 
-    static void onButtonTestPress();
-    static void onButtonTestLongPress();
-
     static bool isListening() { return instance->_listening; };
     static void startListening() { instance->_listening = true; };
     static void stopListening() { instance->_listening = false; };

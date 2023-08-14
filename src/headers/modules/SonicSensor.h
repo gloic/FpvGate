@@ -6,6 +6,7 @@ class SonicSensor {
     SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin);
     void setup();
     bool checkPass();
+
     
   protected:
   
@@ -15,6 +16,8 @@ class SonicSensor {
     int _potPin;
     int _ledPin;
     int _thresholdDistance;
+    long duration;
+    float distance;
     void sendPulse();
     void refreshDistance();
 
