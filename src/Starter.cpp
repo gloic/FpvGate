@@ -19,10 +19,6 @@ void Starter::setup() {
     this->setupWebController();
     this->setupGPIO();
     EspBase::startWebServer();
-
-    trackHandler.setMode(GateMode::INIT);
-    instance->stopListening();
-
     Serial.println("End of setup Starter");
 }
 
@@ -61,6 +57,12 @@ void Starter::setupWebController() {
 void Starter::setupGPIO() {
     Gate::setupGPIO();
     buttonReset.attachClick(&Starter::onButtonResetPress);
+    buttonReset.attachDoubleClick([]() {
+        instance->isCalibrationMode = !instance->isCalibrationMode;
+        if(instance->isCalibrationMode) {
+            instance->enableCalibrationMode();
+        }
+    });
     buttonReset.attachLongPressStart([]() {
         instance->enableTrackMode();
     });
@@ -89,58 +91,46 @@ void Starter::onRaceMode(AsyncWebServerRequest *request) {
 void Starter::onGatePassed(AsyncWebServerRequest *request) {
     Serial.println("Gate passed !");
     int id = instance->getParamFromRequest("id", request).toInt();
-    instance->handleGatePassed(id);
+    auto *gate = instance->getGateClientFromId(id);
+    instance->handleGatePassed(gate);
     request->send(200, "text/plain", "OK");
 }
 
-void Starter::handleGatePassed(int id) {
-    Serial.print("id=");
-    Serial.println(id);
+void Starter::handleGatePassed(GateClient* gate) {
+    Serial.print("Gate passed, id=");
+    Serial.println(gate->id);
 
-    // Serial.print("nextGateIndex=");
-    // Serial.println(nextGateIndex);
-
-    // Serial.print("trackGates size=");
-    // Serial.println(trackGates.size());
-
-    Serial.print("trackmode=");
-    Serial.println(this->trackHandler.getMode());
-
-    // WHY THIS CHECK ON THE SIZE ? is it for dev ?
-    if (this->trackHandler.isTrackMode() && this->trackHandler.getTrackGateSize() == 0) {
-
-        if (this->trackHandler.getTrackGateSize() == 0) {
-            // First gate passed, starter can listen to close track
-            instance->startListening();
+    if (this->trackHandler.isTrackMode()) {
+        Serial.println("Track mode, add gate to track");
+        int trackSize = this->trackHandler.addGateToTrack(gate);
+        if(trackSize == 1) {
+            // when first gate is passed, starter can listen to close the track
+            this->startListening();
+            Serial.println("...and start listening at track has at least one gate");
         }
-        for (auto &gate: gates) {
-            if (gate.id == id) {
-                this->trackHandler.addGateToTrack(gate);
-                break;
+    } else if (this->trackHandler.isRaceMode()) {
+        Serial.print("Next gate index = ");
+        Serial.println(this->trackHandler.getNextGateIndex());
+
+        if(gate->id == this->trackHandler.getNextGate()->id) {
+            Serial.println("The gate is the expected");
+            if (this->trackHandler.hasNextGate()) {
+                this->trackHandler.incrementNextGateIndex();
+                Serial.print("Next gate index is ");
+                Serial.println(this->trackHandler.getNextGateIndex());
+                this->gateStartListening(gate);
+            } else {
+                Serial.println("no next gate, Starter is next : start listening");
+                // no next gate, Starter is next
+                this->startListening();
             }
-        }
-        // CPT - CEST PAS JUSTE DU TOUT NEXTGATEINDEX == ID
-    } else if (instance->trackHandler.isRaceMode() && id == this->trackHandler.getNextGate()->id) {
-        GateClient *gateClient = this->trackHandler.getNextGate();
-
-        bool gatesLeft = this->trackHandler.hasNextGate();
-        if (gatesLeft) {
-            this->trackHandler.incrementNextGateIndex();
-            // Serial.print("notify next gate to listen : ");
-            // Serial.println(nextGateIndex);
-            // notify next gate to listen
-            instance->gateStartListening(this->trackHandler.getNextGate());
         } else {
-            Serial.println("no next gate, Starter is next : start listening");
-            // no next gate, Starter is next
-            instance->startListening();
+            Serial.println("Another gate was passed !");
+            Serial.print("passed=");
+            Serial.println(gate->id);
+            Serial.print("expected=");
+            Serial.println(this->trackHandler.getNextGate()->id);
         }
-    } else {
-        Serial.println("Another gate was passed !");
-        Serial.print("passed=");
-        Serial.println(id);
-        // Serial.print("expected=");
-        // Serial.println(nextGateIndex);
     }
 }
 
@@ -160,28 +150,37 @@ void Starter::loop() {
 //    this->stateLed.loop();
 
     bool passed = false;
-    if (Gate::isListening()) {
-        passed = Gate::checkPass();
+    if (this->isListening()) {
+        passed = this->checkPass();
     }
 
     if (!passed) {
         return;
     }
+    this->handleStarterPassage();    
+}
 
-    Serial.println("Started passed !");
+
+void Starter::handleStarterPassage() {
+    Serial.println("Started passed");
+
+    if(this->isCalibrationMode) {
+        delay(1000);
+        this->enableCalibrationMode();
+        return;
+    }
+    
+    this->stopListening();
+
     if (this->trackHandler.isTrackMode()) {
         if (this->trackHandler.getTrackGateSize() > 0) {
             Serial.println("Track mode finished, starting race mode");
-            Gate::stopListening();
-
             // Workaround, a delay is necessary to avoid instant end of race mode
             delay(5000);
             this->enableRaceMode();
         }
     } else if (instance->trackHandler.isRaceMode()) {
-        if (this->trackHandler.getStartTime() == 0) {
-            // DANGER - NOT SURE
-            Gate::stopListening();
+        if(!this->trackHandler.isRaceStarted()) {
             this->startLap();
         } else {
             this->stopLap();
@@ -191,32 +190,31 @@ void Starter::loop() {
 
 void Starter::onButtonResetPress() {
     Serial.println("onButtonResetPress");
-//    if (instance->trackHandler.isRaceMode()) {
-//        instance->resetLap();
-//    }
+   if (instance->trackHandler.isRaceMode()) {
+       instance->resetLap();
+   }
 }
 
 void Starter::enableTrackMode() {
     Serial.println("enableTrackMode");
-//    Gate::beep();
-//    instance->stateLed.setMode(2);
-    instance->trackHandler.setMode(GateMode::TRACK);
-    // instance->trackHandler.clearTrackGates();
+//    this->beep();
+//    this->stateLed.setMode(2);
+    this->trackHandler.setTrackMode();
+    this->trackHandler.clearTrackGates();
     this->startListeningAll();
 }
 
 void Starter::enableRaceMode() {
     Serial.println("GO");
-    Gate::beep();
-    Gate::beep();
-//    instance->stateLed.setMode(1);
-    instance->trackHandler.setMode(GateMode::RACE);
+    this->beep();
+    this->beep();
+//    this->stateLed.setMode(1);
+    this->trackHandler.setRaceMode();
     // Only Starter should listen
     this->startListening();
 }
 
 void Starter::startListeningAll() {
-    // Notify all gates to start listening
     for (auto &gate: gates) {
         this->gateStartListening(&gate);
     }
@@ -224,6 +222,8 @@ void Starter::startListeningAll() {
 
 void Starter::gateStartListening(GateClient *gate) {
     if (DEV_MODE == 1) {
+        Serial.print("DEV MODE : send start listening to ");
+        Serial.println(gate->id);
         return;
     } else {
         Serial.print("Send start listening to ");
@@ -234,6 +234,8 @@ void Starter::gateStartListening(GateClient *gate) {
 
 void Starter::gateStopListening(GateClient *gate) {
     if (DEV_MODE == 1) {
+        Serial.print("DEV MODE : send stop listening to ");
+        Serial.println(gate->id);
         return;
     } else {
         Serial.print("Send stop listening to ");
@@ -244,17 +246,32 @@ void Starter::gateStopListening(GateClient *gate) {
 
 void Starter::resetLap() {
     this->trackHandler.resetLap();
-    instance->gateStartListening(this->trackHandler.getNextGate());
+    this->gateStartListening(this->trackHandler.getNextGate());
 }
 
 void Starter::startLap() {
+    Serial.println("Starting lap");
+    this->beep();
     this->trackHandler.startLap();
 }
 
 void Starter::stopLap() {
     Serial.println("Lap done");
     this->trackHandler.stopLap();
-    Gate::beep();
-    this->stopListening();
+    this->beep();
     
+}
+
+void Starter::enableCalibrationMode() {
+    this->startListening();
+    this->startListeningAll();
+}
+
+GateClient *Starter::getGateClientFromId(int id) {
+    for (auto &gate : gates) {
+        if (gate.id == id) {
+            return &gate;
+        }
+    }
+    return nullptr;
 }

@@ -1,22 +1,23 @@
 #include <Arduino.h>
 
 #include "headers/GateConfig.h"
-#include "headers/Gate.h"
-#include "headers/Starter.h"
+#include "headers/GateBase.h"
+#include "headers/StarterWrapper.h"
+#include "headers/GateWrapper.h"
+#include "headers/GateBase.h"
 
-Starter *gate;
+GateBase *gate;
 
 void setup() {
     if (DEV_MODE == 1) {
         Serial.begin(115200);
     }
-    gate = new Starter();
-//    gate = new Gate();
-    if (digitalRead(PIN_STARTER) == LOW) {
-        //        gate = new Starter();
+
+    if (digitalRead(PIN_STARTER) == HIGH) {
+        gate = new StarterWrapper();
         Serial.println("Device is the starter");
     } else {
-//        gate = new Gate();
+        gate = new GateWrapper();
         Serial.println("Device is a gate");
     }
     gate->setup();

@@ -16,6 +16,7 @@ protected:
 
 private:
     static Starter *instance;
+    bool isCalibrationMode = false;
     StarterWebController webController;
     TrackHandler trackHandler {};
     
@@ -24,25 +25,29 @@ private:
     void setupGPIO();
     void doRegister(String ip);
     int registerGate(String ip);
-
+    
+    void handleStarterPassage();
     void startListeningAll();
     void enableTrackMode();
     void enableRaceMode();
-//    bool isMode(GateMode mode);
     void startLap();
     void stopLap();
     void resetLap();
 
-    void handleGatePassed(int id);
-    
     void gateStartListening(GateClient *gate);
     void gateStopListening(GateClient *gate);
+    void handleGatePassed(GateClient* gate);
+
+    void enableCalibrationMode();
+
+    GateClient* getGateClientFromId(int id);
 
     static void onRegisterGate(AsyncWebServerRequest *request);
     static void onGatePassed(AsyncWebServerRequest *request);
     static void onTrackMode(AsyncWebServerRequest *request);
     static void onRaceMode(AsyncWebServerRequest *request);
     static void onButtonResetPress();
+
 };
 
 #endif

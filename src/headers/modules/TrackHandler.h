@@ -9,38 +9,48 @@ class TrackHandler {
 public:
     TrackHandler() {}
 
-    void setMode(GateMode mode);
-    bool isTrackMode();
-    bool isRaceMode();
-    GateMode getMode();
+    void setTrackMode() {this->setMode(GateMode::TRACK);}
+    void setRaceMode() {this->setMode(GateMode::RACE);}
+    
+    bool isTrackMode() {return isMode(GateMode::TRACK);}
+    bool isRaceMode() {return isMode(GateMode::RACE);}
 
-    long getLastLapTime();
-    void setLastLapTime(long time);
-    long getBestLapTime();
-    void setBestLapTime(long time);
-    long getStartTime();
+    long getLastLapTime() {return this->lastLapTime;}
+    void setLastLapTime(long time) {this->lastLapTime = time;}
+    long getBestLapTime() {return this->bestLapTime;}
+    void setBestLapTime(long time) {this->bestLapTime = time;}
+    long getStartTime() {return this->startTime;}
+    void clearTrackGates() {this->trackGates.clear();}
 
     bool setLapTime(long time);
-    void clearTrackGates();
     void resetLap();
     void startLap();
     void stopLap();
-    int getTrackGateSize();
-    GateClient* getNextGate();
-    bool hasNextGate();
-    void incrementNextGateIndex();
-    void addGateToTrack(GateClient &gate);
+    int getTrackGateSize() {return this->trackGates.size();}
+    GateClient* getNextGate() {return this->trackGates[nextGateIndex];}
+    bool hasNextGate() {return nextGateIndex < this->getTrackGateSize() - 1;}
+    void incrementNextGateIndex() {nextGateIndex++;}
+    int getNextGateIndex() {return nextGateIndex;}
+    void resetNextGateIndex() {nextGateIndex = 0;}
+    int addGateToTrack(GateClient *gate);
+
+    bool isRaceStarted() { return this->raceStarted;}
 
 private:
-    GateMode _mode;
+    GateMode _mode = GateMode::INIT;
     long lastLapTime;
-    long bestLapTime;
-    long startTime;
-    
-    // Vector containing gates for track mode
-    std::vector<GateClient> trackGates;
+    long bestLapTime = -1;
+    long startTime = 0;
+    int nextGateIndex = 0;
+    long elapsedTime = 0;
+    bool raceStarted = false;
 
-    bool isMode(GateMode mode);
+    // Vector containing gates for track mode
+    std::vector<GateClient*> trackGates;
+
+    bool isMode(GateMode mode) {return this->_mode == mode;};
+    void setMode(GateMode mode) {this->_mode = mode;};
+    GateMode getMode() {return this->_mode;};
 };
 
 #endif

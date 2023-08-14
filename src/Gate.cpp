@@ -46,7 +46,7 @@ void Gate::setupGPIO() {
     Serial.println("SonicGate setup GPIO");
     sonicSensor.setup();
     buzzer.setup();
-    this->_stateLed.setup();
+    // this->_stateLed.setup();
 }
 
 void Gate::doRegister(String ip) {
@@ -82,12 +82,16 @@ void Gate::loop() {
             this->notifyPass();
         }
     }
-   this->_stateLed.loop();
+//    this->_stateLed.loop();
 }
 
 boolean Gate::checkPass() {
     return sonicSensor.checkPass();
 }
+
+// void Gate::setCalibrationMode(bool state) {
+    // sonicSensor.setCalibrationMode(state);
+// }
 
 void Gate::notifyPass() {
     Serial.println("Notify pass to Starter");
@@ -97,3 +101,11 @@ void Gate::notifyPass() {
 void Gate::beep() {
     buzzer.beep();
 }
+
+// void Gate::enableSensorCalibration() {
+//     sonicSensor.setCalibrationMode(true);
+// }
+
+// void Gate::disableSensorCalibration() {
+//     sonicSensor.setCalibrationMode(false);
+// }

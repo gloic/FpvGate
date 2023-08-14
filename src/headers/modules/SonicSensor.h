@@ -6,8 +6,7 @@ class SonicSensor {
     SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin);
     void setup();
     bool checkPass();
-
-    
+    // void setCalibrationMode(bool state) { this->calibrationMode = state;}
   protected:
   
   private:
@@ -15,9 +14,11 @@ class SonicSensor {
     int _echoPin;
     int _potPin;
     int _ledPin;
-    int _thresholdDistance;
+    int _thresholdDistance = 0;
     long duration;
     float distance;
+    bool calibrationMode = false;
+
     void sendPulse();
     void refreshDistance();
 

@@ -3,7 +3,6 @@
 
 enum GateMode {
     INIT,
-    TEST,
     TRACK,
     RACE
 };

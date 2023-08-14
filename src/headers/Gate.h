@@ -1,7 +1,7 @@
 #ifndef Gate_H
 #define Gate_H
 
-#include "headers/modules/StateLed.h"
+// #include "headers/modules/StateLed.h"
 #include "headers/modules/GateWebController.h"
 
 #include <EspBase.h>
@@ -27,19 +27,22 @@ protected:
     void notifyPass();
     void led(bool state);
     void blinkLed();
+    // void setCalibrationMode(bool state);
+    // void enableSensorCalibration();
+    // void disableSensorCalibration();
 
     static void beep();
 
     static bool isListening() { return instance->_listening; };
-    static void startListening() { instance->_listening = true; };
-    static void stopListening() { instance->_listening = false; };
+    static void startListening() { Serial.println("Start listening"); instance->_listening = true; };
+    static void stopListening() { Serial.println("Stop listening"); instance->_listening = false; };
 
 private:
     static Gate *instance;
-    StateLed _stateLed {};
+    // StateLed _stateLed {};
     GateWebController webController;
 
-    bool _listening;
+    bool _listening = false;
     String _id;
 
     void setupWifi();
