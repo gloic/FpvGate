@@ -39,7 +39,7 @@ def chain():
 
 def wiki():
     loader = MWDumpLoader(
-        file_path = "Wikefluid-20230823142901.xml",
+        file_path = "Wiki-20230823142901.xml",
         encoding="utf8",
         #namespaces = [0,2,3] Optional list to load only specific namespaces. Loads all namespaces by default.
     )
