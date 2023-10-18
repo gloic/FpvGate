@@ -27,9 +27,9 @@ void Gate::setup() {
 void Gate::setupWifi() {
     EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
     if (DEV_MODE == 1) {
-        this->doRegister(WiFi.gatewayIP().toString());
-    } else {
         this->doRegister(DEV_IP_STARTER);
+    } else {
+        this->doRegister(WiFi.gatewayIP().toString());
     }
 }
 

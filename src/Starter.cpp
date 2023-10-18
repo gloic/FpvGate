@@ -11,7 +11,7 @@ Starter *Starter::instance = nullptr;
 // Vector containing all registered gates on the network
 std::vector <GateClient> gates;
 
-OneButton buttonReset(PIN_STARTER_RESET, true);
+OneButton buttonReset(PIN_STARTER_RESET, false);
 
 void Starter::setup() {
     Serial.println("Setup Starter");

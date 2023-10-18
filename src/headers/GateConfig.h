@@ -3,8 +3,8 @@
 /*
  * If DEV_MODE 1 :
  * - wifi will connect to existing network
- * - no "listening" sent to gates *
- * - DEV_IP_STARTER will be used as starter's ip (use by gates in a local network)
+ * - no "listening" sent to gates
+ * - DEV_IP_STARTER will be used as starter's ip (used by gates in a local network)
  */
 #define DEV_MODE 1
 #define DEV_IP_STARTER "192.168.0.84"
