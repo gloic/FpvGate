@@ -1,8 +1,8 @@
-#include "headers/Gate.h"
-#include "headers/modules/SonicSensor.h"
-#include "headers/modules/GateBuzzer.h"
-#include "headers/GateConfig.h"
-#include "headers/structs/GateMode.h"
+#include "Gate.h"
+#include "../modules/SonicSensor.h"
+#include "../modules/GateBuzzer.h"
+#include "../config/GateConfig.h"
+#include "../structs/GateMode.h"
 
 #include "OneButton.h"
 

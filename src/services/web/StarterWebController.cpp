@@ -1,5 +1,6 @@
-#include "../headers/modules/StarterWebController.h"
-#include "../headers/structs/GateClient.h"
+#include "StarterWebController.h"
+
+#include "../../structs/GateClient.h"
 
 void StarterWebController::listen(GateClient *gate, String arg) {
     char url[100];

@@ -2,9 +2,9 @@
 #define Starter_H
 
 #include "Gate.h"
-#include "./structs/GateClient.h"
-#include "./modules/TrackHandler.h"
-#include "headers/modules/StarterWebController.h"
+#include "../structs/GateClient.h"
+#include "../services/handlers/TrackHandler.h"
+#include "../services/web/StarterWebController.h"
 
 class Starter : public Gate {
 public:

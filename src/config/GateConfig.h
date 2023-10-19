@@ -1,5 +1,6 @@
 #ifndef GateConfig_H
 #define GateConfig_H
+
 /*
  * If DEV_MODE 1 :
  * - wifi will connect to existing network

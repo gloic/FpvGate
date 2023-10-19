@@ -1,6 +1,7 @@
 #ifndef StarterWebController_H
 #define StarterWebController_H
-#include "../structs/GateClient.h"
+
+#include "../../structs/GateClient.h"
 
 #include <Arduino.h>
 #include <HTTPClient.h>

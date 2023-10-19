@@ -1,7 +1,5 @@
-#include "../headers/modules/TrackHandler.h"
-
-// #include <Arduino.h>
-#include "headers/structs/GateMode.h"
+#include "TrackHandler.h"
+#include "../../structs/GateMode.h"
 
 // unsigned long startTime = 0;
 

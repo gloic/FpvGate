@@ -1,7 +1,7 @@
 #ifndef Gate_H
 #define Gate_H
 
-#include "headers/modules/GateWebController.h"
+#include "../services/web/GateWebController.h"
 
 #include <EspBase.h>
 #include "Secrets.h"

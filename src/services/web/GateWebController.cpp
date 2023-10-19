@@ -1,4 +1,4 @@
-#include "../headers/modules/GateWebController.h"
+#include "GateWebController.h"
 
 int GateWebController::registerOnStarter() {
     int result = -1;
@@ -30,7 +30,6 @@ void GateWebController::notifyPass(String id) {
 void GateWebController::setIpStarter(String ip) {
     this->_ipStarter = ip;
 }
-
 
 // HTTPClient* GateWebController::post(char* url, String payload) {
 //     http.begin(wifiClient, url);

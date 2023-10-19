@@ -1,9 +1,10 @@
 #ifndef TrackHandler_H
 #define TrackHandler_H
 
-#include "headers/structs/GateMode.h"
+#include "../../structs/GateMode.h"
+#include "../../structs/GateClient.h"
+
 #include <vector>
-#include "headers/structs/GateClient.h"
 
 class TrackHandler {
 public:

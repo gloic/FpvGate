@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "headers/modules/GateBuzzer.h"
+#include "GateBuzzer.h"
 
 #define NOTE_C4  880
 

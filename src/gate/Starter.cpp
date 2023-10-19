@@ -1,10 +1,10 @@
-#include "headers/Starter.h"
+#include "Starter.h"
+#include "../config/GateConfig.h"
+#include "../structs/GateMode.h"
 
+#include <vector>
 #include <Arduino.h>
 #include "OneButton.h"
-#include <vector>
-#include "headers/GateConfig.h"
-#include "headers/structs/GateMode.h"
 
 Starter *Starter::instance = nullptr;
 

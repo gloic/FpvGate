@@ -1,5 +1,6 @@
 #ifndef GateBase_H
 #define GateBase_H
+
 class GateBase {
     public:
         virtual void setup() = 0;

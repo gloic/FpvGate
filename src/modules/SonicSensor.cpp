@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "headers/modules/SonicSensor.h"
+#include "SonicSensor.h"
 
 const float minDistance = 10.0;
 const float maxDistance = 300.0;
