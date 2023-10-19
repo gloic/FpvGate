@@ -29,6 +29,7 @@ public:
     void stopLap();
     int getTrackGateSize() {return this->trackGates.size();}
     GateClient* getNextGate() {return this->trackGates[nextGateIndex];}
+    bool isNextGate(int gateId) {return this->getNextGate()->id == gateId;}
     bool hasNextGate() {return nextGateIndex < this->getTrackGateSize() - 1;}
     void incrementNextGateIndex() {nextGateIndex++;}
     int getNextGateIndex() {return nextGateIndex;}
@@ -46,7 +47,6 @@ private:
     long elapsedTime = 0;
     bool raceStarted = false;
 
-    // Vector containing gates for track mode
     std::vector<GateClient*> trackGates;
 
     bool isMode(GateMode mode) {return this->_mode == mode;};

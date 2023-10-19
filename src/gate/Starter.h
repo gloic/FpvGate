@@ -24,10 +24,9 @@ private:
     void setupWebController();
     void setupGPIO();
     void doRegister(String ip);
-    int registerGate(String ip);
     
     void handleStarterPassage();
-    void startListeningAll();
+    
     void enableTrackMode();
     void enableRaceMode();
     void startLap();
@@ -40,12 +39,8 @@ private:
 
     void enableCalibrationMode();
 
-    GateClient* getGateClientFromId(int id);
-
     static void onRegisterGate(AsyncWebServerRequest *request);
     static void onGatePassed(AsyncWebServerRequest *request);
-    static void onTrackMode(AsyncWebServerRequest *request);
-    static void onRaceMode(AsyncWebServerRequest *request);
     static void onButtonResetPress();
 
 };
