@@ -1,5 +1,4 @@
-#ifndef GateConfig_H
-#define GateConfig_H
+#pragma once
 
 /*
  * If DEV_MODE 1 :
@@ -8,7 +7,8 @@
  * - DEV_IP_STARTER will be used as starter's ip (used by gates in a local network)
  */
 #define DEV_MODE 1
-#define DEV_IP_STARTER "192.168.0.84"
+#define DEV_IP_STARTER "192.168.0.10"
+#define DEV_PORT_WS "8080"
 
 // Starter
 #define PIN_STARTER 15
@@ -22,4 +22,6 @@
 #define PIN_BUZZER 27
 #define PIN_STATE_LED 2
 
-#endif
+
+// Gate
+constexpr bool GATE_DEFAULT_CONTINUE_LISTENING = true;

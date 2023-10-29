@@ -1,10 +1,7 @@
-#ifndef GateMode_H
-#define GateMode_H
+#pragma once
 
 enum GateMode {
     INIT,
     TRACK,
     RACE
 };
-
-#endif

@@ -1,6 +1,5 @@
-#ifndef Leds_H
-#define Leds_H
-    
+#pragma once
+
 class Leds {
   public:
     Leds(int numLeds, int dataPin);
@@ -11,5 +10,3 @@ class Leds {
     int numLeds;
     int dataPin; 
 };
-
-#endif

@@ -8,7 +8,7 @@
  * @param time
  * @return true if bestLapTime updated too.
  */
-bool TrackHandler::setLapTime(long time) {
+boolean TrackHandler::setLapTime(long time) {
     this->lastLapTime = time;
     if (this->lastLapTime < this->bestLapTime || this->bestLapTime == -1) {
         this->bestLapTime = time;
@@ -38,7 +38,7 @@ void TrackHandler::stopLap() {
     Serial.print(elapsedTime);
     Serial.println("s");
     // Update last time
-    bool newRecord = this->setLapTime(elapsedTime);
+    boolean newRecord = this->setLapTime(elapsedTime);
     if(newRecord) {
         Serial.println("New record");
         // Gate::beep();

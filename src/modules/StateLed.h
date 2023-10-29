@@ -1,5 +1,4 @@
-#ifndef StateLed_H
-#define StateLed_H
+#pragma once
 
 #include "../structs/LedMode.h"
 #include "../structs/LedColor.h"
@@ -24,5 +23,3 @@ class StateLed {
     int _green;
     int _blue;
 };
-
-#endif

@@ -1,10 +1,7 @@
-#ifndef LedColor_H
-#define LedColor_H
+#pragma once
 
 enum LedColor {
     RED,
     GREEN,
     BLUE
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef Starter_H
-#define Starter_H
+#pragma once
 
 #include "Gate.h"
 #include "../structs/GateClient.h"
@@ -16,7 +15,7 @@ protected:
 
 private:
     static Starter *instance;
-    bool isCalibrationMode = false;
+    boolean isCalibrationMode = false;
     StarterWebController webController;
     TrackHandler trackHandler {};
     
@@ -44,5 +43,3 @@ private:
     static void onButtonResetPress();
 
 };
-
-#endif

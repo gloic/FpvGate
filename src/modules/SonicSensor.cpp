@@ -6,10 +6,10 @@ const float maxDistance = 300.0;
 const int margin = 5;
 
 SonicSensor::SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin) {
-  this->_triggerPin = triggerPin;
-  this->_echoPin = echoPin;
-  this->_potPin = potPin;
-  this->_ledPin = ledPin;
+  this->triggerPin = triggerPin;
+  this->echoPin = echoPin;
+  this->potPin = potPin;
+  this->ledPin = ledPin;
 }
 
 void SonicSensor::setup() {
@@ -24,23 +24,23 @@ void SonicSensor::setup() {
   // Serial.print("ledPin=");
   // Serial.println(this->_ledPin);
 
-  pinMode(this->_triggerPin, OUTPUT);
-  pinMode(this->_echoPin, INPUT);
-  pinMode(this->_potPin, INPUT);
-  pinMode(this->_ledPin, OUTPUT);
+  pinMode(this->triggerPin, OUTPUT);
+  pinMode(this->echoPin, INPUT);
+  pinMode(this->potPin, INPUT);
+  pinMode(this->ledPin, OUTPUT);
 
   this->refreshDistance();
 }
 
-bool SonicSensor::checkPass() {
+boolean SonicSensor::checkPass() {
   this->ledOn();
   this->refreshDistance();
 
   this->sendPulse();  
-  long pulseDuration = pulseIn(this->_echoPin, HIGH);
+  long pulseDuration = pulseIn(this->echoPin, HIGH);
   float passDistance = pulseDuration * 0.034 / 2;
 
-  bool isDetected = passDistance < this->_thresholdDistance;
+  boolean isDetected = passDistance < this->_thresholdDistance;
   if(isDetected) {
     Serial.print("Passage detected at ");
     Serial.print(passDistance);
@@ -53,13 +53,17 @@ bool SonicSensor::checkPass() {
     // Serial.print("thresholdDistance=");
     // Serial.println(this->_thresholdDistance);
     
-    ledOff();
+    this->ledOff();
   }
   return isDetected;
 }
 
+void SonicSensor::stop() {
+  this->ledOff();
+}
+
 void SonicSensor::refreshDistance() {
-  int newThresHoldDistance = map(analogRead(_potPin), 0, 4095, minDistance, maxDistance);
+  int newThresHoldDistance = map(analogRead(potPin), 0, 4095, minDistance, maxDistance);
   if (abs(this->_thresholdDistance - newThresHoldDistance) > margin) {
     Serial.println("Threshold distance changed.");
     Serial.print("actual thresholdDistance=");
@@ -71,17 +75,17 @@ void SonicSensor::refreshDistance() {
 }
 
 void SonicSensor::sendPulse() {
-  digitalWrite(this->_triggerPin, LOW);
+  digitalWrite(this->triggerPin, LOW);
   delayMicroseconds(2);
-  digitalWrite(this->_triggerPin, HIGH);
+  digitalWrite(this->triggerPin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(this->_triggerPin, LOW);
+  digitalWrite(this->triggerPin, LOW);
 }
 
 void SonicSensor::ledOn() {
-  digitalWrite(this->_ledPin, HIGH);
+  digitalWrite(this->ledPin, HIGH);
 }
 
 void SonicSensor::ledOff() {
-  digitalWrite(this->_ledPin, LOW);
+  digitalWrite(this->ledPin, LOW);
 }

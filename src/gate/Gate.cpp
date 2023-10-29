@@ -6,8 +6,6 @@
 
 #include "OneButton.h"
 
-const String ENDPOINT_REGISTER = "/api/gate/register";
-
 SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED);
 GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
 
@@ -26,11 +24,7 @@ void Gate::setup() {
 
 void Gate::setupWifi() {
     EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
-    if (DEV_MODE == 1) {
-        this->doRegister(DEV_IP_STARTER);
-    } else {
-        this->doRegister(WiFi.gatewayIP().toString());
-    }
+    this->doRegister(WiFi.gatewayIP().toString());
 }
 
 void Gate::setupWebController() {
@@ -54,7 +48,23 @@ void Gate::doRegister(String ip) {
 
 void Gate::onStart(AsyncWebServerRequest *request) {
     instance->startListening();
+    // TODO - Add calibration mode
     request->send(200, "text/plain", "started");
+}
+
+boolean Gate::isListening() {
+    return this->listening;
+}
+
+void Gate::startListening() {
+    Serial.println("Start listening");
+    this->listening = true;
+}
+
+void Gate::stopListening() {
+    Serial.println("Stop listening");
+    this->listening = false;
+    sonicSensor.stop();
 }
 
 void Gate::onStop(AsyncWebServerRequest *request) {
@@ -69,10 +79,14 @@ void Gate::onLed(AsyncWebServerRequest *request) {
 }
 
 void Gate::loop() {
-    if (this->isListening()) {
-        if (this->checkPass()) {
+    if (!this->listening) {
+        return;
+    }
+
+    if (this->checkPass()) {
+        // TODO : refactor in a private method
+        if(this->notifyPass()) {
             this->stopListening();
-            this->notifyPass();
         }
     }
 }
@@ -81,9 +95,11 @@ boolean Gate::checkPass() {
     return sonicSensor.checkPass();
 }
 
-void Gate::notifyPass() {
+boolean Gate::notifyPass() {
     Serial.println("Notify pass to Starter");
-    this->webController.notifyPass(this->_id);
+    // TODO : Add informations (height)
+    return this->webController.notifyPass(this->_id);
+
 }
 
 void Gate::beep() {

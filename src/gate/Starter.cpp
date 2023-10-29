@@ -61,7 +61,9 @@ void Starter::onRegisterGate(AsyncWebServerRequest *request) {
 void Starter::onGatePassed(AsyncWebServerRequest *request) {
     Serial.println("Gate passed !");
     int id = instance->getParamFromRequest("id", request).toInt();
-    auto *gate = instance->webController.getGateClientFromId(id);
+    // auto *gate = instance->webController.getGateClientFromId(id);
+    String clientIP = request->client()->remoteIP().toString();
+    auto *gate = instance->webController.getGateClientFromIp(clientIP);
     instance->handleGatePassed(gate);
     request->send(200, "text/plain", "OK");
 }
@@ -100,7 +102,7 @@ void Starter::handleGatePassed(GateClient* gate) {
 void Starter::loop() {
     buttonReset.tick();
 
-    bool passed = false;
+    boolean passed = false;
     if (this->isListening()) {
         passed = this->checkPass();
     }

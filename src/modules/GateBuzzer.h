@@ -1,5 +1,4 @@
-#ifndef GateBuzzer_H
-#define GateBuzzer_H
+#pragma once
 
 class GateBuzzer {
 public:
@@ -12,5 +11,3 @@ public:
 private:
     int _buzzerPin;
 };
-
-#endif

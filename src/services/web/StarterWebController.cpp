@@ -3,18 +3,20 @@
 #include "../../structs/GateClient.h"
 #include "../../config/GateConfig.h"
 
-void StarterWebController::listen(GateClient *gate, String arg) {
-    char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/%s", gate->ip.c_str(), arg);
-    Serial.print("Send request : ");
-    Serial.println(url);
+constexpr const char* URL_PREFIX = "http://";
+constexpr const char* DEFAULT_PORT = "80";
 
-    if(DEV_MODE == 0) {
-        http.begin(wifiClient, url);
-        http.setTimeout(5000); // should be 5 sec
-        http.POST("");
-        http.end();
-    }
+
+void StarterWebController::listen(GateClient *gate, String entrypoint) {
+    char url[100];
+    this->getUrl(gate, entrypoint);
+    Serial.print("Url complete : ");
+    Serial.println(url);
+    
+    http.begin(wifiClient, url);
+    http.setTimeout(5000);
+    http.POST("");
+    http.end();
 }
 
 int StarterWebController::registerGate(String ip) {
@@ -41,4 +43,19 @@ GateClient *StarterWebController::getGateClientFromId(int id) {
         }
     }
     return nullptr;
+}
+
+GateClient *StarterWebController::getGateClientFromIp(String ip) {
+    for (auto &gate : gates) {
+        if (gate.ip == ip) {
+            return &gate;
+        }
+    }
+    return nullptr;
+}
+
+String StarterWebController::getUrl(GateClient *gate, String entrypoint) {
+    String hostame = gate->ip;
+    String port = DEV_MODE ? DEV_PORT_WS : DEFAULT_PORT;
+    return URL_PREFIX + hostame + ':' + port + entrypoint;
 }

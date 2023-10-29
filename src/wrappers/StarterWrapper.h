@@ -1,5 +1,5 @@
-#include "GateBase.h"
-#include "Starter.h"
+#include "../gate/GateBase.h"
+#include "../gate/Starter.h"
 
 class StarterWrapper : public GateBase {
 private:

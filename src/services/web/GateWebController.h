@@ -1,5 +1,4 @@
-#ifndef GateWebController_H
-#define GateWebController_H
+#pragma once
 
 #include <Arduino.h>
 #include <HTTPClient.h>
@@ -8,15 +7,17 @@ class GateWebController {
     public:
         void setIpStarter(String ip);
         int registerOnStarter();
-        void notifyPass(String id);
+        boolean notifyPass(String id);
 
     private:
+        const char* PATH_REGISTER = "/api/gate/register";
+        const char* PATH_NOTIFY = "/api/gate/passed";
+        
         WiFiClient wifiClient;
         HTTPClient http;
-        String _ipStarter;
+        String ipStarter;
 
         // HTTPClient* post(char* url, String payload);
+        String getUrl(String path);
 
 };
-
-#endif

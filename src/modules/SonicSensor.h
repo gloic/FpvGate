@@ -1,23 +1,22 @@
-#ifndef SonicSensor_H
-#define SonicSensor_H
+#pragma once
 
 class SonicSensor {
   public:
     SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin);
     void setup();
-    bool checkPass();
-    // void setCalibrationMode(bool state) { this->calibrationMode = state;}
-  protected:
-  
-  private:
-    int _triggerPin;
-    int _echoPin;
-    int _potPin;
-    int _ledPin;
+    boolean checkPass();
+    void stop();
+    // void setCalibrationMode(boolean state) { this->calibrationMode = state;}
+protected:
+private:
+    int triggerPin;
+    int echoPin;
+    int potPin;
+    int ledPin;
     int _thresholdDistance = 0;
     long duration;
     float distance;
-    bool calibrationMode = false;
+    boolean calibrationMode = false;
 
     void sendPulse();
     void refreshDistance();
@@ -25,5 +24,3 @@ class SonicSensor {
     void ledOn();
     void ledOff();
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef Gate_H
-#define Gate_H
+#pragma once
 
 #include "../services/web/GateWebController.h"
 
@@ -23,21 +22,20 @@ protected:
     void setupGPIO();
     void doRegister(String ip);
     boolean checkPass();
-    void notifyPass();
-    void led(bool state);
+    boolean notifyPass();
+    void led(boolean state);
     void blinkLed();
+    void startListening();
+    void stopListening();
 
     static void beep();
 
-    static bool isListening() { return instance->_listening; };
-    static void startListening() { instance->_listening = true; };
-    static void stopListening() { instance->_listening = false; };
-
+    boolean isListening();
 private:
     static Gate *instance;
     GateWebController webController;
 
-    bool _listening = false;
+    boolean listening = false;
     String _id;
 
     void setupWifi();
@@ -45,4 +43,3 @@ private:
     static void onStop(AsyncWebServerRequest *request);
     static void onLed(AsyncWebServerRequest *request);
 };
-#endif

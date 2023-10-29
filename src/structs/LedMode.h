@@ -1,10 +1,7 @@
-#ifndef LedMode_H
-#define LedMode_H
+#pragma once
 
 enum LedMode {
     OFF,
     ON,
     BLINK,
 };
-
-#endif

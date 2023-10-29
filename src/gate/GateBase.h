@@ -1,5 +1,4 @@
-#ifndef GateBase_H
-#define GateBase_H
+#pragma once
 
 class GateBase {
     public:
@@ -7,5 +6,3 @@ class GateBase {
         virtual void loop() = 0;
         virtual ~GateBase() {}
 };
-
-#endif

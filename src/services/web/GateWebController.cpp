@@ -1,34 +1,54 @@
 #include "GateWebController.h"
+#include "../../config/GateConfig.h"
+
+constexpr const char* URL_PREFIX = "http://";
+constexpr const char* DEFAULT_PORT = "80";
 
 int GateWebController::registerOnStarter() {
     int result = -1;
-    char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/register", this->_ipStarter);
-    
+
+    String url = this->getUrl(PATH_REGISTER);
+    Serial.print("Url complete : ");
+    Serial.println(url);
+
     http.begin(wifiClient, url);
     int httpCode = http.POST("");
-    // NOT SURE
     if (httpCode == HTTP_CODE_OK) {
         result = http.getString().toInt();
     }
     http.end();
+    
     return result;
 }
 
-void GateWebController::notifyPass(String id) {
-    char url[100];
-    snprintf(url, sizeof(url), "http://%s/api/gate/passed", this->_ipStarter);
-    
+boolean GateWebController::notifyPass(String id) {
+    String url = this->getUrl(PATH_NOTIFY);
+    Serial.print("Url complete : ");
+    Serial.println(url);
+
     http.begin(wifiClient, url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
     String payload = "id=" + id;
-    http.POST(payload);
+    int statusCode = http.POST(payload);
+
+    boolean result = GATE_DEFAULT_CONTINUE_LISTENING;
+    if (statusCode == HTTP_CODE_OK) {
+        result = http.getString() == "stop";
+    }
     http.end();
+
+    return result;
 }
 
 void GateWebController::setIpStarter(String ip) {
-    this->_ipStarter = ip;
+    this->ipStarter = ip;
+}
+
+String GateWebController::getUrl(String path) {
+    String hostame = DEV_MODE ? DEV_IP_STARTER : this->ipStarter;
+    String port = DEV_MODE ? DEV_PORT_WS : DEFAULT_PORT;
+    return URL_PREFIX + hostame + ':' + port + path;
 }
 
 // HTTPClient* GateWebController::post(char* url, String payload) {
