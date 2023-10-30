@@ -24,7 +24,7 @@ void Gate::setup() {
 
 void Gate::setupWifi() {
     EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
-    this->doRegister(WiFi.gatewayIP().toString());
+    this->doRegister();
 }
 
 void Gate::setupWebController() {
@@ -40,10 +40,9 @@ void Gate::setupGPIO() {
     buzzer.setup();
 }
 
-void Gate::doRegister(String ip) {
+void Gate::doRegister() {
     Serial.println("Registering gate to Starter");
-    this->webController.setIpStarter(ip.c_str());
-    this->_id = this->webController.registerOnStarter();
+    this->_id = this->webController.registerOnStarter(this->getStarterIP());
 }
 
 void Gate::onStart(AsyncWebServerRequest *request) {
@@ -98,10 +97,13 @@ boolean Gate::checkPass() {
 boolean Gate::notifyPass() {
     Serial.println("Notify pass to Starter");
     // TODO : Add informations (height)
-    return this->webController.notifyPass(this->_id);
-
+    return this->webController.notifyPass(this->getStarterIP());
 }
 
 void Gate::beep() {
     buzzer.beep();
+}
+
+String Gate::getStarterIP() {
+    return WiFi.gatewayIP().toString(); 
 }

@@ -4,11 +4,11 @@
 constexpr const char* URL_PREFIX = "http://";
 constexpr const char* DEFAULT_PORT = "80";
 
-int GateWebController::registerOnStarter() {
+int GateWebController::registerOnStarter(String ip) {
     int result = -1;
 
-    String url = this->getUrl(PATH_REGISTER);
-    Serial.print("Url complete : ");
+    String url = this->getUrl(ip, PATH_REGISTER);
+    Serial.print("Url for register: ");
     Serial.println(url);
 
     http.begin(wifiClient, url);
@@ -21,16 +21,15 @@ int GateWebController::registerOnStarter() {
     return result;
 }
 
-boolean GateWebController::notifyPass(String id) {
-    String url = this->getUrl(PATH_NOTIFY);
-    Serial.print("Url complete : ");
+boolean GateWebController::notifyPass(String ip) {
+    String url = this->getUrl(ip, PATH_NOTIFY);
+    Serial.print("Url for notifyPass: ");
     Serial.println(url);
 
     http.begin(wifiClient, url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    String payload = "id=" + id;
-    int statusCode = http.POST(payload);
+    int statusCode = http.POST("");
 
     boolean result = GATE_DEFAULT_CONTINUE_LISTENING;
     if (statusCode == HTTP_CODE_OK) {
@@ -41,20 +40,7 @@ boolean GateWebController::notifyPass(String id) {
     return result;
 }
 
-void GateWebController::setIpStarter(String ip) {
-    this->ipStarter = ip;
+String GateWebController::getUrl(String ip, String path) {
+    String hostame = DEV_MODE ? DEV_IP_STARTER : ip;
+    return URL_PREFIX + hostame + ':' + DEFAULT_PORT + path;
 }
-
-String GateWebController::getUrl(String path) {
-    String hostame = DEV_MODE ? DEV_IP_STARTER : this->ipStarter;
-    String port = DEV_MODE ? DEV_PORT_WS : DEFAULT_PORT;
-    return URL_PREFIX + hostame + ':' + port + path;
-}
-
-// HTTPClient* GateWebController::post(char* url, String payload) {
-//     http.begin(wifiClient, url);
-//     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-//     int result = http.POST(payload);
-//     http.end();
-//     return &http;
-// }

@@ -51,7 +51,16 @@ void Starter::setupGPIO() {
 void Starter::onRegisterGate(AsyncWebServerRequest *request) {
     Serial.println("onRegisterGate");
     String clientIP = request->client()->remoteIP().toString();
-    int id = instance->webController.registerGate(clientIP);
+    auto *gate = instance->webController.getGateClientFromIp(clientIP);
+    if(gate != nullptr) {
+        Serial.print("Ip already registered : ");
+        Serial.print(clientIP);
+        request->send(200, "text/plain", String(gate->id));
+        return;
+    }
+
+    boolean isMock = request->getHeader("isMock") != nullptr;
+    int id = instance->webController.registerGate(clientIP, isMock);
 
     AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "");
     response->addHeader("test", "Test");
@@ -60,17 +69,20 @@ void Starter::onRegisterGate(AsyncWebServerRequest *request) {
 
 void Starter::onGatePassed(AsyncWebServerRequest *request) {
     Serial.println("Gate passed !");
-    int id = instance->getParamFromRequest("id", request).toInt();
+    //int id = instance->getParamFromRequest("id", request).toInt();
     // auto *gate = instance->webController.getGateClientFromId(id);
     String clientIP = request->client()->remoteIP().toString();
+    Serial.print("Client ip =");
+    Serial.println(clientIP);
+
     auto *gate = instance->webController.getGateClientFromIp(clientIP);
     instance->handleGatePassed(gate);
-    request->send(200, "text/plain", "OK");
+    request->send(200, "text/plain", "stop");
 }
 
 void Starter::handleGatePassed(GateClient* gate) {
     Serial.print("Gate passed, id=");
-    Serial.println(gate->id);
+    Serial.println(String(gate->id));
 
     if (this->trackHandler.isTrackMode()) {
         Serial.println("Track mode, add gate to track");
@@ -138,6 +150,8 @@ void Starter::handleStarterPassage() {
         } else {
             this->stopLap();
         }
+        auto* gate = this->trackHandler.getNextGate();
+        this->gateStartListening(gate);
     }
 }
 
@@ -174,9 +188,7 @@ void Starter::gateStartListening(GateClient *gate) {
 void Starter::gateStopListening(GateClient *gate) {
     Serial.print("Send stop listening to ");
     Serial.println(gate->id);
-    if (DEV_MODE == 0) {
-        this->webController.stopListening(gate);
-    }
+    this->webController.stopListening(gate);
 }
 
 void Starter::resetLap() {

@@ -20,7 +20,7 @@ protected:
     
     void setupWebController();
     void setupGPIO();
-    void doRegister(String ip);
+    void doRegister();
     boolean checkPass();
     boolean notifyPass();
     void led(boolean state);
@@ -39,6 +39,8 @@ private:
     String _id;
 
     void setupWifi();
+    String getStarterIP();
+
     static void onStart(AsyncWebServerRequest *request);
     static void onStop(AsyncWebServerRequest *request);
     static void onLed(AsyncWebServerRequest *request);

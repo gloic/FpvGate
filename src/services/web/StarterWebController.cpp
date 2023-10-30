@@ -8,9 +8,8 @@ constexpr const char* DEFAULT_PORT = "80";
 
 
 void StarterWebController::listen(GateClient *gate, String entrypoint) {
-    char url[100];
-    this->getUrl(gate, entrypoint);
-    Serial.print("Url complete : ");
+    String url = this->getUrl(gate, entrypoint);
+    Serial.print("Url for listen : ");
     Serial.println(url);
     
     http.begin(wifiClient, url);
@@ -19,14 +18,16 @@ void StarterWebController::listen(GateClient *gate, String entrypoint) {
     http.end();
 }
 
-int StarterWebController::registerGate(String ip) {
+int StarterWebController::registerGate(String ip, boolean isMock) {
     int id = gates.size();
-    gates.push_back(GateClient{id, ip});
+    gates.push_back(GateClient{id, ip, isMock});
 
     Serial.print("Gate registered : ");
     Serial.print(ip);
     Serial.print(" with id = ");
     Serial.println(id);
+    Serial.print(" and is mock = ");
+    Serial.println(isMock);
     return id;
 }
 
@@ -56,6 +57,6 @@ GateClient *StarterWebController::getGateClientFromIp(String ip) {
 
 String StarterWebController::getUrl(GateClient *gate, String entrypoint) {
     String hostame = gate->ip;
-    String port = DEV_MODE ? DEV_PORT_WS : DEFAULT_PORT;
+    String port = gate->isMock ? DEV_MOCK_PORT_WS : DEFAULT_PORT;
     return URL_PREFIX + hostame + ':' + port + entrypoint;
 }

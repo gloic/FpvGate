@@ -5,9 +5,8 @@
 
 class GateWebController {
     public:
-        void setIpStarter(String ip);
-        int registerOnStarter();
-        boolean notifyPass(String id);
+        int registerOnStarter(String ip);
+        boolean notifyPass(String ip);
 
     private:
         const char* PATH_REGISTER = "/api/gate/register";
@@ -17,7 +16,6 @@ class GateWebController {
         HTTPClient http;
         String ipStarter;
 
-        // HTTPClient* post(char* url, String payload);
-        String getUrl(String path);
+        String getUrl(String ip, String path);
 
 };

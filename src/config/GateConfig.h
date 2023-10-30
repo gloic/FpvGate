@@ -6,9 +6,9 @@
  * - no "listening" sent to gates
  * - DEV_IP_STARTER will be used as starter's ip (used by gates in a local network)
  */
-#define DEV_MODE 1
-#define DEV_IP_STARTER "192.168.0.10"
-#define DEV_PORT_WS "8080"
+#define DEV_MODE 0
+#define DEV_IP_STARTER "192.168.0.84"
+#define DEV_MOCK_PORT_WS "8080"
 
 // Starter
 #define PIN_STARTER 15
