@@ -27,7 +27,7 @@ private:
     long sendPulse();
     void updateThreshold();
 
-    void ledOn() {digitalWrite(this->ledPin, HIGH);}
-    void ledOff() {digitalWrite(this->ledPin, LOW);}
+    void ledOn() {digitalWrite(ledPin, HIGH);}
+    void ledOff() {digitalWrite(ledPin, LOW);}
     ;
 };

@@ -2,7 +2,7 @@
 
 class GateBuzzer {
 public:
-    GateBuzzer(int buzzerpin): 
+    explicit GateBuzzer(int buzzerpin): 
     buzzerPin(buzzerpin) {}
     void setup();
     void beep();

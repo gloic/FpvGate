@@ -10,34 +10,34 @@ const int step = 5;
 
 void SonicSensor::setup() {
   Log.infoln("SonicSensor setup");
-  pinMode(this->potPin, INPUT);
-  pinMode(this->ledPin, OUTPUT);
-  this->updateThreshold();  
+  pinMode(potPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  updateThreshold();  
 }
 
 boolean SonicSensor::checkPass() {
-  this->updateThreshold();
-  this->ledOn();
+  updateThreshold();
+  ledOn();
   
   boolean result = false;
   delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
-  long distance = this->sonar.ping_cm(this->thresholdDistance);  
+  long distance = sonar.ping_cm(thresholdDistance);  
   if(distance > 0) {
     Log.infoln("Passage detected at %d cm", distance);
     result = true;
-    this->ledOff();
+    ledOff();
   }
   return result;
 }
 
 void SonicSensor::stop() {
-  this->ledOff();
+  ledOff();
 }
 
 void SonicSensor::updateThreshold() {
   int newThresHoldDistance = map(analogRead(potPin), 0, 4095, minDistance, maxDistance);
-  if (abs(this->thresholdDistance - newThresHoldDistance) > step) {
-    Log.infoln("Threshold distance changed. previous: %d, new: %d", this->thresholdDistance, newThresHoldDistance);
-    this->thresholdDistance = newThresHoldDistance;
+  if (abs(thresholdDistance - newThresHoldDistance) > step) {
+    Log.infoln("Threshold distance changed. previous: %d, new: %d", thresholdDistance, newThresHoldDistance);
+    thresholdDistance = newThresHoldDistance;
   }
 }

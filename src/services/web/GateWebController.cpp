@@ -7,7 +7,7 @@ constexpr const char* DEFAULT_PORT = "80";
 int GateWebController::registerOnStarter(String ip) {
     int result = -1;
 
-    String url = this->getUrl(ip, PATH_REGISTER);
+    String url = getUrl(ip, PATH_REGISTER);
     Serial.print("Url for register: ");
     Serial.println(url);
 
@@ -22,7 +22,7 @@ int GateWebController::registerOnStarter(String ip) {
 }
 
 boolean GateWebController::notifyPass(String ip) {
-    String url = this->getUrl(ip, PATH_NOTIFY);
+    String url = getUrl(ip, PATH_NOTIFY);
     Serial.print("Url for notifyPass: ");
     Serial.println(url);
 

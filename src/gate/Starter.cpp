@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <Arduino.h>
+#include <ArduinoLog.h>
 #include "OneButton.h"
 
 Starter *Starter::instance = nullptr;
@@ -11,12 +12,12 @@ Starter *Starter::instance = nullptr;
 OneButton buttonReset(PIN_STARTER_RESET, false);
 
 void Starter::setup() {
-    Serial.println("Setup Starter");
-    this->setupWifi();
-    this->setupWebController();
-    this->setupGPIO();
+    Log.infoln("Setup Starter");
+    setupWifi();
+    setupWebController();
+    setupGPIO();
     EspBase::startWebServer();
-    Serial.println("End of setup Starter");
+    Log.infoln("End of setup Starter");
 }
 
 void Starter::setupWifi() {
@@ -29,9 +30,9 @@ void Starter::setupWifi() {
 
 void Starter::setupWebController() {
     Gate::setupWebController();
-    Serial.println("Starter::setupWebController");
-    this->server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
-    this->server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
+    Log.infoln("Starter::setupWebController");
+    server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
+    server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
 }
 
 void Starter::setupGPIO() {
@@ -49,65 +50,47 @@ void Starter::setupGPIO() {
 }
 
 void Starter::onRegisterGate(AsyncWebServerRequest *request) {
-    Serial.println("onRegisterGate");
+    Log.infoln("onRegisterGate");
     String clientIP = request->client()->remoteIP().toString();
-    auto *gate = instance->webController.getGateClientFromIp(clientIP);
-    if(gate != nullptr) {
-        Serial.print("Ip already registered : ");
-        Serial.print(clientIP);
-        request->send(200, "text/plain", String(gate->id));
-        return;
-    }
-
     boolean isMock = request->getHeader("isMock") != nullptr;
-    int id = instance->webController.registerGate(clientIP, isMock);
 
-    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "");
-    response->addHeader("test", "Test");
+    int id = instance->webController.registerGate(clientIP, isMock);
     request->send(200, "text/plain", String(id));
 }
 
 void Starter::onGatePassed(AsyncWebServerRequest *request) {
-    Serial.println("Gate passed !");
-    //int id = instance->getParamFromRequest("id", request).toInt();
-    // auto *gate = instance->webController.getGateClientFromId(id);
+    Log.infoln("Gate passed !");
     String clientIP = request->client()->remoteIP().toString();
-    Serial.print("Client ip =");
-    Serial.println(clientIP);
+    Log.infoln("Client ip: %s", clientIP);
 
-    auto *gate = instance->webController.getGateClientFromIp(clientIP);
-    instance->handleGatePassed(gate);
+    auto *gate = instance->gatesManager.getGateClientFromIp(clientIP);
+    instance->handleGatePassed(*gate);
     String responseBehavior = instance->isCalibrationMode ? "continue" : "stop";
     request->send(200, "text/plain", responseBehavior);
 }
 
-void Starter::handleGatePassed(GateClient* gate) {
-    Serial.print("Gate passed, id=");
-    Serial.println(String(gate->id));
+void Starter::handleGatePassed(GateClient &gate) {
+    Log.infoln("Gate passed, id=%d", String(gate.id));
 
-    if (this->trackHandler.isTrackMode()) {
-        Serial.println("Track mode, add gate to track");
-        int trackSize = this->trackHandler.addGateToTrack(gate);
+    if (trackHandler.isTrackMode()) {
+        Log.infoln("Track mode, add gate to track");
+        int trackSize = trackHandler.addGateToTrack(gate);
         if(trackSize >= 1) {
-            Serial.println("track has at least one gate, starter is listening too");
-            this->startListening();
+            Log.infoln("track has at least one gate, starter is listening too");
+            startListening();
         }
-    } else if (this->trackHandler.isRaceMode()) {
-        if(this->trackHandler.isNextGate(gate->id)) {
-            Serial.println("This gate is expected");
-            if (this->trackHandler.hasNextGate()) {
-                this->trackHandler.incrementNextGateIndex();
-                this->gateStartListening(gate);
+    } else if (trackHandler.isRaceMode()) {
+        if(trackHandler.isNextGate(gate.id)) {
+            Log.infoln("This gate is expected");
+            if (trackHandler.hasNextGate()) {
+                trackHandler.incrementNextGateIndex();
+                gateStartListening(gate);
             } else {
-                Serial.println("no next gate, Starter is next : start listening");
-                this->startListening();
+                Log.infoln("no next gate, Starter is next : start listening");
+                startListening();
             }
         } else {
-            Serial.println("Another gate was passed !");
-            Serial.print("passed=");
-            Serial.println(gate->id);
-            Serial.print("expected=");
-            Serial.println(this->trackHandler.getNextGate()->id);
+            Log.infoln("Another gate was passed ! pass:%p - expected:%p", gate, trackHandler.getNextGate());
         }
     }
 }
@@ -116,101 +99,100 @@ void Starter::loop() {
     buttonReset.tick();
 
     boolean passed = false;
-    if (this->isListening()) {
-        passed = this->checkPass();
+    if (isListening()) {
+        passed = checkPass();
     }
 
-    this->leds.loop();
+    leds.loop();
 
     if (passed) {
-        this->handleStarterPassage();
+        handleStarterPassage();
     }
 }
 
 
 void Starter::handleStarterPassage() {
-    Serial.println("Starter pass detected");
+    Log.infoln("Starter pass detected");
 
-    if(this->isCalibrationMode) {
+    if(isCalibrationMode) {
         delay(100);
-        this->enableCalibrationMode();
+        enableCalibrationMode();
         return;
     }
     
-    this->stopListening();
+    stopListening();
 
-    if (this->trackHandler.isTrackMode()) {
-        if (this->trackHandler.getTrackGateSize() > 0) {
-            Serial.println("Track mode finished, starting race mode");
+    if (trackHandler.isTrackMode()) {
+        if (trackHandler.getTrackGateSize() > 0) {
+            Log.infoln("Track mode finished, starting race mode");
             // Workaround, a delay is necessary to avoid instant end of race mode
             delay(5000);
-            this->enableRaceMode();
+            enableRaceMode();
         }
     } else if (instance->trackHandler.isRaceMode()) {
-        if(!this->trackHandler.isRaceStarted()) {
-            this->startLap();
+        if(!trackHandler.isRaceStarted()) {
+            startLap();
         } else {
-            this->stopLap();
+            stopLap();
         }
-        auto* gate = this->trackHandler.getNextGate();
-        this->gateStartListening(gate);
+        auto &gate = trackHandler.getNextGate();
+        gateStartListening(gate);
     }
 }
 
 void Starter::onButtonResetPress() {
-    Serial.println("onButtonResetPress");
+    Log.infoln("onButtonResetPress");
    if (instance->trackHandler.isRaceMode()) {
        instance->resetLap();
    }
 }
 
 void Starter::enableTrackMode() {
-    Serial.println("enableTrackMode");
-    this->beep();
-    this->trackHandler.setTrackMode();
-    this->trackHandler.clearTrackGates();
-    this->webController.startListeningAll();
+    Log.infoln("enableTrackMode");
+    beep();
+    trackHandler.setTrackMode();
+    trackHandler.clearTrackGates();
+    webController.startListeningAll();
 }
 
 void Starter::enableRaceMode() {
-    Serial.println("GO");
-    this->beep();
-    this->beep();
-    this->trackHandler.setRaceMode();
+    Log.infoln("GO");
+    beep();
+    beep();
+    trackHandler.setRaceMode();
     // Only Starter should listen
-    this->startListening();
+    startListening();
 }
 
-void Starter::gateStartListening(GateClient *gate) {
-    Serial.print("Send start listening to ");
-    Serial.println(gate->id);
-    this->webController.startListening(gate);
+void Starter::gateStartListening(GateClient &gate) {
+    Log.infoln("Send start listening to %p", gate);
+    
+    webController.startListening(gate);
 }
 
-void Starter::gateStopListening(GateClient *gate) {
-    Serial.print("Send stop listening to ");
-    Serial.println(gate->id);
-    this->webController.stopListening(gate);
+void Starter::gateStopListening(GateClient &gate) {
+    Log.infoln("Send stop listening to %p", gate);
+    webController.stopListening(gate);
 }
 
 void Starter::resetLap() {
-    this->trackHandler.resetLap();
-    this->gateStartListening(this->trackHandler.getNextGate());
+    trackHandler.resetLap();
+    gateStartListening(trackHandler.getNextGate());
 }
 
 void Starter::startLap() {
-    Serial.println("Starting lap");
-    this->beep();
-    this->trackHandler.startLap();
+    Log.infoln("Starting lap");
+    beep();
+    trackHandler.startLap();
 }
 
 void Starter::stopLap() {
-    Serial.println("Lap done");
-    this->beep();
-    this->trackHandler.stopLap();
+    Log.infoln("Lap done");
+    beep();
+    trackHandler.stopLap();
 }
 
 void Starter::enableCalibrationMode() {
-    this->startListening();
-    this->webController.startListeningAll();
+    startListening();
+    webController.startListeningAll();
 }

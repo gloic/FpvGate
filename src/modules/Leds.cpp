@@ -5,29 +5,29 @@
 const int WAITING_TIME = 50;
 
 void Leds::setup() {
-  this->pixels.begin();
-  this->pixels.show();
+  pixels.begin();
+  pixels.show();
 }
 
 void Leds::blink() {
   Log.infoln("Blinking");
-  this->on();
+  on();
   delay(1000);
-  this->off();
+  off();
   delay(1000);
 }
 
 void Leds::on() {
-  colorWipe(this->pixels.Color(0, 0, 255));
+  colorWipe(pixels.Color(0, 0, 255));
 }
 
 void Leds::off() {
-  colorWipe(this->pixels.Color(0, 0, 0));
+  colorWipe(pixels.Color(0, 0, 0));
 }
 
 void Leds::colorWipe(uint32_t color) {
-  for (int i = 0; i < this->pixels.numPixels(); i++) {
-    this->pixels.setPixelColor(i, color);
+  for (int i = 0; i < pixels.numPixels(); i++) {
+    pixels.setPixelColor(i, color);
   }
 }
 
@@ -35,9 +35,9 @@ void Leds::setColor(uint32_t color) {
   uint8_t red = (color >> 16) & 0xFF;
   uint8_t green = (color >> 8) & 0xFF;
   uint8_t blue = color & 0xFF;
-  this->pixels.Color(red, green, blue);
+  pixels.Color(red, green, blue);
 }
 
 void Leds::loop() {
-  this->pixels.show();
+  pixels.show();
 }

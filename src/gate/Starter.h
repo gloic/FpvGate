@@ -2,7 +2,8 @@
 
 #include "Gate.h"
 #include "../structs/GateClient.h"
-#include "../services/handlers/TrackHandler.h"
+#include "../managers/TrackManager.h"
+#include "../managers/GatesManager.h"
 #include "../services/web/StarterWebController.h"
 
 class Starter : public Gate {
@@ -17,7 +18,8 @@ private:
     static Starter *instance;
     boolean isCalibrationMode = false;
     StarterWebController webController;
-    TrackHandler trackHandler {};
+    GatesManager gatesManager; // TODO - Remove this dependency
+    TrackManager trackHandler {};
     
     void setupWifi();
     void setupWebController();
@@ -32,9 +34,9 @@ private:
     void stopLap();
     void resetLap();
 
-    void gateStartListening(GateClient *gate);
-    void gateStopListening(GateClient *gate);
-    void handleGatePassed(GateClient* gate);
+    void gateStartListening(GateClient &gate);
+    void gateStopListening(GateClient &gate);
+    void handleGatePassed(GateClient &gate);
 
     void enableCalibrationMode();
 

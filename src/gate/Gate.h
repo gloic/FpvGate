@@ -15,12 +15,9 @@
 
 class Gate : public EspBase {
 public:
-    Gate():
-        sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED),
-        buzzer(PIN_BUZZER)
-        {
-            Gate::instance = this;
-        }
+    Gate(): sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED), buzzer(PIN_BUZZER) {
+        Gate::instance = this;
+    }
     void setup() override;
     void loop() override;
 
@@ -42,13 +39,13 @@ protected:
 
     boolean isListening();
 private:
-    static Gate* instance;
+    static Gate * instance;
     GateWebController webController;
     SonicSensor sonicSensor;
     GateBuzzer buzzer;
 
     boolean listening = false;
-    String _id;
+    String id;
 
     void setupWifi();
     String getStarterIP();

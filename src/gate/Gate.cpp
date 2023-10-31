@@ -9,36 +9,36 @@ String ipStarter;
 Gate* Gate::instance = nullptr;
 
 void Gate::setup() {
-    this->setupWifi();
-    this->setupWebController();
-    this->setupGPIO();
+    setupWifi();
+    setupWebController();
+    setupGPIO();
 
     EspBase::startWebServer();
-    this->stopListening();
+    stopListening();
 }
 
 void Gate::setupWifi() {
     EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
-    this->doRegister();
+    doRegister();
 }
 
 void Gate::setupWebController() {
     EspBase::setupWebController();
     Log.infoln("Gate::setupWebController");
-    this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
-    this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
+    server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
+    server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
 }
 
 void Gate::setupGPIO() {
     Log.infoln("Gate setup GPIO");
-    this->sonicSensor.setup();
-    this->leds.setup();
+    sonicSensor.setup();
+    leds.setup();
     buzzer.setup();
 }
 
 void Gate::doRegister() {
     Log.infoln("Registering gate to Starter");
-    this->_id = this->webController.registerOnStarter(this->getStarterIP());
+    id = webController.registerOnStarter(getStarterIP());
 }
 
 void Gate::onStart(AsyncWebServerRequest *request) {
@@ -48,21 +48,21 @@ void Gate::onStart(AsyncWebServerRequest *request) {
 }
 
 boolean Gate::isListening() {
-    return this->listening;
+    return listening;
 }
 
 void Gate::startListening() {
     Log.infoln("Start listening");
-    this->listening = true;
-    this->leds.on();
+    listening = true;
+    leds.on();
 }
 
 void Gate::stopListening() {
     Log.infoln("Stop listening");
-    this->listening = false;
+    listening = false;
     
-    this->sonicSensor.stop();
-    this->leds.off();
+    sonicSensor.stop();
+    leds.off();
 }
 
 void Gate::onStop(AsyncWebServerRequest *request) {
@@ -77,31 +77,31 @@ void Gate::onLed(AsyncWebServerRequest *request) {
 }
 
 void Gate::loop() {
-    if (!this->listening) {
+    if (!listening) {
         return;
     }
 
-    if (this->checkPass()) {
+    if (checkPass()) {
         // TODO : refactor in a private method
-        if(this->notifyPass()) {
-            this->stopListening();
+        if(notifyPass()) {
+            stopListening();
         }
     }
-    this->leds.loop();
+    leds.loop();
 }
 
 boolean Gate::checkPass() {
-    return this->sonicSensor.checkPass();
+    return sonicSensor.checkPass();
 }
 
 boolean Gate::notifyPass() {
     Log.infoln("Notify pass to Starter");
     // TODO : Add informations (height ?)
-    return this->webController.notifyPass(this->getStarterIP());
+    return webController.notifyPass(getStarterIP());
 }
 
 void Gate::beep() {
-    this->buzzer.beep();
+    buzzer.beep();
 }
 
 String Gate::getStarterIP() {
