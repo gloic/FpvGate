@@ -1,6 +1,11 @@
 #pragma once
 
 #include "../services/web/GateWebController.h"
+#include "../config/GateConfig.h"
+
+#include "../modules/SonicSensor.h"
+#include "../modules/GateBuzzer.h"
+#include "../modules/Leds.h"
 
 #include <EspBase.h>
 #include "Secrets.h"
@@ -10,13 +15,19 @@
 
 class Gate : public EspBase {
 public:
-    Gate() {instance = this;}
+    Gate():
+        sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED),
+        buzzer(PIN_BUZZER)
+        {
+            Gate::instance = this;
+        }
     void setup() override;
     void loop() override;
 
 protected:
     WiFiClient wifiClient;
     HTTPClient http;
+    Leds leds;
     
     void setupWebController();
     void setupGPIO();
@@ -27,13 +38,14 @@ protected:
     void blinkLed();
     void startListening();
     void stopListening();
-
-    static void beep();
+    void beep();
 
     boolean isListening();
 private:
-    static Gate *instance;
+    static Gate* instance;
     GateWebController webController;
+    SonicSensor sonicSensor;
+    GateBuzzer buzzer;
 
     boolean listening = false;
     String _id;

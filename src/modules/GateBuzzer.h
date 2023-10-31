@@ -2,12 +2,10 @@
 
 class GateBuzzer {
 public:
-    GateBuzzer(int buzzerpin);
-
+    GateBuzzer(int buzzerpin): 
+    buzzerPin(buzzerpin) {}
     void setup();
-
     void beep();
-
 private:
-    int _buzzerPin;
+    int buzzerPin;
 };

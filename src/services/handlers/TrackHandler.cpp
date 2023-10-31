@@ -1,8 +1,6 @@
 #include "TrackHandler.h"
 #include "../../structs/GateMode.h"
 
-// unsigned long startTime = 0;
-
 /**
  * Update lastTime and bestLapTime if needed
  * @param time

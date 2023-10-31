@@ -1,91 +1,43 @@
-#include "Arduino.h"
 #include "SonicSensor.h"
+
+#include "Arduino.h"
+#include <NewPing.h>
+#include <ArduinoLog.h>
 
 const float minDistance = 10.0;
 const float maxDistance = 300.0;
-const int margin = 5;
-
-SonicSensor::SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin) {
-  this->triggerPin = triggerPin;
-  this->echoPin = echoPin;
-  this->potPin = potPin;
-  this->ledPin = ledPin;
-}
+const int step = 5;
 
 void SonicSensor::setup() {
-  Serial.println("SonicSensor setup");
-
-  // Serial.print("triggerPin=");
-  // Serial.println(this->_triggerPin);
-  // Serial.print("echoPin=");
-  // Serial.println(this->_echoPin);
-  // Serial.print("potPin=");
-  // Serial.println(this->_potPin);
-  // Serial.print("ledPin=");
-  // Serial.println(this->_ledPin);
-
-  pinMode(this->triggerPin, OUTPUT);
-  pinMode(this->echoPin, INPUT);
+  Log.infoln("SonicSensor setup");
   pinMode(this->potPin, INPUT);
   pinMode(this->ledPin, OUTPUT);
-
-  this->refreshDistance();
+  this->updateThreshold();  
 }
 
 boolean SonicSensor::checkPass() {
+  this->updateThreshold();
   this->ledOn();
-  this->refreshDistance();
-
-  this->sendPulse();  
-  long pulseDuration = pulseIn(this->echoPin, HIGH);
-  float passDistance = pulseDuration * 0.034 / 2;
-
-  boolean isDetected = passDistance < this->_thresholdDistance;
-  if(isDetected) {
-    Serial.print("Passage detected at ");
-    Serial.print(passDistance);
-    Serial.println("cm");
-    
-    // Serial.print("pulseDuration=");
-    // Serial.println(pulseDuration);
-    // Serial.print("passDistance=");
-    // Serial.println(passDistance);
-    // Serial.print("thresholdDistance=");
-    // Serial.println(this->_thresholdDistance);
-    
+  
+  boolean result = false;
+  delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+  long distance = this->sonar.ping_cm(this->thresholdDistance);  
+  if(distance > 0) {
+    Log.infoln("Passage detected at %d cm", distance);
+    result = true;
     this->ledOff();
   }
-  return isDetected;
+  return result;
 }
 
 void SonicSensor::stop() {
   this->ledOff();
 }
 
-void SonicSensor::refreshDistance() {
+void SonicSensor::updateThreshold() {
   int newThresHoldDistance = map(analogRead(potPin), 0, 4095, minDistance, maxDistance);
-  if (abs(this->_thresholdDistance - newThresHoldDistance) > margin) {
-    Serial.println("Threshold distance changed.");
-    Serial.print("actual thresholdDistance=");
-    Serial.println(this->_thresholdDistance);
-    Serial.print("new ThresHoldDistance=");
-    Serial.println(newThresHoldDistance);
-    this->_thresholdDistance = newThresHoldDistance;
+  if (abs(this->thresholdDistance - newThresHoldDistance) > step) {
+    Log.infoln("Threshold distance changed. previous: %d, new: %d", this->thresholdDistance, newThresHoldDistance);
+    this->thresholdDistance = newThresHoldDistance;
   }
-}
-
-void SonicSensor::sendPulse() {
-  digitalWrite(this->triggerPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(this->triggerPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(this->triggerPin, LOW);
-}
-
-void SonicSensor::ledOn() {
-  digitalWrite(this->ledPin, HIGH);
-}
-
-void SonicSensor::ledOff() {
-  digitalWrite(this->ledPin, LOW);
 }

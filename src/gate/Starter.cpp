@@ -77,7 +77,8 @@ void Starter::onGatePassed(AsyncWebServerRequest *request) {
 
     auto *gate = instance->webController.getGateClientFromIp(clientIP);
     instance->handleGatePassed(gate);
-    request->send(200, "text/plain", "stop");
+    String responseBehavior = instance->isCalibrationMode ? "continue" : "stop";
+    request->send(200, "text/plain", responseBehavior);
 }
 
 void Starter::handleGatePassed(GateClient* gate) {
@@ -119,18 +120,19 @@ void Starter::loop() {
         passed = this->checkPass();
     }
 
-    if (!passed) {
-        return;
+    this->leds.loop();
+
+    if (passed) {
+        this->handleStarterPassage();
     }
-    this->handleStarterPassage();    
 }
 
 
 void Starter::handleStarterPassage() {
-    Serial.println("Started passed");
+    Serial.println("Starter pass detected");
 
     if(this->isCalibrationMode) {
-        delay(1000);
+        delay(100);
         this->enableCalibrationMode();
         return;
     }
@@ -204,8 +206,8 @@ void Starter::startLap() {
 
 void Starter::stopLap() {
     Serial.println("Lap done");
-    this->trackHandler.stopLap();
     this->beep();
+    this->trackHandler.stopLap();
 }
 
 void Starter::enableCalibrationMode() {

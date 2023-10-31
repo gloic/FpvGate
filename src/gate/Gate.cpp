@@ -1,17 +1,12 @@
 #include "Gate.h"
-#include "../modules/SonicSensor.h"
-#include "../modules/GateBuzzer.h"
-#include "../config/GateConfig.h"
+
 #include "../structs/GateMode.h"
 
 #include "OneButton.h"
-
-SonicSensor sonicSensor = SonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED);
-GateBuzzer buzzer = GateBuzzer(PIN_BUZZER);
-
-Gate *Gate::instance = nullptr;
+#include <ArduinoLog.h>
 
 String ipStarter;
+Gate* Gate::instance = nullptr;
 
 void Gate::setup() {
     this->setupWifi();
@@ -29,19 +24,20 @@ void Gate::setupWifi() {
 
 void Gate::setupWebController() {
     EspBase::setupWebController();
-    Serial.println("Gate::setupWebController");
+    Log.infoln("Gate::setupWebController");
     this->server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
     this->server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
 }
 
 void Gate::setupGPIO() {
-    Serial.println("SonicGate setup GPIO");
-    sonicSensor.setup();
+    Log.infoln("Gate setup GPIO");
+    this->sonicSensor.setup();
+    this->leds.setup();
     buzzer.setup();
 }
 
 void Gate::doRegister() {
-    Serial.println("Registering gate to Starter");
+    Log.infoln("Registering gate to Starter");
     this->_id = this->webController.registerOnStarter(this->getStarterIP());
 }
 
@@ -56,14 +52,17 @@ boolean Gate::isListening() {
 }
 
 void Gate::startListening() {
-    Serial.println("Start listening");
+    Log.infoln("Start listening");
     this->listening = true;
+    this->leds.on();
 }
 
 void Gate::stopListening() {
-    Serial.println("Stop listening");
+    Log.infoln("Stop listening");
     this->listening = false;
-    sonicSensor.stop();
+    
+    this->sonicSensor.stop();
+    this->leds.off();
 }
 
 void Gate::onStop(AsyncWebServerRequest *request) {
@@ -72,7 +71,7 @@ void Gate::onStop(AsyncWebServerRequest *request) {
 }
 
 void Gate::onLed(AsyncWebServerRequest *request) {
-   Serial.println("LED");
+   Log.infoln("LED");
    int state = instance->getParamFromRequest("state", request).toInt();
    request->send(200, "text/plain", "led");
 }
@@ -88,20 +87,21 @@ void Gate::loop() {
             this->stopListening();
         }
     }
+    this->leds.loop();
 }
 
 boolean Gate::checkPass() {
-    return sonicSensor.checkPass();
+    return this->sonicSensor.checkPass();
 }
 
 boolean Gate::notifyPass() {
-    Serial.println("Notify pass to Starter");
-    // TODO : Add informations (height)
+    Log.infoln("Notify pass to Starter");
+    // TODO : Add informations (height ?)
     return this->webController.notifyPass(this->getStarterIP());
 }
 
 void Gate::beep() {
-    buzzer.beep();
+    this->buzzer.beep();
 }
 
 String Gate::getStarterIP() {

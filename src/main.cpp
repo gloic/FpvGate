@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include <ArduinoLog.h>
 #include "config/GateConfig.h"
 #include "gate/GateBase.h"
 #include "wrappers/StarterWrapper.h"
@@ -8,32 +9,20 @@
 GateBase *gate;
 
 void setup() {
-    // if (DEV_MODE == 1) {
-        Serial.begin(115200);
-    // }
-
-    pinMode(PIN_STARTER, INPUT);
-    pinMode(PIN_SONIC_SENSOR_LED, OUTPUT);
-
+    Serial.begin(115200);
+    Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+    
     if (digitalRead(PIN_STARTER) == LOW) {
        gate = new StarterWrapper();
-       Serial.println("Device is the starter");
+       Log.infoln("Device is the starter");
     } else {
         gate = new GateWrapper();
-        Serial.println("Device is a gate");
+        Log.infoln("Device is a gate");
     }
     gate->setup();
-    Serial.println("Device ready!");
-
-
+    Log.infoln("Device ready!");
 }
 
 void loop() {
     gate->loop();
-    // if (digitalRead(PIN_STARTER) == HIGH) {
-    //     digitalWrite(PIN_SONIC_SENSOR_LED, LOW);
-    // } else {
-    //     digitalWrite(PIN_SONIC_SENSOR_LED, HIGH);
-    // }
-
 }

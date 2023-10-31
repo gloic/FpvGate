@@ -1,26 +1,33 @@
 #pragma once
 
+#include <NewPing.h>
+
+
 class SonicSensor {
   public:
-    SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin);
+    SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin):
+      sonar(triggerPin, echoPin, 200),
+      potPin(potPin),
+      ledPin(ledPin){}
     void setup();
     boolean checkPass();
     void stop();
-    // void setCalibrationMode(boolean state) { this->calibrationMode = state;}
 protected:
 private:
-    int triggerPin;
-    int echoPin;
+    NewPing sonar;
+
     int potPin;
     int ledPin;
-    int _thresholdDistance = 0;
-    long duration;
-    float distance;
-    boolean calibrationMode = false;
+    int thresholdDistance = 0;
 
-    void sendPulse();
-    void refreshDistance();
+    // long duration;
+    // float distance;
+    // boolean calibrationMode = false;
 
-    void ledOn();
-    void ledOff();
+    long sendPulse();
+    void updateThreshold();
+
+    void ledOn() {digitalWrite(this->ledPin, HIGH);}
+    void ledOff() {digitalWrite(this->ledPin, LOW);}
+    ;
 };
