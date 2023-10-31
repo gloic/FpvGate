@@ -1,6 +1,6 @@
 # FPVGate
 
-![FPVGate Logo](./images/fpv_gate_logo.png)
+![FPVGate Logo](./logo.png)
 
 FPVGate is a project that aims to create a gate system for detecting the passage of objects, such as drones or RC
 helicopters, using ultrasonic sensors. The gate system is designed for FPV (First Person View) racing and can be used as
