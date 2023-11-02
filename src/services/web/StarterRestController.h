@@ -1,15 +1,14 @@
 #pragma once
 
+#include "StarterWebController.h"
+#include <ESPAsyncWebServer.h>
+
 class StarterRestController {
     public:
-        StarterRestController(AsyncWebServer& server, StarterWebController webController): server(server), webController(webController) {
-            StarterRestController::instance = this;
-        };
-        void setup();
-
+        StarterRestController() { instance = this; };
+        void setup(AsyncWebServer& server);
     private:
-        static Starter *instance;
-        AsyncWebServer& server;
+        static StarterRestController *instance;
         StarterWebController webController;
 
         static void onRegisterGate(AsyncWebServerRequest *request);

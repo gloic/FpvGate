@@ -30,10 +30,7 @@ void Starter::setupWifi() {
 
 void Starter::setupWebController() {
     Gate::setupWebController();
-    Log.infoln("Starter::setupWebController");
-    
-    server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
-    // server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
+    restController.setup(server());
 }
 
 void Starter::setupGPIO() {
@@ -59,27 +56,34 @@ void Starter::setupGPIO() {
 //     request->send(200, "text/plain", String(id));
 // }
 
-void Starter::onGatePassed(AsyncWebServerRequest *request) {
-    Log.infoln("Gate passed !");
-    String clientIP = request->client()->remoteIP().toString();
-    Log.infoln("Client ip: %s", clientIP);
+// void Starter::onGatePassed(AsyncWebServerRequest *request) {
+//     Log.infoln("Gate passed !");
+//     String clientIP = request->client()->remoteIP().toString();
+//     Log.infoln("Client ip: %s", clientIP);
 
-    auto *gate = instance->gatesManager.getGateClientFromIp(clientIP);
-    instance->handleGatePassed(*gate);
-    String responseBehavior = instance->isCalibrationMode ? "continue" : "stop";
-    request->send(200, "text/plain", responseBehavior);
-}
+//     auto *gate = instance->gatesManager.getGateClientFromIp(clientIP);
+//     instance->handleGatePassed(*gate);
+//     String responseBehavior = instance->isCalibrationMode ? "continue" : "stop";
+//     request->send(200, "text/plain", responseBehavior);
+// }
 
 void Starter::handleGatePassed(GateClient &gate) {
     Log.infoln("Gate passed, id=%d", String(gate.id));
 
     if (trackHandler.isTrackMode()) {
-        Log.infoln("Track mode, add gate to track");
-        int trackSize = trackHandler.addGateToTrack(gate);
-        if(trackSize >= 1) {
-            Log.infoln("track has at least one gate, starter is listening too");
-            startListening();
-        }
+
+    // gate passed when TRACK MODE
+    // add gate to track 
+    // and if at least one gate (other than starter), then starter can listen to close the track.
+    Log.infoln("Track mode, add gate to track");
+    int trackSize = trackHandler.addGateToTrack(gate);
+    if(trackSize >= 1) {
+        Log.infoln("track has at least one gate, starter is listening too");
+        startListening();
+    }
+    // gate passed when RACE MODE
+    // check if it's expected gate (nextGate == passedGate)
+    //    if true : get next gate (or starter if it was last gate) and start listen 
     } else if (trackHandler.isRaceMode()) {
         if(trackHandler.isNextGate(gate.id)) {
             Log.infoln("This gate is expected");

@@ -8,7 +8,7 @@ struct GateClient : public Printable {
   boolean isMock;
 
   GateClient(int id, String ip, boolean isMock): id(id), ip(ip), isMock(isMock) {}
-  GateClient(String ip, boolean isMock): ip(ip), isMock(isMock) {}
+  // GateClient(String ip, boolean isMock): ip(ip), isMock(isMock) {}
   size_t printTo(Print& p) const {
     size_t n = p.print("GateClient{ id=");
     n += p.print(id);

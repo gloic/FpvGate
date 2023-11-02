@@ -8,7 +8,6 @@
 constexpr const char* URL_PREFIX = "http://";
 constexpr const char* DEFAULT_PORT = "80";
 
-
 void StarterWebController::listen(GateClient &gate, String entrypoint) {
     String url = getUrl(gate, entrypoint);
     Log.infoln("Url for listen : %s", url);
@@ -20,15 +19,7 @@ void StarterWebController::listen(GateClient &gate, String entrypoint) {
 }
 
 int StarterWebController::registerGate(String ip, boolean isMock) {
-    auto *gate = manager.getGateClientFromIp(ip);
-    if(&gate != nullptr) {
-        Log.infoln("Ip already registered: %s", ip);
-        return gate->id;
-    } else {
-        GateClient newGate = GateClient{ip, isMock};
-        Log.infoln("Gate registered : %p", newGate);
-        return manager.addGate(newGate);
-    }
+    return manager.registerGate(ip, isMock);
 }
 
 void StarterWebController::startListeningAll() {
@@ -43,7 +34,11 @@ String StarterWebController::getUrl(GateClient &gate, String entrypoint) {
     return URL_PREFIX + hostame + ':' + port + entrypoint;
 }
 
-String StarterWebController::handleGatePass(clientIP) {
-    auto *gate = gatesManager.getGateClientFromIp(clientIP);
-    // 
+String StarterWebController::handleGatePass(String clientIP) {
+    Log.infoln("StarterWebController::handleGatePass");
+    Log.infoln("Client ip: %s", clientIP);
+    auto *gate = manager.getGateClientFromIp(clientIP);
+    // instance->handleGatePassed(*gate);
+    // String response = instance->isCalibrationMode ? "continue" : "stop";
+    return "";
 }

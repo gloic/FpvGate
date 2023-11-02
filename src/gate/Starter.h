@@ -9,10 +9,7 @@
 
 class Starter : public Gate {
 public:
-    Starter(StarterWebController webController) : webController(webController) {
-        instance = this;
-        restController = StarterRestController(server(), webController);
-    }
+    Starter() { instance = this; };
     void setup();
     void loop();
 protected:
@@ -46,8 +43,8 @@ private:
 
     void enableCalibrationMode();
 
-    static void onRegisterGate(AsyncWebServerRequest *request);
-    static void onGatePassed(AsyncWebServerRequest *request);
+    // static void onRegisterGate(AsyncWebServerRequest *request);
+    // static void onGatePassed(AsyncWebServerRequest *request);
     static void onButtonResetPress();
 
 };

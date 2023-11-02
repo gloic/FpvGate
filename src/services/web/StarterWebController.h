@@ -12,7 +12,7 @@ class StarterWebController {
         void startListening(GateClient &gate) {listen(gate, StarterEntryPoints::START_LISTEN);}
         void stopListening(GateClient &gate)  {listen(gate, StarterEntryPoints::STOP_LISTEN);}
 
-        String handleGatePass(clientIP);
+        String handleGatePass(String clientIP);
 
         void startListeningAll();
         

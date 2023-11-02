@@ -1,5 +1,19 @@
 #include "GatesManager.h"
 
+#include "ArduinoLog.h"
+
+int GatesManager::registerGate(String ip, boolean isMock) {
+    auto *gate = getGateClientFromIp(ip);
+    if(&gate != nullptr) {
+        Log.warningln("Ip already registered: %s for %p", ip, gate);
+        return gate->id;
+    } else {
+        auto newGate = createGateClient(ip, isMock);
+        Log.infoln("Gate registered : %p", newGate);
+        return addGate(newGate);
+    }
+}
+
 GateClient GatesManager::createGateClient(String ip, boolean isMock) {
     int id = gates.size();
     return GateClient{id, ip, isMock};
@@ -14,7 +28,7 @@ GateClient* GatesManager::getGateClientFromIp(String& ip) {
     try {
         return &findByIp(ip);
     } catch (std::runtime_error& e) {
-            return nullptr;
+        return nullptr;
     }
 }
 
