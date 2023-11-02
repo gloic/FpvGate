@@ -31,8 +31,9 @@ void Starter::setupWifi() {
 void Starter::setupWebController() {
     Gate::setupWebController();
     Log.infoln("Starter::setupWebController");
+    
     server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
-    server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
+    // server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
 }
 
 void Starter::setupGPIO() {
@@ -49,14 +50,14 @@ void Starter::setupGPIO() {
     });
 }
 
-void Starter::onRegisterGate(AsyncWebServerRequest *request) {
-    Log.infoln("onRegisterGate");
-    String clientIP = request->client()->remoteIP().toString();
-    boolean isMock = request->getHeader("isMock") != nullptr;
+// void Starter::onRegisterGate(AsyncWebServerRequest *request) {
+//     Log.infoln("onRegisterGate");
+//     String clientIP = request->client()->remoteIP().toString();
+//     boolean isMock = request->getHeader("isMock") != nullptr;
+//     int id = instance->webController.registerGate(clientIP, isMock);
 
-    int id = instance->webController.registerGate(clientIP, isMock);
-    request->send(200, "text/plain", String(id));
-}
+//     request->send(200, "text/plain", String(id));
+// }
 
 void Starter::onGatePassed(AsyncWebServerRequest *request) {
     Log.infoln("Gate passed !");

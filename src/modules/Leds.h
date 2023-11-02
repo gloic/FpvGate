@@ -13,7 +13,12 @@ class Leds {
     void setup();
     void loop();
 
+    
+    void initPattern();
+
     void blink();
+
+    void on(uint32_t color);
     void on();
     void off();
     void setColor(uint32_t color);

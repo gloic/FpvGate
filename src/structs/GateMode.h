@@ -3,5 +3,6 @@
 enum GateMode {
     INIT,
     TRACK,
-    RACE
+    RACE, 
+    CALIBRATION
 };

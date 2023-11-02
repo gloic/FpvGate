@@ -5,10 +5,14 @@
 #include "../managers/TrackManager.h"
 #include "../managers/GatesManager.h"
 #include "../services/web/StarterWebController.h"
+#include "../services/web/StarterRestController.h"
 
 class Starter : public Gate {
 public:
-    Starter() { instance = this; }
+    Starter(StarterWebController webController) : webController(webController) {
+        instance = this;
+        restController = StarterRestController(server(), webController);
+    }
     void setup();
     void loop();
 protected:
@@ -18,6 +22,8 @@ private:
     static Starter *instance;
     boolean isCalibrationMode = false;
     StarterWebController webController;
+    StarterRestController restController;
+
     GatesManager gatesManager; // TODO - Remove this dependency
     TrackManager trackHandler {};
     

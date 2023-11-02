@@ -42,3 +42,8 @@ String StarterWebController::getUrl(GateClient &gate, String entrypoint) {
     String port = gate.isMock ? DEV_MOCK_PORT_WS : DEFAULT_PORT;
     return URL_PREFIX + hostame + ':' + port + entrypoint;
 }
+
+String StarterWebController::handleGatePass(clientIP) {
+    auto *gate = gatesManager.getGateClientFromIp(clientIP);
+    // 
+}

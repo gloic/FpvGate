@@ -11,6 +11,9 @@ class StarterWebController {
     public:
         void startListening(GateClient &gate) {listen(gate, StarterEntryPoints::START_LISTEN);}
         void stopListening(GateClient &gate)  {listen(gate, StarterEntryPoints::STOP_LISTEN);}
+
+        String handleGatePass(clientIP);
+
         void startListeningAll();
         
         int registerGate(String ip, boolean isMock);
