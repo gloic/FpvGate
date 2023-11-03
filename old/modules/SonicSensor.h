@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Arduino.h"
 #include <NewPing.h>
-#include <ArduinoLog.h>
+
 
 class SonicSensor {
   public:

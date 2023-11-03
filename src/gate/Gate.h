@@ -1,56 +1,45 @@
 #pragma once
 
-#include "../services/web/GateWebController.h"
-#include "../config/GateConfig.h"
+#include <config/GateConfig.h>
+#include <modules/SonicSensor.h>
 
-#include "../modules/SonicSensor.h"
-#include "../modules/GateBuzzer.h"
-#include "../modules/Leds.h"
+#include <Secrets.h>
+#include <WiFi.h>
+#include <AsyncTCP.h>
 
-#include <EspBase.h>
-#include "Secrets.h"
+#include <ESPAsyncWebServer.h>
+#include <ArduinoLog.h>
 
-#include <HTTPClient.h>
-#include "ESPAsyncWebServer.h"
+#include <services/GateService.h>
 
-class Gate : public EspBase {
-public:
-    Gate(): sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED), buzzer(PIN_BUZZER) {
-        Gate::instance = this;
-    }
-    void setup() override;
-    void loop() override;
+class Gate {
+    public:
+        Gate(): server(80), sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED) {
+            Gate::instance = this;
+        };
+        void setup();
+        void loop();
+    protected:
+        AsyncWebServer server;
+        boolean isListening;
 
-protected:
-    WiFiClient wifiClient;
-    HTTPClient http;
-    Leds leds;
-    
-    void setupWebController();
-    void setupGPIO();
-    void doRegister();
-    boolean checkPass();
-    boolean notifyPass();
-    void led(boolean state);
-    void blinkLed();
-    void startListening();
-    void stopListening();
-    void beep();
+        void setupWifi();
+        void setupWebController();
+        
+        void doRegister();
+        void doNotifyPassage();
 
-    boolean isListening();
-private:
-    static Gate * instance;
-    GateWebController webController;
-    SonicSensor sonicSensor;
-    GateBuzzer buzzer;
+        void startListen();
+        void stopListen();
+    private:
+        static Gate *instance;
+        static void onStartListen(AsyncWebServerRequest *request);
+        static void onStopListen(AsyncWebServerRequest *request);
 
-    boolean listening = false;
-    String id;
+        SonicSensor sonicSensor;
+        GateService service;
 
-    void setupWifi();
-    String getStarterIP();
-
-    static void onStart(AsyncWebServerRequest *request);
-    static void onStop(AsyncWebServerRequest *request);
-    static void onLed(AsyncWebServerRequest *request);
+        void setupService();
+        void setupModules();
+        
 };

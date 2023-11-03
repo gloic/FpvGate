@@ -1,109 +1,71 @@
 #include "Gate.h"
 
-#include "../structs/GateMode.h"
-
-#include "OneButton.h"
-#include <ArduinoLog.h>
-
-String ipStarter;
 Gate* Gate::instance = nullptr;
 
 void Gate::setup() {
     setupWifi();
     setupWebController();
-    setupGPIO();
-
-    EspBase::startWebServer();
-    stopListening();
+    doRegister();
+    server.begin();
 }
 
 void Gate::setupWifi() {
-    EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
-    doRegister();
+    WiFi.begin(SECRET_SSID, SECRET_PASS);
+    Log.infoln("Wifi connected");
+    Log.infoln("IP= %s", WiFi.localIP().toString());
+    Log.infoln("Gateway=%s", WiFi.gatewayIP().toString());
 }
 
 void Gate::setupWebController() {
-    EspBase::setupWebController();
-    Log.infoln("Gate::setupWebController");
-    server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
-    server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
+    server.on("/api/gate/start", HTTP_POST, &Gate::onStartListen);
+    server.on("/api/gate/stop", HTTP_POST, &Gate::onStopListen);
 }
 
-void Gate::setupGPIO() {
-    Log.infoln("Gate setup GPIO");
+void Gate::setupModules() {
+    Log.infoln("Gate::setupModules");
     sonicSensor.setup();
-    leds.setup();
-    buzzer.setup();
+}
+
+void Gate::setupService() {
+    service.setIpStarter(WiFi.gatewayIP().toString());
 }
 
 void Gate::doRegister() {
-    Log.infoln("Registering gate to Starter");
-    id = webController.registerOnStarter(getStarterIP());
+    service.registerGate();
 }
 
-void Gate::onStart(AsyncWebServerRequest *request) {
-    instance->startListening();
-    // TODO - Add calibration mode
-    request->send(200, "text/plain", "started");
+void Gate::onStartListen(AsyncWebServerRequest *request) {
+    instance->startListen();
+    request->send(200, "text/plain", "OK");
 }
 
-boolean Gate::isListening() {
-    return listening;
+void Gate::onStopListen(AsyncWebServerRequest *request) {
+    instance->stopListen();
+    request->send(200, "text/plain", "OK");
 }
 
-void Gate::startListening() {
-    Log.infoln("Start listening");
-    listening = true;
-    leds.on();
+void Gate::startListen() {
+    Log.infoln("Start listen");
+    isListening = true;
 }
 
-void Gate::stopListening() {
-    Log.infoln("Stop listening");
-    listening = false;
-    
+void Gate::stopListen() {
+    Log.infoln("Stop listen");
+    isListening = false;
     sonicSensor.stop();
-    leds.off();
-}
-
-void Gate::onStop(AsyncWebServerRequest *request) {
-    instance->stopListening();
-    request->send(200, "text/plain", "stopped");
-}
-
-void Gate::onLed(AsyncWebServerRequest *request) {
-   Log.infoln("LED");
-   int state = instance->getParamFromRequest("state", request).toInt();
-   request->send(200, "text/plain", "led");
 }
 
 void Gate::loop() {
-    if (!listening) {
+    if(!isListening) {
         return;
     }
 
-    if (checkPass()) {
-        // TODO : refactor in a private method
-        if(notifyPass()) {
-            stopListening();
-        }
+    if(sonicSensor.checkPass()) {
+        Log.infoln("Passage detected");
+        doNotifyPassage();
     }
-    leds.loop();
 }
 
-boolean Gate::checkPass() {
-    return sonicSensor.checkPass();
-}
-
-boolean Gate::notifyPass() {
-    Log.infoln("Notify pass to Starter");
-    // TODO : Add informations (height ?)
-    return webController.notifyPass(getStarterIP());
-}
-
-void Gate::beep() {
-    buzzer.beep();
-}
-
-String Gate::getStarterIP() {
-    return WiFi.gatewayIP().toString(); 
+void Gate::doNotifyPassage() {
+    service.notifyPassage();
 }

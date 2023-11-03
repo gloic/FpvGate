@@ -1,5 +1,7 @@
-#include "../gate/GateBase.h"
-#include "../gate/Gate.h"
+#pragma once
+
+#include <gate/GateBase.h>
+#include <gate/Gate.h>
 
 class GateWrapper : public GateBase {
 private:

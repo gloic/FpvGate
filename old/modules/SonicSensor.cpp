@@ -1,5 +1,9 @@
 #include "SonicSensor.h"
 
+#include "Arduino.h"
+#include <NewPing.h>
+#include <ArduinoLog.h>
+
 const float minDistance = 10.0;
 const float maxDistance = 300.0;
 const int step = 5;
