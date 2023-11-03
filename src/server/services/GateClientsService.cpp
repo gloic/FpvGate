@@ -1,9 +1,19 @@
-#include "GateClients.h"
+#include "GateClientsService.h"
 #include <ArduinoLog.h>
 
-GateClients* GateClients::instance = nullptr;
+GateClientsService* GateClientsService::instance = nullptr;
 
-int GateClients::add(String ip) {
+
+GateClientsService& GateClientsService::getInstance() {
+    if (!instance) {
+        instance = new GateClientsService();
+    }
+    return *instance;
+}
+
+GateClientsService::GateClientsService() {}
+
+int GateClientsService::add(String ip) {
     GateClient& gate = findByIp(ip);
     if(&gate != nullptr) {
         Log.warningln("Ip already registered: %s for %p", ip, gate);
@@ -15,7 +25,7 @@ int GateClients::add(String ip) {
     }
 }
 
-GateClient& GateClients::findByIp(String& ip) {
+GateClient& GateClientsService::findByIp(String& ip) {
     auto it = std::find_if(gates.begin(), gates.end(), [&](const GateClient& gate){return gate.getIp() == ip;});
     if (it != gates.end()) {
         return *it;
@@ -24,16 +34,16 @@ GateClient& GateClients::findByIp(String& ip) {
     }
 }
 
-GateClient GateClients::createGateClient(String ip) {
+GateClient GateClientsService::createGateClient(String ip) {
     int id = gates.size();
     return GateClient{id, ip};
 }
 
-int GateClients::addGate(const GateClient &gate) {
+int GateClientsService::addGate(const GateClient &gate) {
     gates.push_back(gate);
     return gate.getId();
 }
 
-void GateClients::setStarter(String ip) {
+void GateClientsService::setStarter(String ip) {
     starter = StarterClient(ip);
 }

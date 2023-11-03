@@ -1,5 +1,6 @@
 #include "ServerWebController.h"
-#include <clients/GateClients.h>
+
+#include <server/services/GateClientsService.h>
 
 void ServerWebController::setup(AsyncWebServer &webServer) {
     webServer.on("/api/gate/register", HTTP_POST, &ServerWebController::onRegister);
@@ -8,12 +9,11 @@ void ServerWebController::setup(AsyncWebServer &webServer) {
 
 void ServerWebController::onRegister(AsyncWebServerRequest *request) {
     String clientIP = request->client()->remoteIP().toString();
-    // boolean isMock = request->getHeader("isMock") != nullptr;
-    
-    //int id = instance->webController.registerGate(clientIP, isMock);
-    // TODO - Call GateRegisterService
-    GateClients::getInstance().add();
+    int id = GateClientsService::getInstance().add(clientIP);
+    request->send(200, "text/plain", String(id));
 }
 
 void ServerWebController::onPass(AsyncWebServerRequest *request) {
+    String response = "coin";
+    request->send(200, "text/plain", response);
 }

@@ -26,12 +26,16 @@ void Gate::setupModules() {
     sonicSensor.setup();
 }
 
-void Gate::setupService() {
-    service.setIpStarter(WiFi.gatewayIP().toString());
+void Gate::doRegister() {
+    webUtils.post(webUtils.getUrl(getIpStarter(), "/api/gate/register")).toInt();
 }
 
-void Gate::doRegister() {
-    service.registerGate();
+String Gate::getIpStarter() {
+    if (DEV_MODE == 1) {
+        return DEV_IP_STARTER;
+    } else {
+        return WiFi.gatewayIP().toString();
+    }
 }
 
 void Gate::onStartListen(AsyncWebServerRequest *request) {
@@ -67,5 +71,5 @@ void Gate::loop() {
 }
 
 void Gate::doNotifyPassage() {
-    service.notifyPassage();
+    webUtils.post(webUtils.getUrl(getIpStarter(), "/api/gate/passed")).toInt();
 }

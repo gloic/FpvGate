@@ -10,11 +10,14 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoLog.h>
 
-#include <services/GateService.h>
+#include <utils/WebUtils.h>
 
 class Gate {
     public:
-        Gate(): server(80), sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED) {
+        Gate(): 
+        server(80), 
+        webUtils(),
+        sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED) {
             Gate::instance = this;
         };
         void setup();
@@ -31,15 +34,13 @@ class Gate {
 
         void startListen();
         void stopListen();
+        void setupModules();
     private:
         static Gate *instance;
+        String getIpStarter();
         static void onStartListen(AsyncWebServerRequest *request);
         static void onStopListen(AsyncWebServerRequest *request);
 
+        WebUtils webUtils;
         SonicSensor sonicSensor;
-        GateService service;
-
-        void setupService();
-        void setupModules();
-        
 };

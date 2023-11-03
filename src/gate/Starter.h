@@ -1,6 +1,5 @@
 #pragma once
 
-#include <services/StarterService.h>
 #include "Gate.h"
 
 class Starter : public Gate {
@@ -10,9 +9,9 @@ class Starter : public Gate {
     protected:
         void setupWifi();
         void setupWebController();
-
+        void setupModules();
+        
         void doRegister();
         void doNotifyPassage();
-    private:
-        StarterService service;
+        void setupButton();
 };
