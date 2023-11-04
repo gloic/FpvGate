@@ -1,24 +1,11 @@
 #include "Starter.h"
-
 #include <server/services/GateManager.h>
-
-void Starter::setup(AsyncWebServer &webServer) {
-    setupWifi();
-    setupWebController(webServer);
-    doRegister();
-}
+#include <server/FpvGateServer.h>
 
 void Starter::setupWifi() {
-    if (DEV_MODE == 1) {
-        Log.infoln("Connecting to existing network");
-        WiFi.mode(WIFI_STA);
-        WiFi.begin(SECRET_SSID, SECRET_PASS);   
-    } else {
-        Log.infoln("Setting wifi as AP");
-        WiFi.mode(WIFI_AP);
-        WiFi.softAP(SECRET_SSID, SECRET_PASS);
-    }
-
+    Log.infoln("Setting wifi as AP");
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(SECRET_SSID, SECRET_PASS);
     Log.infoln("Wifi AP created. IP=%s", WiFi.softAPIP());
 }
 
@@ -28,15 +15,37 @@ void Starter::setupWebController(AsyncWebServer &webServer) {
     });   
 }
 
-void Starter::doRegister() {
-    GateManager::getInstance().setStarter(WiFi.softAPIP().toString());
+int Starter::doRegister() {
+    return GateManager::getInstance().setStarter(WiFi.softAPIP().toString());
 }
 
 void Starter::doNotifyPassage() {
-    // TODO
+    FpvGateServer::getInstance().gatePassage(id);
 }
 
 void Starter::setupModules() {
     Gate::setupModules();
+}
 
+void Starter::setupButton() {
+    Log.infoln("Starter::setupButton");
+    buttonReset = new OneButton(PIN_STARTER, false);
+    buttonReset->attachClick(&Starter::onButtonResetPress);
+    buttonReset->attachDoubleClick(&Starter::onButtonResetDoublePress);
+    buttonReset->attachLongPressStart(&Starter::onButtonResetLongPress);
+}
+
+void Starter::onButtonResetPress() {
+    Log.infoln("reset button pressed (single)");
+    FpvGateServer::getInstance().reset();
+}
+
+void Starter::onButtonResetDoublePress() {
+    Log.infoln("reset button pressed (double)");
+    FpvGateServer::getInstance().setTrackMode();
+}
+
+void Starter::onButtonResetLongPress() {
+    Log.infoln("reset button pressed (long)");
+    FpvGateServer::getInstance().setCalibrationMode();
 }

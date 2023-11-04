@@ -2,7 +2,7 @@
 
 #include "Arduino.h"
 #include <ESPAsyncWebServer.h>
-#include "ServerWebController.h"
+#include "ServerRestController.h"
 #include <server/model/enums/ServerMode.h>
 
 #include <server/handlers/HandlerBase.h>
@@ -14,25 +14,28 @@
 
 class FpvGateServer {
     public:
-        static FpvGateServer& getInstance();
+        static FpvGateServer& getInstance(){if (!instance) {instance = new FpvGateServer();} return *instance;};
+
         void setup(AsyncWebServer &webServer) {
             webController.setup(webServer);
         };
-        void loop();
-        void setMode(ServerMode newMode);
-        void gatePassage(int id);
+
+        String gatePassage(int id);
+        void reset() {setMode(ServerMode::IDLE);};
+        void setTrackMode() {setMode(ServerMode::TRACK);};
+        void setCalibrationMode() {setMode(ServerMode::CALIBRATION);};
     protected:
-        FpvGateServer();
+        FpvGateServer(){};
     private:
         static FpvGateServer* instance;
-        ServerWebController webController;
-
+        ServerRestController webController;
         ServerMode mode;
         std::shared_ptr<HandlerBase> currentHandler;
         std::map<ServerMode, std::shared_ptr<HandlerBase>> handlers = {
             {ServerMode::IDLE, std::make_shared<IdleHandler>()},
             {ServerMode::CALIBRATION, std::make_shared<CalibrationHandler>()},
             {ServerMode::TRACK, std::make_shared<TrackHandler>()},
-            {ServerMode::RACE, std::make_shared<RaceHandler>()}
+            {ServerMode::RACE, std::make_shared<RaceHandler>()},
         };
+        void setMode(ServerMode newMode);
 };

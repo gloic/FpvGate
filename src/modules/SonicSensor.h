@@ -3,13 +3,14 @@
 #include "Arduino.h"
 #include <NewPing.h>
 #include <ArduinoLog.h>
+#include <config/GateConfig.h>
 
 class SonicSensor {
   public:
-    SonicSensor(int triggerPin, int echoPin, int potPin, int ledPin):
-      sonar(triggerPin, echoPin, 200),
-      potPin(potPin),
-      ledPin(ledPin){}
+    SonicSensor():
+      sonar(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, 200),
+      potPin(PIN_SONIC_SENSOR_POT_RANGE),
+      ledPin(PIN_SONIC_SENSOR_LED) {}
     void setup();
     boolean checkPass();
     void stop();

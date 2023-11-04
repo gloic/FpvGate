@@ -4,7 +4,9 @@
 
 class WebUtils {
     public:
-        String post(String url);
+        WebUtils() {};
+        String post(String ip, String path);
+        String post(String ip, String path, String payload);
         String getUrl(String ipStarter, String endpoint);
     private:
         WiFiClient wifiClient;

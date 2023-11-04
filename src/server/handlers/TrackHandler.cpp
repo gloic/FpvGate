@@ -1,32 +1,29 @@
 #include "TrackHandler.h"
 
 #include "server/services/TrackManager.h"
-
-/* TRACK
-    id
-    // label
-    StarterClient
-    vector<GatesClient>
-
-    timer
-    nbLap
-    best lap
-    last lap
-*/
+#include <server/model/enums/ActionWhenPass.h>
+#include <server/model/Track.h>
+// #include <server/serve
 
 void TrackHandler::begin() {
-    Track& track = TrackManager::getInstance().getCurrentTrack();
-    // Send listen/start to all gate with stop
-    // wait to receive /pass from gates
-    
+    listenExecutor.stopStarter();
+    listenExecutor.startAll(ActionWhenPass::STOP);
+
 }
 
 void TrackHandler::end() {
-    // Send listen/stop to starter
+    listenExecutor.stopStarter();
+    listenExecutor.stopAll();
 }
 
-void TrackHandler::gatePassage(int id) {
-    // Add gate to track 
+String TrackHandler::gatePassage(int id) {
     TrackManager::getInstance().addGate(id);
+
     // when first gate passed, send listen with stop to starter
+    listenExecutor.startStarter(ActionWhenPass::STOP);
+
+    // when starter is passed, the track is over and this is the end of this mode
+
+
+    return "";
 }

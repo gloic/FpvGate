@@ -1,12 +1,16 @@
 #include "CalibrationHandler.h"
 #include <ArduinoLog.h>
 
+#include <server/model/enums/ActionWhenPass.h>
+
 void CalibrationHandler::begin() {
     Log.infoln("Begin Calibration");
-    // TODO - Send /listen/start to all gates with continue + starter'
+    listenExecutor.startStarter(ActionWhenPass::CONTINUE);
+    listenExecutor.startAll(ActionWhenPass::CONTINUE);
 }
 
 void CalibrationHandler::end() {
     Log.infoln("End Calibration");
-    // TODO - Send /listen/stop to all gates with continue + starter'
+    listenExecutor.stopStarter();
+    listenExecutor.stopAll();
 }

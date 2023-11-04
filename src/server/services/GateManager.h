@@ -7,9 +7,12 @@
 class GateManager {
     public:
         static GateManager& getInstance();
-        void setStarter(String ip);
+        int setStarter(String ip);
         int add(String ip);
         GateClient& findById(int id);
+        
+        std::vector<GateClient> findAll() {return gates;}
+        StarterClient& getStarter() {return starter;}
     protected:
         GateManager();
     private:

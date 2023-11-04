@@ -14,7 +14,8 @@ void RaceHandler::end() {
     // send listen/stop to all
 }
 
-void RaceHandler::gatePassage(int id) {
+String RaceHandler::gatePassage(int id) {
     // send listen to next gate etc...
     // once finished, restart
+    return "continue";
 }

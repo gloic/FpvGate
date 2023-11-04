@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gate/GateBase.h>
+#include "Wrapper.h"
 #include <gate/Gate.h>
 
-class GateWrapper : public GateBase {
+class GateWrapper : public Wrapper {
 private:
     Gate gate;
 public:

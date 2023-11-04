@@ -1,9 +1,19 @@
 #include "WebUtils.h"
+#include <ArduinoLog.h>
 
-String WebUtils::post(String url) {
+String WebUtils::post(String ip, String path) {
+    return post(ip, path, "");
+}
+
+String WebUtils::post(String ip, String path, String payload) {
+    String url = getUrl(ip, path);
+
+    Log.infoln("Sending POST request to %s", url);
+    
     String result = "";
     http.begin(wifiClient, url);
-    int httpCode = http.POST("");
+    http.addHeader("Content-Type", "application/json");
+    int httpCode = http.POST(payload);
     if (httpCode == HTTP_CODE_OK) {
         result = http.getString();
     }

@@ -2,7 +2,7 @@
 
 #include <ESPAsyncWebServer.h>
 
-class ServerWebController {
+class ServerRestController {
     public:
         void setup(AsyncWebServer &webServer);
    private:

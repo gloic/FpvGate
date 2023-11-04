@@ -1,17 +1,22 @@
 #pragma once
 
 #include "Gate.h"
+#include "OneButton.h"
 
 class Starter : public Gate {
     public:
         Starter(): Gate() {}
-        void setup(AsyncWebServer &webServer);
     protected:
         void setupWifi();
         void setupWebController(AsyncWebServer &webServer);
         void setupModules();
-        
-        void doRegister();
+        int doRegister();
         void doNotifyPassage();
+    private:
+        OneButton* buttonReset;
+
         void setupButton();
+        static void onButtonResetPress();
+        static void onButtonResetDoublePress();
+        static void onButtonResetLongPress();
 };

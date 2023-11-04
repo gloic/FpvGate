@@ -2,9 +2,9 @@
 
 #include <ESPAsyncWebServer.h>
 
-class GateBase {
+class Wrapper {
     public:
         virtual void setup(AsyncWebServer &webServer) = 0;
         virtual void loop() = 0;
-        virtual ~GateBase() {}
+        virtual ~Wrapper() {}
 };

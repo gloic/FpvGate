@@ -2,11 +2,27 @@
 
 Gate* Gate::instance = nullptr;
 
-void Gate::setup(AsyncWebServer &webServer) {
-    setupWifi();
-    setupWebController(webServer);
-    doRegister();
-    webServer.begin();
+// void Gate::setup(AsyncWebServer &webServer) {
+    
+// }
+
+void Gate::loop() {
+    if(!isListening) {
+        return;
+    }
+
+    if(sonicSensor.checkPass()) {
+        Log.infoln("Passage detected");
+        doNotifyPassage();
+    }
+}
+
+int Gate::doRegister() {
+    return webUtils.post(getIpStarter(), "/api/gate/register").toInt();
+}
+
+void Gate::doNotifyPassage() {
+    webUtils.post(getIpStarter(), "/api/gate/passed").toInt();
 }
 
 void Gate::setupWifi() {
@@ -26,12 +42,8 @@ void Gate::setupModules() {
     sonicSensor.setup();
 }
 
-void Gate::doRegister() {
-    webUtils.post(webUtils.getUrl(getIpStarter(), "/api/gate/register")).toInt();
-}
-
 String Gate::getIpStarter() {
-    if (DEV_MODE == 1) {
+    if (DEV_MODE) {
         return DEV_IP_STARTER;
     } else {
         return WiFi.gatewayIP().toString();
@@ -57,19 +69,4 @@ void Gate::stopListen() {
     Log.infoln("Stop listen");
     isListening = false;
     sonicSensor.stop();
-}
-
-void Gate::loop() {
-    if(!isListening) {
-        return;
-    }
-
-    if(sonicSensor.checkPass()) {
-        Log.infoln("Passage detected");
-        doNotifyPassage();
-    }
-}
-
-void Gate::doNotifyPassage() {
-    webUtils.post(webUtils.getUrl(getIpStarter(), "/api/gate/passed")).toInt();
 }

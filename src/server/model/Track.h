@@ -10,8 +10,7 @@ class Track {
         void addGate(GateClient& gate);
         std::vector<GateClient>& getGates();        
         std::shared_ptr<StarterClient>& getStarter();
-        void setStarter(std::shared_ptr<StarterClient> starterPtr);
-        boolean isReadyToRace();
+        void setStarter(std::shared_ptr<StarterClient> starterPtr) {this->starter = starterPtr;};
     private:
         std::shared_ptr<StarterClient> starter;
         std::vector<GateClient> gates;
