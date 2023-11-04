@@ -8,7 +8,7 @@ class HandlerBase {
         HandlerBase(): gateManager(GateManager::getInstance()), listenExecutor(listenExecutor) {}
         virtual void begin() = 0;
         virtual void end() = 0;
-        virtual String gatePassage(int id) {return "";};
+        virtual void gatePassage(int id) {};
     protected:
         GateManager& gateManager;
         ListenExecutor& listenExecutor;

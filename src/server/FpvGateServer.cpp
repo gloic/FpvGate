@@ -18,6 +18,6 @@ void FpvGateServer::setMode(ServerMode newMode) {
     currentHandler->begin();
 }
 
-String FpvGateServer::gatePassage(int id) {
-    return currentHandler->gatePassage(id);
+void FpvGateServer::gatePassage(int id) {
+    currentHandler->gatePassage(id);
 }

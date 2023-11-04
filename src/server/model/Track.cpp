@@ -6,8 +6,12 @@ void Track::addGate(GateClient& gate) {
 
 std::vector<GateClient>& Track::getGates() {
     return gates;
-}  
+}
 
-std::shared_ptr<StarterClient>& Track::getStarter() {
-    return starter;
+void Track::advanceToNextGate() {
+    if(nextGateIndex == gates.size() - 1) {
+        nextGateIndex = 0;
+    } else {
+        nextGateIndex++;
+    }
 }

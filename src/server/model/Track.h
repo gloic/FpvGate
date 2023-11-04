@@ -1,17 +1,17 @@
 #pragma once
 #include <vector>
 #include "server/model/GateClient.h"
-#include "server/model/StarterClient.h"
 #include "memory"
 
 class Track {
     public:
-        Track() : starter(nullptr) {};
+        Track() {};
         void addGate(GateClient& gate);
-        std::vector<GateClient>& getGates();        
-        std::shared_ptr<StarterClient>& getStarter();
-        void setStarter(std::shared_ptr<StarterClient> starterPtr) {this->starter = starterPtr;};
+        std::vector<GateClient>& getGates();
+
+        GateClient& getNextGate() {return gates[nextGateIndex];}
+        void advanceToNextGate();
     private:
-        std::shared_ptr<StarterClient> starter;
         std::vector<GateClient> gates;
+        int nextGateIndex = 0;
 };

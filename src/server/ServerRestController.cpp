@@ -17,7 +17,6 @@ void ServerRestController::onRegister(AsyncWebServerRequest *request) {
 void ServerRestController::onPass(AsyncWebServerRequest *request) {
     int id = request->getHeader("id")->value().toInt();
     Log.infoln("Receive passage notification from ip '%s'. Id from request is %d", request->client()->remoteIP().toString(), id);
-    String response = FpvGateServer::getInstance().gatePassage(id);
-    Log.infoln("Sending response: '%s'", response);
-    request->send(200, "text/plain", response);
+    FpvGateServer::getInstance().gatePassage(id);
+    request->send(200, "text/plain", "OK");
 }

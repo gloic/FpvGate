@@ -20,7 +20,7 @@ class FpvGateServer {
             webController.setup(webServer);
         };
 
-        String gatePassage(int id);
+        void gatePassage(int id);
         void reset() {setMode(ServerMode::IDLE);};
         void setTrackMode() {setMode(ServerMode::TRACK);};
         void setCalibrationMode() {setMode(ServerMode::CALIBRATION);};

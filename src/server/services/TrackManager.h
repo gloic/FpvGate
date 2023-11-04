@@ -9,6 +9,9 @@ class TrackManager {
         Track& getCurrentTrack();
         void addGate(int id);
         void setStarter(GateClient& starterPtr);
+
+        GateClient& getNextGate() { return track->getNextGate();}
+        void advanceToNextGate() {track->advanceToNextGate();}
     protected:
         TrackManager(): track(new Track()) {}
     private:

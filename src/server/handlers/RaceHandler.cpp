@@ -1,6 +1,8 @@
 #include "RaceHandler.h"
+#include "server/services/TrackManager.h"
 
 void RaceHandler::begin() {
+    listenExecutor.startStarter(ActionWhenPass::STOP);
     /*
         From a TRACK:
             send listen to Starter (stop)
@@ -11,11 +13,13 @@ void RaceHandler::begin() {
 }
 
 void RaceHandler::end() {
-    // send listen/stop to all
+    listenExecutor.stopStarter();
+    listenExecutor.stopAll();
 }
 
-String RaceHandler::gatePassage(int id) {
-    // send listen to next gate etc...
-    // once finished, restart
-    return "continue";
+void RaceHandler::gatePassage(int id) {
+    GateClient& gate = TrackManager::getInstance().getNextGate();
+    // if gate : listenExecutor.startListen(ActionWhenPass::STOP);
+    // if starter : start on starter
+    TrackManager::getInstance().advanceToNextGate();
 }
