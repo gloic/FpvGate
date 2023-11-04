@@ -1,6 +1,6 @@
 #include "ServerWebController.h"
 
-#include <server/services/GateClientsService.h>
+#include <server/services/GateManager.h>
 
 void ServerWebController::setup(AsyncWebServer &webServer) {
     webServer.on("/api/gate/register", HTTP_POST, &ServerWebController::onRegister);
@@ -9,7 +9,7 @@ void ServerWebController::setup(AsyncWebServer &webServer) {
 
 void ServerWebController::onRegister(AsyncWebServerRequest *request) {
     String clientIP = request->client()->remoteIP().toString();
-    int id = GateClientsService::getInstance().add(clientIP);
+    int id = GateManager::getInstance().add(clientIP);
     request->send(200, "text/plain", String(id));
 }
 

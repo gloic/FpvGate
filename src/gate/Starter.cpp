@@ -1,12 +1,11 @@
 #include "Starter.h"
 
-#include <server/services/GateClientsService.h>
+#include <server/services/GateManager.h>
 
-void Starter::setup() {
+void Starter::setup(AsyncWebServer &webServer) {
     setupWifi();
-    setupWebController();
+    setupWebController(webServer);
     doRegister();
-    server.begin();
 }
 
 void Starter::setupWifi() {
@@ -23,14 +22,14 @@ void Starter::setupWifi() {
     Log.infoln("Wifi AP created. IP=%s", WiFi.softAPIP());
 }
 
-void Starter::setupWebController() {
-    server.on("/api/test", HTTP_POST, [](AsyncWebServerRequest *request){
+void Starter::setupWebController(AsyncWebServer &webServer) {
+    webServer.on("/api/test", HTTP_POST, [](AsyncWebServerRequest *request){
         request->send(200, "text/plain", "I'm starter !");
     });   
 }
 
 void Starter::doRegister() {
-    GateClientsService::getInstance().setStarter(WiFi.softAPIP().toString());
+    GateManager::getInstance().setStarter(WiFi.softAPIP().toString());
 }
 
 void Starter::doNotifyPassage() {

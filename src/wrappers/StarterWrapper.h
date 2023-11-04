@@ -6,10 +6,9 @@
 class StarterWrapper : public GateBase {
 private:
     Starter starter;
-
 public:
-    void setup() override {
-        starter.setup();
+    void setup(AsyncWebServer &webServer) override {
+        starter.setup(webServer);
     }
 
     void loop() override {

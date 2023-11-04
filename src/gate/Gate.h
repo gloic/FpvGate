@@ -6,28 +6,26 @@
 #include <Secrets.h>
 #include <WiFi.h>
 #include <AsyncTCP.h>
-
 #include <ESPAsyncWebServer.h>
 #include <ArduinoLog.h>
-
 #include <utils/WebUtils.h>
 
 class Gate {
     public:
         Gate(): 
-        server(80), 
+        // webServer(80), 
         webUtils(),
         sonicSensor(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, PIN_SONIC_SENSOR_POT_RANGE, PIN_SONIC_SENSOR_LED) {
             Gate::instance = this;
         };
-        void setup();
+        void setup(AsyncWebServer &webServer);
         void loop();
     protected:
-        AsyncWebServer server;
+        // AsyncWebServer webServer;
         boolean isListening;
 
         void setupWifi();
-        void setupWebController();
+        void setupWebController(AsyncWebServer &webServer);
         
         void doRegister();
         void doNotifyPassage();

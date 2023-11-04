@@ -1,18 +1,19 @@
 #pragma once
 
 #include <vector>
-#include <clients/GateClient.h>
-#include <clients/StarterClient.h>
+#include <server/model/GateClient.h>
+#include <server/model/StarterClient.h>
 
-class GateClientsService {
+class GateManager {
     public:
-        static GateClientsService& getInstance();
+        static GateManager& getInstance();
         void setStarter(String ip);
         int add(String ip);
+        GateClient& findById(int id);
     protected:
-        GateClientsService();
+        GateManager();
     private:
-        static GateClientsService* instance;
+        static GateManager* instance;
         StarterClient starter;
         std::vector<GateClient> gates;
 

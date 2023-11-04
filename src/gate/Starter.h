@@ -5,10 +5,10 @@
 class Starter : public Gate {
     public:
         Starter(): Gate() {}
-        void setup();
+        void setup(AsyncWebServer &webServer);
     protected:
         void setupWifi();
-        void setupWebController();
+        void setupWebController(AsyncWebServer &webServer);
         void setupModules();
         
         void doRegister();

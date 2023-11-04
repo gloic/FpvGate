@@ -6,10 +6,9 @@
 class GateWrapper : public GateBase {
 private:
     Gate gate;
-
 public:
-    void setup() override {
-        gate.setup();
+    void setup(AsyncWebServer &webServer) override {
+        gate.setup(webServer);
     }
 
     void loop() override {

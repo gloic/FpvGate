@@ -1,6 +1,10 @@
 #pragma once
 
-class TrackHandler {
-    void begin();
-    void end();
+#include "HandlerBase.h"
+
+class TrackHandler : public HandlerBase {
+    public:
+        void begin() override;
+        void end() override;
+        void gatePassage(int id) override;
 };

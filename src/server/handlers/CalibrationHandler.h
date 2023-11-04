@@ -1,7 +1,8 @@
 #pragma once
+#include "HandlerBase.h"
 
-class CalibrationHandler {
+class CalibrationHandler : public HandlerBase {
     public:
-        void begin();
-        void end();
+        void begin() override;
+        void end() override;
 };

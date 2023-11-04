@@ -2,11 +2,11 @@
 
 Gate* Gate::instance = nullptr;
 
-void Gate::setup() {
+void Gate::setup(AsyncWebServer &webServer) {
     setupWifi();
-    setupWebController();
+    setupWebController(webServer);
     doRegister();
-    server.begin();
+    webServer.begin();
 }
 
 void Gate::setupWifi() {
@@ -16,9 +16,9 @@ void Gate::setupWifi() {
     Log.infoln("Gateway=%s", WiFi.gatewayIP().toString());
 }
 
-void Gate::setupWebController() {
-    server.on("/api/gate/start", HTTP_POST, &Gate::onStartListen);
-    server.on("/api/gate/stop", HTTP_POST, &Gate::onStopListen);
+void Gate::setupWebController(AsyncWebServer &webServer) {
+    webServer.on("/api/gate/start", HTTP_POST, &Gate::onStartListen);
+    webServer.on("/api/gate/stop", HTTP_POST, &Gate::onStopListen);
 }
 
 void Gate::setupModules() {
