@@ -13,12 +13,9 @@ Wrapper* initGate();
 void setup() {
     Serial.begin(115200);
     Log.begin(LOG_LEVEL_VERBOSE, &Serial);
-
     isStarter = digitalRead(PIN_STARTER) == LOW;
-
     gate = initGate();
     gate->setup(webServer);
-
     webServer.begin();
     Log.infoln("Device ready!");
 }

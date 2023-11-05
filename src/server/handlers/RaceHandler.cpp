@@ -17,8 +17,8 @@ void RaceHandler::end() {
     listenExecutor.stopAll();
 }
 
-void RaceHandler::gatePassage(int id) {
-    GateClient& gate = TrackManager::getInstance().getNextGate();
+void RaceHandler::gatePassage(GateClient& gate) {
+    // GateClient& gate = TrackManager::getInstance().getNextGate();
     // if gate : listenExecutor.startListen(ActionWhenPass::STOP);
     // if starter : start on starter
     TrackManager::getInstance().advanceToNextGate();

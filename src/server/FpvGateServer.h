@@ -15,11 +15,9 @@
 class FpvGateServer {
     public:
         static FpvGateServer& getInstance(){if (!instance) {instance = new FpvGateServer();} return *instance;};
-
         void setup(AsyncWebServer &webServer) {
             webController.setup(webServer);
         };
-
         void gatePassage(int id);
         void reset() {setMode(ServerMode::IDLE);};
         void setTrackMode() {setMode(ServerMode::TRACK);};

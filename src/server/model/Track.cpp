@@ -15,3 +15,7 @@ void Track::advanceToNextGate() {
         nextGateIndex++;
     }
 }
+
+GateClient& Track::getNextGate() {
+     return gates[nextGateIndex];
+}

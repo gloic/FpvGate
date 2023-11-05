@@ -2,10 +2,6 @@
 
 Gate* Gate::instance = nullptr;
 
-// void Gate::setup(AsyncWebServer &webServer) {
-    
-// }
-
 void Gate::loop() {
     if(!isListening) {
         return;

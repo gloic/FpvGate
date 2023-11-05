@@ -24,15 +24,6 @@ int GateManager::add(String ip) {
     }
 }
 
-GateClient& GateManager::findByIp(String& ip) {
-    auto it = std::find_if(gates.begin(), gates.end(), [&](const GateClient& gate){return gate.getIp() == ip;});
-    if (it != gates.end()) {
-        return *it;
-    } else {
-        throw std::runtime_error("No such IP found.");
-    }
-}
-
 GateClient GateManager::createGateClient(String ip) {
     int id = gates.size();
     return GateClient{id, ip};
@@ -44,8 +35,18 @@ int GateManager::addGate(const GateClient &gate) {
 }
 
 int GateManager::setStarter(String ip) {
-    starter = StarterClient(ip);
+    starter.setIp(ip);
     return starter.getId();
+}
+
+GateClient& GateManager::findByIp(String& ip) {
+    auto it = std::find_if(gates.begin(), gates.end(), [&](const GateClient& gate){return gate.getIp() == ip;});
+    if (it != gates.end()) {
+        return *it;
+    } else {
+        Log.errorln("Can't find by gate by ip, '%s' not found", ip);
+        throw std::runtime_error("No such IP found.");
+    }
 }
 
 GateClient& GateManager::findById(int id) {
@@ -53,6 +54,7 @@ GateClient& GateManager::findById(int id) {
     if (it != gates.end()) {
         return *it;
     } else {
+        Log.errorln("Can't find by gate by id, '%d' not found", id);
         throw std::runtime_error("No such ID found.");
     }
 }

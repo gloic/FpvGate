@@ -10,7 +10,6 @@ class GateManager {
         int setStarter(String ip);
         int add(String ip);
         GateClient& findById(int id);
-        
         std::vector<GateClient> findAll() {return gates;}
         StarterClient& getStarter() {return starter;}
     protected:
@@ -19,7 +18,6 @@ class GateManager {
         static GateManager* instance;
         StarterClient starter;
         std::vector<GateClient> gates;
-
         GateClient createGateClient(String ip);
         int addGate(const GateClient &gate);
         GateClient& findByIp(String& ip);

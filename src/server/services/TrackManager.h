@@ -1,19 +1,20 @@
 #pragma once
 #include <server/model/Track.h>
 #include <memory>
+#include <server/services/GateManager.h>
 
 class TrackManager {
     public: 
         static TrackManager& getInstance(){if(!instance) {instance = new TrackManager();}return *instance;}
-        void setCurrentTrack(const Track& track);
-        Track& getCurrentTrack();
-        void addGate(int id);
-        void setStarter(GateClient& starterPtr);
+        Track& getCurrentTrack() {return *track;};
+        void addGate(GateClient& gate);
+        void setStarter(GateClient& starter);
 
         GateClient& getNextGate() { return track->getNextGate();}
         void advanceToNextGate() {track->advanceToNextGate();}
+        GateClient& getStarter() {return track->getStarter();}
     protected:
-        TrackManager(): track(new Track()) {}
+        TrackManager() {}
     private:
         static TrackManager* instance;
         std::unique_ptr<Track> track;

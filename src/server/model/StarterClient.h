@@ -4,6 +4,6 @@
 
 class StarterClient : public GateClient {
     public:
-        StarterClient(): GateClient(0, "") {}
-        StarterClient(String ip): GateClient(0, ip) {}
+        StarterClient(): GateClient() {}
+        bool isStarter() override { return true; }
 };

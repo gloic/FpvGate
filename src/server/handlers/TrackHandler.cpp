@@ -2,6 +2,8 @@
 #include "server/services/TrackManager.h"
 #include <server/model/enums/ActionWhenPass.h>
 #include <server/model/Track.h>
+#include <memory>
+#include <typeinfo>
 
 void TrackHandler::begin() {
     listenExecutor.stopStarter();
@@ -13,11 +15,14 @@ void TrackHandler::end() {
     listenExecutor.stopAll();
 }
 
-void TrackHandler::gatePassage(int id) {
-    TrackManager::getInstance().addGate(id);
+void TrackHandler::gatePassage(GateClient& gate) {
+    if(gate.isStarter()) {
+        TrackManager::getInstance().setStarter(gate);
+        // when starter is passed, the track is over and this is the end of this mode
 
-    // when first gate passed, send listen with stop to starter
-    listenExecutor.startStarter(ActionWhenPass::STOP);
-
-    // when starter is passed, the track is over and this is the end of this mode
+    } else {
+        TrackManager::getInstance().addGate(gate);
+        // when first gate passed, send listen to starter
+        listenExecutor.startStarter(ActionWhenPass::STOP);
+    }
 }
