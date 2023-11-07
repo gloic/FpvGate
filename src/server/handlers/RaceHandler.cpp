@@ -1,5 +1,4 @@
 #include "RaceHandler.h"
-#include "server/services/TrackManager.h"
 
 void RaceHandler::begin() {
     listenExecutor.startStarter(ActionWhenPass::STOP);
@@ -18,8 +17,17 @@ void RaceHandler::end() {
 }
 
 void RaceHandler::gatePassage(GateClient& gate) {
-    // GateClient& gate = TrackManager::getInstance().getNextGate();
+    /* When starter pass :
+        - start chrono
+        - send listen to next gate (first of list)
+    */
+    
+    GateClient& nextGate = trackManager.getNextGate();
     // if gate : listenExecutor.startListen(ActionWhenPass::STOP);
     // if starter : start on starter
-    TrackManager::getInstance().advanceToNextGate();
+    trackManager.advanceToNextGate();
+}
+
+void RaceHandler::reset() {
+
 }

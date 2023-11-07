@@ -5,17 +5,19 @@
 
 class Track {
     public:
-        Track() : starter(nullptr) {}
-        explicit Track(std::shared_ptr<GateClient> starter = nullptr) : starter(starter) {}
+        Track() {}
+        // Track() : starter(nullptr) {}
+        // explicit Track(std::shared_ptr<GateClient> starter = nullptr) : starter(starter) {}
 
         std::vector<GateClient>& getGates();
-        GateClient& getStarter() {return *starter;};
+        // GateClient& getStarter() {return *starter;};
         GateClient& getNextGate();
         void advanceToNextGate();
         void addGate(GateClient& gate);
-        void setStarter(std::shared_ptr<GateClient> starter) {this->starter = starter; };
+        // void setStarter(std::shared_ptr<GateClient> starter) {this->starter = starter; };
+        void reset() {gates.clear();};
     private:
         std::vector<GateClient> gates;
-        std::shared_ptr<GateClient> starter;
+        // std::shared_ptr<GateClient> starter;
         int nextGateIndex = 0;
 };
