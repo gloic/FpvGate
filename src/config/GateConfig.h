@@ -30,5 +30,11 @@
 #define PIN_STRIP_LEDS              14
 #define NUM_LEDS                    20
 
+// Menu buttons
+#define PIN_MENU_UP                 39
+#define PIN_MENU_DOWN               34
+#define PIN_MENU_OK                 35
+#define PIN_MENU_CANCEL             32
+
 // Gate
 constexpr bool GATE_DEFAULT_CONTINUE_LISTENING = true;
