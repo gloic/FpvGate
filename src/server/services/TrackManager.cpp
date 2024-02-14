@@ -7,7 +7,11 @@ void TrackManager::addGate(GateClient& gate) {
     track->addGate(gate);
 }
 
+bool TrackManager::isTrackEmpty() {
+    return this->getCurrentTrack().getGates().size() == 0;
+}
+
 // void TrackManager::setStarter(GateClient& starter) {
 //     auto starterPtr = std::make_shared<GateClient>(starter);
 //     track->setStarter(starterPtr);
-// }
+// }]

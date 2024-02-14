@@ -6,11 +6,11 @@
 void CalibrationHandler::begin() {
     Log.infoln("Begin Calibration");
     listenExecutor.startStarter(ActionWhenPass::CONTINUE);
-    listenExecutor.startAll(ActionWhenPass::CONTINUE);
+    listenExecutor.startGates(ActionWhenPass::CONTINUE);
 }
 
 void CalibrationHandler::end() {
     Log.infoln("End Calibration");
     listenExecutor.stopStarter();
-    listenExecutor.stopAll();
+    listenExecutor.stopGates();
 }

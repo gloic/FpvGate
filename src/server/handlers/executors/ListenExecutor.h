@@ -7,13 +7,16 @@
 class ListenExecutor {
     public:
         ListenExecutor() {};
-        void startStarter(ActionWhenPass whenPass) {starterListen("start", whenPass);}
-        void stopStarter() {starterListen("stop", ActionWhenPass::STOP);};
-        void startAll(ActionWhenPass whenPass) {listenAll("start", whenPass);};
-        void stopAll() {listenAll("stop", ActionWhenPass::STOP);};
+
+        void startStarter(ActionWhenPass whenPass);
+        void stopStarter();
+
+        void startGates(ActionWhenPass whenPass);
+        void stopGates();
     private:
         WebUtils webUtils;
-        void listenAll(String action, ActionWhenPass whenPass);
-        void listen(GateClient& gate, String action, ActionWhenPass whenPass);
-        void starterListen(String action, ActionWhenPass whenPass);
+        void sendToGates(String state, ActionWhenPass whenPass);
+        void sendToStarter(String state, ActionWhenPass whenPass);
+
+        void listen(GateClient& gate, String state, ActionWhenPass whenPass);
 };

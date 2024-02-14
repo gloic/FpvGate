@@ -10,7 +10,7 @@ void TrackHandler::begin() {
 
 void TrackHandler::end() {
     listenExecutor.stopStarter();
-    listenExecutor.stopAll();
+    listenExecutor.stopGates();
 }
 
 void TrackHandler::gatePassage(GateClient& gate) {
@@ -23,7 +23,7 @@ void TrackHandler::gatePassage(GateClient& gate) {
 
 void TrackHandler::handleStarterPassage(GateClient& gate) {
     // TODO - create a dedicated method
-    if(trackManager.getCurrentTrack().getGates().size() == 0) {
+    if(trackManager.isTrackEmpty()) {
         // Add Starter in the track and stop listening
         handleGatePassage(gate);
     } else {

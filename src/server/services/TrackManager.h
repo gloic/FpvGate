@@ -4,16 +4,24 @@
 #include <server/services/GateManager.h>
 
 class TrackManager {
-    public: 
-        static TrackManager& getInstance(){if(!instance) {instance = new TrackManager();}return *instance;}
-        Track& getCurrentTrack() {return *track;};
+    public:
+        static TrackManager &getInstance() {
+            if (!instance) {
+                instance = new TrackManager();
+            }
+            return *instance;
+        }
+
+        Track& getCurrentTrack() { return *track; };
         void addGate(GateClient& gate);
         // void setStarter(GateClient& starter);
 
-        GateClient& getNextGate() { return track->getNextGate();}
-        void advanceToNextGate() {track->advanceToNextGate();}
-        // GateClient& getStarter() {return track->getStarter();}
-        void clearTrack() {track.reset();};
+        GateClient& getNextGate() { return track->getNextGate(); }
+        void advanceToNextGate() { track->advanceToNextGate(); }
+        // GateClient& getStarter() { return track->getStarter(); }
+
+        void clearTrack() { track.reset();};
+        bool isTrackEmpty();
     protected:
         TrackManager() {}
     private:

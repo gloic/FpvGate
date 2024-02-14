@@ -13,7 +13,7 @@ void RaceHandler::begin() {
 
 void RaceHandler::end() {
     listenExecutor.stopStarter();
-    listenExecutor.stopAll();
+    listenExecutor.stopGates();
 }
 
 void RaceHandler::gatePassage(GateClient& gate) {
