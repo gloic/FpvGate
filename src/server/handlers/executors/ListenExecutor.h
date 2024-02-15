@@ -11,12 +11,15 @@ class ListenExecutor {
         void startStarter(ActionWhenPass whenPass);
         void stopStarter();
 
+        void startGate(GateClient& gate, ActionWhenPass whenPass);
         void startGates(ActionWhenPass whenPass);
         void stopGates();
     private:
         WebUtils webUtils;
-        void sendToGates(String state, ActionWhenPass whenPass);
         void sendToStarter(String state, ActionWhenPass whenPass);
+        void sendToGate(String state, ActionWhenPass whenPass);
+        void sendToGates(String state, ActionWhenPass whenPass);
 
-        void listen(GateClient& gate, String state, ActionWhenPass whenPass);
+        void startListen(GateClient& gate, ActionWhenPass whenPass);
+        void stopListen(GateClient& gate);
 };

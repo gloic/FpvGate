@@ -11,6 +11,10 @@ bool TrackManager::isTrackEmpty() {
     return this->getCurrentTrack().getGates().size() == 0;
 }
 
+int TrackManager::getTrackSize() {
+    return this->getCurrentTrack().getGates().size();
+}
+
 // void TrackManager::setStarter(GateClient& starter) {
 //     auto starterPtr = std::make_shared<GateClient>(starter);
 //     track->setStarter(starterPtr);

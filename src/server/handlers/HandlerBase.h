@@ -12,9 +12,13 @@ class HandlerBase {
         virtual void end() = 0;
 
         virtual void reset() {};
-        virtual void gatePassage(GateClient& gate) {};
+
+        void onGatePassage(int id) { onGatePassage(GateManager::getInstance().findById(id)); };
+        
     protected:
         GateManager& gateManager;
         ListenExecutor& listenExecutor;
         boolean isActive;
+
+        virtual void onGatePassage(GateClient& gate) {};
 };

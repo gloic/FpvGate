@@ -20,7 +20,7 @@ int Starter::doRegister() {
 }
 
 void Starter::doNotifyPassage() {
-    FpvGateServer::getInstance().gatePassage(id);
+    FpvGateServer::getInstance().onGatePassage(id);
 }
 
 void Starter::setupModules() {

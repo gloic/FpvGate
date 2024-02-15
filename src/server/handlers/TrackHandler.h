@@ -8,7 +8,7 @@ class TrackHandler : public HandlerBase {
         void begin() override;
         void end() override;
 
-        void gatePassage(GateClient& gate) override;
+        void onGatePassage(GateClient& gate) override;
         void reset() override;
     private:
         TrackManager& trackManager;

@@ -14,14 +14,13 @@ class TrackManager {
 
         Track& getCurrentTrack() { return *track; };
         void addGate(GateClient& gate);
-        // void setStarter(GateClient& starter);
 
         GateClient& getNextGate() { return track->getNextGate(); }
         void advanceToNextGate() { track->advanceToNextGate(); }
-        // GateClient& getStarter() { return track->getStarter(); }
 
         void clearTrack() { track.reset();};
         bool isTrackEmpty();
+        int getTrackSize();
     protected:
         TrackManager() {}
     private:

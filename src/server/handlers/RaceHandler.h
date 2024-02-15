@@ -7,7 +7,7 @@ class RaceHandler : public HandlerBase {
         RaceHandler() : HandlerBase(), trackManager(TrackManager::getInstance()) {} 
         void begin() override;
         void end() override;
-        void gatePassage(GateClient& gate) override;
+        void onGatePassage(GateClient& gate) override;
         void reset() override;
     private:
         TrackManager& trackManager;

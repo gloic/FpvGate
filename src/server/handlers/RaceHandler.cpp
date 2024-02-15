@@ -16,12 +16,12 @@ void RaceHandler::end() {
     listenExecutor.stopGates();
 }
 
-void RaceHandler::gatePassage(GateClient& gate) {
-    /* When starter pass :
-        - start chrono
-        - send listen to next gate (first of list)
-    */
+void RaceHandler::onGatePassage(GateClient& gate) {
+    if (gate->isStarter()) {
+        // start chrono
+    }
     
+    // send listen to next gate (first of list)
     GateClient& nextGate = trackManager.getNextGate();
     // if gate : listenExecutor.startListen(ActionWhenPass::STOP);
     // if starter : start on starter

@@ -12,7 +12,8 @@ void FpvGateServer::setMode(ServerMode newMode) {
     currentHandler->begin();
 }
 
-void FpvGateServer::gatePassage(int id) {
-    auto& gate = GateManager::getInstance().findById(id);
-    currentHandler->gatePassage(gate);
+void FpvGateServer::onGatePassage(int id) {
+    // auto& gate = GateManager::getInstance().findById(id);
+    // currentHandler->onGatePassage(gate);
+    currentHandler->onGatePassage(id);
 }

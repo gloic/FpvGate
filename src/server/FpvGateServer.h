@@ -18,7 +18,7 @@ class FpvGateServer {
         void setup(AsyncWebServer &webServer) {
             webController.setup(webServer);
         };
-        void gatePassage(int id);
+        void onGatePassage(int id);
         void reset() {setMode(ServerMode::IDLE);};
         void setTrackMode() {setMode(ServerMode::TRACK);};
         void setCalibrationMode() {setMode(ServerMode::CALIBRATION);};
