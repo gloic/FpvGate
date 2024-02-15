@@ -24,7 +24,7 @@ void TrackHandler::onGatePassage(GateClient& gate) {
 void TrackHandler::handleStarterPassage(GateClient& gate) {
     if (trackManager.isTrackEmpty()) {
         trackManager.addGate(gate);
-        listenExecutor.startGates();
+        listenExecutor.startGates(ActionWhenPass::STOP);
     } else {
         this->end();
     }

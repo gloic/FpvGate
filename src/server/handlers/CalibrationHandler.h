@@ -5,4 +5,5 @@ class CalibrationHandler : public HandlerBase {
     public:
         void begin() override;
         void end() override;
+        void reset() override;
 };

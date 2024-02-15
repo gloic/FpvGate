@@ -14,3 +14,8 @@ void CalibrationHandler::end() {
     listenExecutor.stopStarter();
     listenExecutor.stopGates();
 }
+
+void CalibrationHandler::reset() {
+    Log.infoln("Reset");
+    this->begin();
+}

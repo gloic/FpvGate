@@ -16,9 +16,9 @@ class ListenExecutor {
         void stopGates();
     private:
         WebUtils webUtils;
-        void sendToStarter(String state, ActionWhenPass whenPass);
-        void sendToGate(String state, ActionWhenPass whenPass);
-        void sendToGates(String state, ActionWhenPass whenPass);
+        // void sendToStarter(String state, ActionWhenPass whenPass);
+        // void sendToGate(String state, ActionWhenPass whenPass);
+        // void sendToGates(String state, ActionWhenPass whenPass);
 
         void startListen(GateClient& gate, ActionWhenPass whenPass);
         void stopListen(GateClient& gate);

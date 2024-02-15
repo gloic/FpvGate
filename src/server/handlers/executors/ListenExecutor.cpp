@@ -16,38 +16,22 @@ void ListenExecutor::startGate(GateClient& gate, ActionWhenPass whenPass) {
 }
 
 void ListenExecutor::startGates(ActionWhenPass whenPass) {
-    this->sendToGates("start", whenPass);
-}
-
-void ListenExecutor::stopGates() {
-    this->sendToGates("stop", ActionWhenPass::STOP);
-}
-
-void ListenExecutor::sendToStarter(String state, ActionWhenPass actionWhenPass) {
-    GateClient &starter = GateManager::getInstance().getStarter();
-    this->listen(starter, state, actionWhenPass);
-}
-
-void ListenExecutor::sendToGate(GateClient& gate, String state, ActionWhenPass actionWhenPass) {
-    this->listen(gate, state, actionWhenPass);
-}
-
-void ListenExecutor::sendToGates(String state, ActionWhenPass actionWhenPass) {
-    std::vector<GateClient> gates = GateManager::getInstance().findAll();
-    for (auto &gate : gates) {
-        this->sendToGate(gate, state, actionWhenPass);
+    for (auto &gate : GateManager::getInstance().findAll()) {
+        this->startListen(gate, whenPass);
     }
 }
 
-// void ListenExecutor::listen(GateClient& gate, String state, ActionWhenPass actionWhenPass) {
-//     webUtils.post(gate.getIp(), "/api/gate/listen/" + state);
-// }
+void ListenExecutor::stopGates() {
+    for (auto &gate : GateManager::getInstance().findAll()) {
+        this->stopListen(gate);
+    }
+}
 
 void ListenExecutor::startListen(GateClient& gate, ActionWhenPass actionWhenPass) {
     // TODO send actionWhenPass too
     webUtils.post(gate.getIp(), "/api/gate/listen/start");
 }
 
-void ListenExecutor::stopListen(GateClient& gate, String state) {
+void ListenExecutor::stopListen(GateClient& gate) {
     webUtils.post(gate.getIp(), "/api/gate/listen/stop");
 }
