@@ -1,16 +1,22 @@
-#include "../gate/GateBase.h"
-#include "../gate/Starter.h"
+#pragma once
 
-class StarterWrapper : public GateBase {
-private:
-    Starter starter;
+#include "Wrapper.h"
+#include <gate/Starter.h>
+#include <gate/StarterDev.h>
 
-public:
-    void setup() override {
-        starter.setup();
-    }
+class StarterWrapper : public Wrapper {
+    public:
+        StarterWrapper() {
+            starter = new Starter();
+        }
 
-    void loop() override {
-        starter.loop();
-    }
+        void setup(AsyncWebServer &webServer) override {
+            starter->setup(webServer);
+        }
+
+        void loop() override {
+            starter->loop();
+        }
+    private:
+        Starter* starter;
 };

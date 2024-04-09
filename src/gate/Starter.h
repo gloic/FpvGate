@@ -1,53 +1,29 @@
 #pragma once
 
 #include "Gate.h"
-#include "../structs/GateClient.h"
-#include "../managers/TrackManager.h"
-#include "../managers/GatesManager.h"
-#include "../services/web/StarterWebController.h"
-#include "../services/web/StarterRestController.h"
+#include "OneButton.h"
 
 class Starter : public Gate {
-public:
-    Starter(StarterWebController webController) : webController(webController) {
-        instance = this;
-        restController = StarterRestController(server(), webController);
-    }
-    void setup();
-    void loop();
-protected:
-    void notifyPass();
+    public:
+        Starter(): Gate() {}
+        void setup(AsyncWebServer &webServer) {
+            setupWifi();
+            setupWebController(webServer);
+            setupButton();
+            id = doRegister();
+        }
+        void loop();
+    protected:
+        void setupWifi();
+        void setupWebController(AsyncWebServer &webServer);
+        void setupModules();
+        int doRegister();
+        void doNotifyPassage();
+    private:
+        OneButton* buttonReset;
 
-private:
-    static Starter *instance;
-    boolean isCalibrationMode = false;
-    StarterWebController webController;
-    StarterRestController restController;
-
-    GatesManager gatesManager; // TODO - Remove this dependency
-    TrackManager trackHandler {};
-    
-    void setupWifi();
-    void setupWebController();
-    void setupGPIO();
-    void doRegister(String ip);
-    
-    void handleStarterPassage();
-    
-    void enableTrackMode();
-    void enableRaceMode();
-    void startLap();
-    void stopLap();
-    void resetLap();
-
-    void gateStartListening(GateClient &gate);
-    void gateStopListening(GateClient &gate);
-    void handleGatePassed(GateClient &gate);
-
-    void enableCalibrationMode();
-
-    static void onRegisterGate(AsyncWebServerRequest *request);
-    static void onGatePassed(AsyncWebServerRequest *request);
-    static void onButtonResetPress();
-
+        void setupButton();
+        static void onButtonResetPress();
+        static void onButtonResetDoublePress();
+        static void onButtonResetLongPress();
 };

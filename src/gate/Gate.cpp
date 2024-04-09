@@ -1,109 +1,88 @@
 #include "Gate.h"
 
-#include "../structs/GateMode.h"
-
-#include "OneButton.h"
-#include <ArduinoLog.h>
-
-String ipStarter;
 Gate* Gate::instance = nullptr;
 
-void Gate::setup() {
-    setupWifi();
-    setupWebController();
-    setupGPIO();
-
-    EspBase::startWebServer();
-    stopListening();
-}
-
-void Gate::setupWifi() {
-    EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
-    doRegister();
-}
-
-void Gate::setupWebController() {
-    EspBase::setupWebController();
-    Log.infoln("Gate::setupWebController");
-    server().on("/api/gate/start", HTTP_POST, &Gate::onStart);
-    server().on("/api/gate/stop", HTTP_POST, &Gate::onStop);
-}
-
-void Gate::setupGPIO() {
-    Log.infoln("Gate setup GPIO");
-    sonicSensor.setup();
-    leds.setup();
-    buzzer.setup();
-}
-
-void Gate::doRegister() {
-    Log.infoln("Registering gate to Starter");
-    id = webController.registerOnStarter(getStarterIP());
-}
-
-void Gate::onStart(AsyncWebServerRequest *request) {
-    instance->startListening();
-    // TODO - Add calibration mode
-    request->send(200, "text/plain", "started");
-}
-
-boolean Gate::isListening() {
-    return listening;
-}
-
-void Gate::startListening() {
-    Log.infoln("Start listening");
-    listening = true;
-    leds.on();
-}
-
-void Gate::stopListening() {
-    Log.infoln("Stop listening");
-    listening = false;
-    
-    sonicSensor.stop();
-    leds.off();
-}
-
-void Gate::onStop(AsyncWebServerRequest *request) {
-    instance->stopListening();
-    request->send(200, "text/plain", "stopped");
-}
-
-void Gate::onLed(AsyncWebServerRequest *request) {
-   Log.infoln("LED");
-   int state = instance->getParamFromRequest("state", request).toInt();
-   request->send(200, "text/plain", "led");
-}
-
 void Gate::loop() {
-    if (!listening) {
+    if(!isListening) {
         return;
     }
 
-    if (checkPass()) {
-        // TODO : refactor in a private method
-        if(notifyPass()) {
-            stopListening();
-        }
+    if(this->checkPass()) {
+        Log.infoln("Passage detected");
+        doNotifyPassage();
     }
-    leds.loop();
 }
 
 boolean Gate::checkPass() {
     return sonicSensor.checkPass();
 }
 
-boolean Gate::notifyPass() {
-    Log.infoln("Notify pass to Starter");
-    // TODO : Add informations (height ?)
-    return webController.notifyPass(getStarterIP());
+int Gate::doRegister() {
+    return webUtils.post(getIpStarter(), "/api/gate/register").toInt();
 }
 
-void Gate::beep() {
-    buzzer.beep();
+void Gate::doNotifyPassage() {
+    webUtils.post(getIpStarter(), "/api/gate/passed").toInt();
 }
 
-String Gate::getStarterIP() {
-    return WiFi.gatewayIP().toString(); 
+void Gate::setupWifi() {
+    Log.infoln("Setup Wifi for Gate");
+    WiFi.begin(SECRET_SSID, SECRET_PASS);
+
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+  
+    Log.infoln("Wifi connected");
+    Log.infoln("IP= %s", WiFi.localIP().toString());
+    Log.infoln("Gateway=%s", WiFi.gatewayIP().toString());
+}
+
+void Gate::setupWebController(AsyncWebServer &webServer) {
+    Log.infoln("Setup Web Controller for Gate");
+    webServer.on("/api/gate/start", HTTP_POST, &Gate::onStartListen);
+    webServer.on("/api/gate/stop", HTTP_POST, &Gate::onStopListen);
+}
+
+void Gate::setupModules() {
+    Log.infoln("Gate::setupModules");
+    sonicSensor.setup();
+}
+
+String Gate::getIpStarter() {
+    if (DEV_MODE) {
+        return DEV_IP_STARTER;
+    } else {
+        return WiFi.gatewayIP().toString();
+    }
+}
+
+void Gate::onStartListen(AsyncWebServerRequest *request) {
+    instance->startListen();
+    request->send(200, "text/plain", "OK");
+}
+
+void Gate::onStopListen(AsyncWebServerRequest *request) {
+    instance->stopListen();
+    request->send(200, "text/plain", "OK");
+}
+
+void Gate::startListen() {
+    Log.infoln("Start listen");
+    if(!isListening) {
+        isListening = true;
+    } else {
+        Log.warningln("Already listening");
+    }
+}
+
+void Gate::stopListen() {
+    Log.infoln("Stop listen");
+    if(isListening) {
+        isListening = false;
+        sonicSensor.stop();
+    } else {
+        Log.warningln("Already stopped listening");
+    }
 }

@@ -1,199 +1,80 @@
 #include "Starter.h"
-#include "../config/GateConfig.h"
-#include "../structs/GateMode.h"
-
-#include <vector>
-#include <Arduino.h>
-#include <ArduinoLog.h>
-#include "OneButton.h"
-
-Starter *Starter::instance = nullptr;
-
-OneButton buttonReset(PIN_STARTER_RESET, false);
-
-void Starter::setup() {
-    Log.infoln("Setup Starter");
-    setupWifi();
-    setupWebController();
-    setupGPIO();
-    EspBase::startWebServer();
-    Log.infoln("End of setup Starter");
-}
+#include <server/services/GateManager.h>
+#include <server/FpvGateServer.h>
 
 void Starter::setupWifi() {
-    if (DEV_MODE == 1) {
-        EspBase::setupWifi(SECRET_SSID, SECRET_PASS);
+    Log.infoln("Setup Wifi for Starter");
+    if (DEV_MODE) {
+        Log.infoln("Setting wifi started (dev mode)");
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(SECRET_SSID, SECRET_PASS);
+
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Serial.print(".");
+        }
+
+        Log.infoln("Wifi connected");
+        Log.infoln("IP= %s", WiFi.localIP().toString());
+        Log.infoln("Gateway=%s", WiFi.gatewayIP().toString());
     } else {
-        EspBase::setupAPWifi(SECRET_SSID, SECRET_PASS);
+        Log.infoln("Setting wifi as AP");
+        WiFi.mode(WIFI_AP);
+        WiFi.softAP(SECRET_SSID, SECRET_PASS);
+        Log.infoln("Wifi AP created. IP=%s", WiFi.softAPIP().toString());
     }
 }
 
-void Starter::setupWebController() {
-    Gate::setupWebController();
-    Log.infoln("Starter::setupWebController");
-    
-    server().on("/api/gate/register", HTTP_POST, &Starter::onRegisterGate);
-    // server().on("/api/gate/passed", HTTP_POST, &Starter::onGatePassed);
-}
-
-void Starter::setupGPIO() {
-    Gate::setupGPIO();
-    buttonReset.attachClick(&Starter::onButtonResetPress);
-    buttonReset.attachDoubleClick([]() {
-        instance->isCalibrationMode = !instance->isCalibrationMode;
-        if(instance->isCalibrationMode) {
-            instance->enableCalibrationMode();
-        }
-    });
-    buttonReset.attachLongPressStart([]() {
-        instance->enableTrackMode();
-    });
-}
-
-// void Starter::onRegisterGate(AsyncWebServerRequest *request) {
-//     Log.infoln("onRegisterGate");
-//     String clientIP = request->client()->remoteIP().toString();
-//     boolean isMock = request->getHeader("isMock") != nullptr;
-//     int id = instance->webController.registerGate(clientIP, isMock);
-
-//     request->send(200, "text/plain", String(id));
-// }
-
-void Starter::onGatePassed(AsyncWebServerRequest *request) {
-    Log.infoln("Gate passed !");
-    String clientIP = request->client()->remoteIP().toString();
-    Log.infoln("Client ip: %s", clientIP);
-
-    auto *gate = instance->gatesManager.getGateClientFromIp(clientIP);
-    instance->handleGatePassed(*gate);
-    String responseBehavior = instance->isCalibrationMode ? "continue" : "stop";
-    request->send(200, "text/plain", responseBehavior);
-}
-
-void Starter::handleGatePassed(GateClient &gate) {
-    Log.infoln("Gate passed, id=%d", String(gate.id));
-
-    if (trackHandler.isTrackMode()) {
-        Log.infoln("Track mode, add gate to track");
-        int trackSize = trackHandler.addGateToTrack(gate);
-        if(trackSize >= 1) {
-            Log.infoln("track has at least one gate, starter is listening too");
-            startListening();
-        }
-    } else if (trackHandler.isRaceMode()) {
-        if(trackHandler.isNextGate(gate.id)) {
-            Log.infoln("This gate is expected");
-            if (trackHandler.hasNextGate()) {
-                trackHandler.incrementNextGateIndex();
-                gateStartListening(gate);
-            } else {
-                Log.infoln("no next gate, Starter is next : start listening");
-                startListening();
-            }
-        } else {
-            Log.infoln("Another gate was passed ! pass:%p - expected:%p", gate, trackHandler.getNextGate());
-        }
-    }
+void Starter::setupWebController(AsyncWebServer &webServer) {
+    Log.infoln("Setup Web Controller for Starter");
+    webServer.on("/api/test", HTTP_POST, [](AsyncWebServerRequest *request){
+        request->send(200, "text/plain", "I'm starter !");
+    });   
 }
 
 void Starter::loop() {
-    buttonReset.tick();
+    buttonReset->tick();
 
-    boolean passed = false;
-    if (isListening()) {
-        passed = checkPass();
+    if(!isListening) {
+        return;
     }
 
-    leds.loop();
-
-    if (passed) {
-        handleStarterPassage();
+    if (this->checkPass()) {
+        this->doNotifyPassage();
     }
 }
 
+int Starter::doRegister() {
+    return GateManager::getInstance().setStarter(WiFi.softAPIP().toString());
+}
 
-void Starter::handleStarterPassage() {
-    Log.infoln("Starter pass detected");
+void Starter::doNotifyPassage() {
+    FpvGateServer::getInstance().onGatePassage(id);
+}
 
-    if(isCalibrationMode) {
-        delay(100);
-        enableCalibrationMode();
-        return;
-    }
-    
-    stopListening();
+void Starter::setupModules() {
+    Gate::setupModules();
+}
 
-    if (trackHandler.isTrackMode()) {
-        if (trackHandler.getTrackGateSize() > 0) {
-            Log.infoln("Track mode finished, starting race mode");
-            // Workaround, a delay is necessary to avoid instant end of race mode
-            delay(5000);
-            enableRaceMode();
-        }
-    } else if (instance->trackHandler.isRaceMode()) {
-        if(!trackHandler.isRaceStarted()) {
-            startLap();
-        } else {
-            stopLap();
-        }
-        auto &gate = trackHandler.getNextGate();
-        gateStartListening(gate);
-    }
+void Starter::setupButton() {
+    Log.infoln("Starter::setupButton");
+    buttonReset = new OneButton(PIN_STARTER);
+    buttonReset->attachClick(&Starter::onButtonResetPress);
+    buttonReset->attachDoubleClick(&Starter::onButtonResetDoublePress);
+    buttonReset->attachLongPressStart(&Starter::onButtonResetLongPress);
 }
 
 void Starter::onButtonResetPress() {
-    Log.infoln("onButtonResetPress");
-   if (instance->trackHandler.isRaceMode()) {
-       instance->resetLap();
-   }
+    Log.infoln("reset button pressed (single)");
+    FpvGateServer::getInstance().reset();
 }
 
-void Starter::enableTrackMode() {
-    Log.infoln("enableTrackMode");
-    beep();
-    trackHandler.setTrackMode();
-    trackHandler.clearTrackGates();
-    webController.startListeningAll();
+void Starter::onButtonResetDoublePress() {
+    Log.infoln("reset button pressed (double)");
+    FpvGateServer::getInstance().setTrackMode();
 }
 
-void Starter::enableRaceMode() {
-    Log.infoln("GO");
-    beep();
-    beep();
-    trackHandler.setRaceMode();
-    // Only Starter should listen
-    startListening();
-}
-
-void Starter::gateStartListening(GateClient &gate) {
-    Log.infoln("Send start listening to %p", gate);
-    
-    webController.startListening(gate);
-}
-
-void Starter::gateStopListening(GateClient &gate) {
-    Log.infoln("Send stop listening to %p", gate);
-    webController.stopListening(gate);
-}
-
-void Starter::resetLap() {
-    trackHandler.resetLap();
-    gateStartListening(trackHandler.getNextGate());
-}
-
-void Starter::startLap() {
-    Log.infoln("Starting lap");
-    beep();
-    trackHandler.startLap();
-}
-
-void Starter::stopLap() {
-    Log.infoln("Lap done");
-    beep();
-    trackHandler.stopLap();
-}
-
-void Starter::enableCalibrationMode() {
-    startListening();
-    webController.startListeningAll();
+void Starter::onButtonResetLongPress() {
+    Log.infoln("reset button pressed (long)");
+    FpvGateServer::getInstance().setCalibrationMode();
 }
