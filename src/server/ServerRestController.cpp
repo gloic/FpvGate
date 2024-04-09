@@ -1,12 +1,12 @@
 #include "ServerRestController.h"
 #include <server/FpvGateServer.h>
-#include <server/services/GateManager.h>
 #include <ArduinoLog.h>
+#include <config/GateEndPoints.h>
 
 void ServerRestController::setup(AsyncWebServer &webServer) {
     Log.infoln("ServerRestController");
-    webServer.on("/api/gate/register", HTTP_POST, &ServerRestController::onRegister);
-    webServer.on("/api/gate/passed", HTTP_POST, &ServerRestController::onPass);
+    webServer.on(REGISTER, HTTP_POST, &ServerRestController::onRegister);
+    webServer.on(PASSED, HTTP_POST, &ServerRestController::onPass);
 }
 
 void ServerRestController::onRegister(AsyncWebServerRequest *request) {

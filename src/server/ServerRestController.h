@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ESPAsyncWebServer.h>
+#include <server/services/GateManager.h>
 
 class ServerRestController {
     public:
