@@ -34,9 +34,10 @@ int GateManager::addGate(const GateClient &gate) {
     return gate.getId();
 }
 
-int GateManager::setStarter(String ip) {
-    starter.setIp(ip);
-    return starter.getId();
+int GateManager::setStarter(Starter& starterPtr, String ip) {
+    starterClient.setIp(ip);
+    starterClient.setPtr(&starterPtr); // i don't know what i'm doing
+    return starterClient.getId();
 }
 
 GateClient& GateManager::findByIp(String& ip) {

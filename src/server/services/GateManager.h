@@ -8,19 +8,18 @@ class GateManager {
 public:
     static GateManager &getInstance();
 
-    int setStarter(String ip);
+    int setStarter(Starter& starterPtr, String ip);
     int add(String ip);
     GateClient &findById(int id);
     std::vector<GateClient> findAll() { return gates; }
-    StarterClient &getStarter() { return starter; }
-
+    void starterStartListen() { this->starterClient.getPtr().startListen(); }
+    void starterStopListen() { this->starterClient.getPtr().stopListen(); }
 protected:
     GateManager();
-
 private:
     static GateManager *instance;
 
-    StarterClient starter;
+    StarterClient starterClient;
     std::vector<GateClient> gates;
     GateClient createGateClient(String ip);
     int addGate(const GateClient &gate);

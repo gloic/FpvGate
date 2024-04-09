@@ -1,6 +1,6 @@
 #pragma once
 
-enum ActionWhenPass {
+enum class ActionWhenPass {
     STOP, 
     CONTINUE
 };

@@ -2,16 +2,11 @@
 #include <server/services/GateManager.h>
 
 void ListenExecutor::startStarter(ActionWhenPass whenPass) {
-    GateClient &starter = GateManager::getInstance().getStarter(); // TODO - Dedicated method
-    
-    // TODO bugfix : should be done locally or depending of the implementation of Starter. don't call rest
-    // this->startListen(GateManager::getInstance().getStarter(), whenPass);
+    GateManager::getInstance().starterStartListen();
 }
 
 void ListenExecutor::stopStarter() {
-    GateClient &starter = GateManager::getInstance().getStarter(); // TODO - Dedicated method
-    // TODO bugfix : should be done locally or depending of the implementation of Starter. don't call rest
-    this->stopListen(starter);
+    GateManager::getInstance().starterStopListen();
 }
 
 void ListenExecutor::startGate(GateClient& gate, ActionWhenPass whenPass) {

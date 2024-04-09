@@ -28,7 +28,7 @@ void Gate::doNotifyPassage() {
 void Gate::setupWifi() {
     Log.infoln("Setup Wifi for Gate");
     WiFi.begin(SECRET_SSID, SECRET_PASS);
-
+    
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");

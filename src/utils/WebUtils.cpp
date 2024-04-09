@@ -8,7 +8,7 @@ String WebUtils::post(String ip, String path) {
 String WebUtils::post(String ip, String path, String payload) {
     String url = getUrl(ip, path);
 
-    Log.infoln("Sending POST request to %s", useRealRandomGenerator);
+    Log.infoln("Sending POST request to %s", url.c_str());
     
     String result = "";
     http.begin(wifiClient, url);
