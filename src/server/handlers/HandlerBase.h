@@ -7,7 +7,9 @@
 
 class HandlerBase {
     public:
-        HandlerBase(): gateManager(GateManager::getInstance()), listenExecutor(listenExecutor) {}
+        HandlerBase(): gateManager(GateManager::getInstance()), listenExecutor(listenExecutor) {
+            Log.infoln("HandlerBase()");
+        }
         virtual void begin() = 0;
         virtual void end() = 0;
 
@@ -21,4 +23,6 @@ class HandlerBase {
         boolean isActive;
 
         virtual void onGatePassage(GateClient& gate) {};
+        virtual void handleStarterPassage(GateClient& gate) {};
+        virtual void handleGatePassage(GateClient& gate) {};
 };

@@ -14,9 +14,11 @@
 
 class FpvGateServer {
     public:
-        static FpvGateServer& getInstance(){if (!instance) {instance = new FpvGateServer();} return *instance;};
+        static FpvGateServer& getInstance();
+
         void setup(AsyncWebServer &webServer) {
             webController.setup(webServer);
+            setMode(ServerMode::IDLE);
         };
         void onGatePassage(int id);
         void reset() {setMode(ServerMode::IDLE);};
@@ -36,4 +38,5 @@ class FpvGateServer {
             {ServerMode::RACE, std::make_shared<RaceHandler>()},
         };
         void setMode(ServerMode newMode);
+        void switchHandler(ServerMode newMode);
 };

@@ -6,6 +6,13 @@
 class Starter : public Gate {
     public:
         Starter(): Gate() {}
+        void setup(AsyncWebServer &webServer) {
+            setupWifi();
+            setupWebController(webServer);
+            setupButton();
+            id = doRegister();
+        }
+        void loop();
     protected:
         void setupWifi();
         void setupWebController(AsyncWebServer &webServer);

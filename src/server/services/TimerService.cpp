@@ -1,12 +1,10 @@
 #include "TimerService.h"
-#include <sys/time.h>
+#include "Arduino.h"
 
 TimerService* TimerService::instance = nullptr;
 
 long currentTime() {
-   struct timeval tv;
-   gettimeofday(&tv, NULL);
-   return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+   return millis();
 }
 
 void TimerService::start() {

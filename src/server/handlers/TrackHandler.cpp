@@ -1,8 +1,6 @@
 #include "TrackHandler.h"
 #include <server/model/enums/ActionWhenPass.h>
 #include <server/model/Track.h>
-#include <memory>
-#include <typeinfo>
 
 void TrackHandler::begin() {
     listenExecutor.startStarter(ActionWhenPass::STOP);

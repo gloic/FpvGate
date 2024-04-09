@@ -6,18 +6,19 @@
 
 Wrapper* gate;
 AsyncWebServer webServer(80);
-boolean isStarter;
 
 Wrapper* initGate();
 
 void setup() {
     Serial.begin(115200);
+    pinMode(PIN_STARTER, INPUT_PULLUP);
     Log.begin(LOG_LEVEL_VERBOSE, &Serial);
-    isStarter = digitalRead(PIN_STARTER) == LOW;
     gate = initGate();
     gate->setup(webServer);
     webServer.begin();
+
     Log.infoln("Device ready!");
+
 }
 
 void loop() {
@@ -25,7 +26,7 @@ void loop() {
 }
 
 Wrapper* initGate() {
-    if (isStarter) {
+    if (digitalRead(PIN_STARTER) == HIGH) { // true by default if not pressed
        Log.infoln("Device is the starter");
        FpvGateServer::getInstance().setup(webServer);
        return new StarterWrapper();

@@ -7,10 +7,14 @@ void Gate::loop() {
         return;
     }
 
-    if(sonicSensor.checkPass()) {
+    if(this->checkPass()) {
         Log.infoln("Passage detected");
         doNotifyPassage();
     }
+}
+
+boolean Gate::checkPass() {
+    return sonicSensor.checkPass();
 }
 
 int Gate::doRegister() {
@@ -22,13 +26,21 @@ void Gate::doNotifyPassage() {
 }
 
 void Gate::setupWifi() {
+    Log.infoln("Setup Wifi for Gate");
     WiFi.begin(SECRET_SSID, SECRET_PASS);
+
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+  
     Log.infoln("Wifi connected");
     Log.infoln("IP= %s", WiFi.localIP().toString());
     Log.infoln("Gateway=%s", WiFi.gatewayIP().toString());
 }
 
 void Gate::setupWebController(AsyncWebServer &webServer) {
+    Log.infoln("Setup Web Controller for Gate");
     webServer.on("/api/gate/start", HTTP_POST, &Gate::onStartListen);
     webServer.on("/api/gate/stop", HTTP_POST, &Gate::onStopListen);
 }

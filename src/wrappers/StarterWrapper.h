@@ -7,11 +7,7 @@
 class StarterWrapper : public Wrapper {
     public:
         StarterWrapper() {
-            if(DEV_MODE) {
-                starter = new StarterDev();
-            } else {
-                starter = new Starter();
-            }
+            starter = new Starter();
         }
 
         void setup(AsyncWebServer &webServer) override {
@@ -22,5 +18,5 @@ class StarterWrapper : public Wrapper {
             starter->loop();
         }
     private:
-        Gate* starter;
+        Starter* starter;
 };

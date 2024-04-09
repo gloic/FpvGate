@@ -24,7 +24,7 @@ class Gate {
 
         void loop();
     protected:
-        boolean isListening;
+        boolean isListening = false;
         int id;
         
         void setupWifi();
@@ -36,13 +36,14 @@ class Gate {
         void startListen();
         void stopListen();
         void setupModules();
+
+        boolean checkPass();
     private:
         static Gate *instance;
         String getIpStarter();
 
         static void onStartListen(AsyncWebServerRequest *request);
         static void onStopListen(AsyncWebServerRequest *request);
-    
 
         WebUtils webUtils;
         SonicSensor sonicSensor;

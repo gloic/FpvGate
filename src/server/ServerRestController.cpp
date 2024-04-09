@@ -4,6 +4,7 @@
 #include <ArduinoLog.h>
 
 void ServerRestController::setup(AsyncWebServer &webServer) {
+    Log.infoln("ServerRestController");
     webServer.on("/api/gate/register", HTTP_POST, &ServerRestController::onRegister);
     webServer.on("/api/gate/passed", HTTP_POST, &ServerRestController::onPass);
 }

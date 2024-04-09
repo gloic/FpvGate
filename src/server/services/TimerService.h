@@ -9,13 +9,14 @@ class TimerService {
             return *instance;
         }
 
-    protected:
-        TimerService() {}
         void start();
         void stop();
         long getLastLapTime();
         long getBestLapTime();
         bool isRunning();
+        
+    protected:
+        TimerService() {}
         
     private:
         static TimerService* instance;
