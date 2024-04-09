@@ -1,4 +1,5 @@
 #include "Gate.h"
+#include <config/GateEndPoints.h>
 
 Gate* Gate::instance = nullptr;
 
@@ -18,11 +19,11 @@ boolean Gate::checkPass() {
 }
 
 int Gate::doRegister() {
-    return webUtils.post(getIpStarter(), "/api/gate/register").toInt();
+    return webUtils.post(getIpStarter(), REGISTER).toInt();
 }
 
 void Gate::doNotifyPassage() {
-    webUtils.post(getIpStarter(), "/api/gate/passed").toInt();
+    webUtils.post(getIpStarter(), PASSED).toInt();
 }
 
 void Gate::setupWifi() {
@@ -41,8 +42,8 @@ void Gate::setupWifi() {
 
 void Gate::setupWebController(AsyncWebServer &webServer) {
     Log.infoln("Setup Web Controller for Gate");
-    webServer.on("/api/gate/start", HTTP_POST, &Gate::onStartListen);
-    webServer.on("/api/gate/stop", HTTP_POST, &Gate::onStopListen);
+    webServer.on(LISTEN_START, HTTP_POST, &Gate::onStartListen);
+    webServer.on(LISTEN_STOP, HTTP_POST, &Gate::onStopListen);
 }
 
 void Gate::setupModules() {

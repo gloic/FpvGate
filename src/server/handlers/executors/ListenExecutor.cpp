@@ -1,12 +1,13 @@
 #include "ListenExecutor.h"
 #include <server/services/GateManager.h>
+#include <config/GateEndPoints.h>
 
 void ListenExecutor::startStarter(ActionWhenPass whenPass) {
-    GateManager::getInstance().starterStartListen();
+    this->gateManager.starterStartListen();
 }
 
 void ListenExecutor::stopStarter() {
-    GateManager::getInstance().starterStopListen();
+    this->gateManager.starterStopListen();
 }
 
 void ListenExecutor::startGate(GateClient& gate, ActionWhenPass whenPass) {
@@ -14,22 +15,22 @@ void ListenExecutor::startGate(GateClient& gate, ActionWhenPass whenPass) {
 }
 
 void ListenExecutor::startGates(ActionWhenPass whenPass) {
-    for (auto &gate : GateManager::getInstance().findAll()) {
+    for (auto &gate : this->gateManager.findAll()) {
         this->startListen(gate, whenPass);
     }
 }
 
 void ListenExecutor::stopGates() {
-    for (auto &gate : GateManager::getInstance().findAll()) {
+    for (auto &gate : this->gateManager.findAll()) {
         this->stopListen(gate);
     }
 }
 
 void ListenExecutor::startListen(GateClient& gate, ActionWhenPass actionWhenPass) {
     // TODO send actionWhenPass too
-    webUtils.post(gate.getIp(), "/api/gate/listen/start");
+    webUtils.post(gate.getIp(), LISTEN_START);
 }
 
 void ListenExecutor::stopListen(GateClient& gate) {
-    webUtils.post(gate.getIp(), "/api/gate/listen/stop");
+    webUtils.post(gate.getIp(), LISTEN_STOP);
 }
