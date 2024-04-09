@@ -2,8 +2,9 @@
 
 #include <config/GateConfig.h>
 #include "OneButton.h"
+#include "IModule.h"
 
-class MenuButtons {
+class MenuButtons : public IModule {
     public:
      MenuButtons(): 
         buttonUp(PIN_MENU_UP),
@@ -15,14 +16,15 @@ class MenuButtons {
             buttonOk.attachClick(&MenuButtons::onOkPressed);
             buttonCancel.attachClick(&MenuButtons::onCancelPressed);
         };
+
+        void setup() override;
+        void loop() override;
         
     private:
         OneButton buttonUp;
         OneButton buttonDown;
         OneButton buttonOk;
         OneButton buttonCancel;
-
-        void setup();
 
         static void onUpPressed();
         static void onDownPressed();
