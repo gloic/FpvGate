@@ -1,6 +1,6 @@
 #pragma once
 
-enum ServerMode {
+enum class ServerMode {
     IDLE,
     CALIBRATION,
     TRACK,

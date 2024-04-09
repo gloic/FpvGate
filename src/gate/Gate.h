@@ -23,6 +23,8 @@ class Gate {
         }
 
         void loop();
+        void startListen();
+        void stopListen();
     protected:
         boolean isListening = false;
         int id;
@@ -32,9 +34,6 @@ class Gate {
         
         int doRegister();
         void doNotifyPassage();
-
-        void startListen();
-        void stopListen();
         void setupModules();
 
         boolean checkPass();

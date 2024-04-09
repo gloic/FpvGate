@@ -2,6 +2,15 @@
 #include <server/services/GateManager.h>
 #include <server/FpvGateServer.h>
 
+Starter* Starter::instance = nullptr;
+
+Starter& Starter::getInstance() {
+    if (!instance) {
+        instance = new Starter();
+    }
+    return *instance;
+}
+
 void Starter::setupWifi() {
     Log.infoln("Setup Wifi for Starter");
     if (DEV_MODE) {
@@ -45,7 +54,8 @@ void Starter::loop() {
 }
 
 int Starter::doRegister() {
-    return GateManager::getInstance().setStarter(WiFi.softAPIP().toString());
+    // TODO - pass instance
+    return GateManager::getInstance().setStarter(this->getInstance(), WiFi.softAPIP().toString());
 }
 
 void Starter::doNotifyPassage() {
