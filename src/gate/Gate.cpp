@@ -71,8 +71,9 @@ void Gate::onStopListen(AsyncWebServerRequest *request) {
 
 void Gate::startListen() {
     Log.infoln("Start listen");
-    if(!isListening) {
-        isListening = true;
+    if(!this->isListening) {
+        Log.infoln("isListening = true");
+        this->isListening = true;
     } else {
         Log.warningln("Already listening");
     }
@@ -80,9 +81,9 @@ void Gate::startListen() {
 
 void Gate::stopListen() {
     Log.infoln("Stop listen");
-    if(isListening) {
-        isListening = false;
-        sonicSensor.stop();
+    if(this->isListening) {
+        this->isListening = false;
+        this->sonicSensor.stop();
     } else {
         Log.warningln("Already stopped listening");
     }

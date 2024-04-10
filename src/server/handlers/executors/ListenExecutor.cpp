@@ -2,6 +2,15 @@
 #include <server/services/GateManager.h>
 #include <config/GateEndPoints.h>
 
+ListenExecutor* ListenExecutor::instance = nullptr;
+
+ListenExecutor &ListenExecutor::getInstance() {
+    if (!instance) {
+        instance = new ListenExecutor();
+    }
+    return *instance;
+}
+
 void ListenExecutor::startStarter(ActionWhenPass whenPass) {
     this->gateManager.starterStartListen();
 }

@@ -13,6 +13,7 @@ class Starter : public Gate {
             id = doRegister();
         }
         void loop();
+        void startListen() { Gate::startListen(); }
     protected:
         void setupWifi();
         void setupWebController(AsyncWebServer &webServer);

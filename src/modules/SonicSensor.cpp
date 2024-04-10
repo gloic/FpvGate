@@ -12,6 +12,7 @@ void SonicSensor::setup() {
 }
 
 boolean SonicSensor::checkPass() {
+  Log.infoln("SonicSensor::checkPass");
   updateThreshold();
   ledOn();
   
@@ -27,6 +28,7 @@ boolean SonicSensor::checkPass() {
 }
 
 void SonicSensor::stop() {
+  Log.infoln("SonicSensor::stop");
   ledOff();
 }
 
