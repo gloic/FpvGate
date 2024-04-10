@@ -1,6 +1,6 @@
 #pragma once
 
-class IModule {
+class Module {
     public:
         virtual void setup() {};
         virtual void loop() {};

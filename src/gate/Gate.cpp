@@ -4,7 +4,7 @@
 Gate* Gate::instance = nullptr;
 
 void Gate::loop() {
-    if(!isListening) {
+    if(!this->isListening) {
         return;
     }
 
