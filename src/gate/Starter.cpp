@@ -44,11 +44,12 @@ void Starter::setupWebController(AsyncWebServer &webServer) {
 void Starter::loop() {
     buttonReset->tick();
 
-    if(!isListening) {
+    if(!this->isListening) {
         return;
     }
 
     if (this->checkPass()) {
+        Log.infoln("passage detected on starter");
         this->doNotifyPassage();
     }
 }
@@ -75,16 +76,16 @@ void Starter::setupButton() {
 }
 
 void Starter::onButtonResetPress() {
-    Log.infoln("reset button pressed (single)");
+    Log.infoln("reset mode");
     FpvGateServer::getInstance().reset();
 }
 
 void Starter::onButtonResetDoublePress() {
-    Log.infoln("reset button pressed (double)");
+    Log.infoln("set track mode");
     FpvGateServer::getInstance().setTrackMode();
 }
 
 void Starter::onButtonResetLongPress() {
-    Log.infoln("reset button pressed (long)");
+    Log.infoln("set calibration mode");
     FpvGateServer::getInstance().setCalibrationMode();
 }

@@ -12,10 +12,10 @@ public:
     int add(String ip);
     GateClient &findById(int id);
     std::vector<GateClient> findAll() { return gates; }
-    void starterStartListen() { this->starterClient.getPtr().startListen(); }
+    void starterStartListen();
     void starterStopListen() { this->starterClient.getPtr().stopListen(); }
 protected:
-    GateManager();
+    GateManager() {}
 private:
     static GateManager *instance;
 

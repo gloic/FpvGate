@@ -7,7 +7,7 @@
 
 class HandlerBase {
     public:
-        HandlerBase(): gateManager(GateManager::getInstance()), listenExecutor(listenExecutor) {
+        HandlerBase(): gateManager(GateManager::getInstance()), listenExecutor(ListenExecutor::getInstance()) {
             Log.infoln("HandlerBase()");
         }
         virtual void begin() = 0;

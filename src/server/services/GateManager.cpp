@@ -10,7 +10,7 @@ GateManager& GateManager::getInstance() {
     return *instance;
 }
 
-GateManager::GateManager() {}
+// GateManager::GateManager() {}
 
 int GateManager::add(String ip) {
     GateClient& gate = findByIp(ip);
@@ -35,6 +35,9 @@ int GateManager::addGate(const GateClient &gate) {
 }
 
 int GateManager::setStarter(Starter& starterPtr, String ip) {
+    Log.infoln("setStarter");
+    starterClient = StarterClient();
+    Log.infoln("ip=%s", ip);
     starterClient.setIp(ip);
     starterClient.setPtr(&starterPtr); // i don't know what i'm doing
     return starterClient.getId();
@@ -58,4 +61,9 @@ GateClient& GateManager::findById(int id) {
         Log.errorln("Can't find by gate by id, '%d' not found", id);
         throw std::runtime_error("No such ID found.");
     }
+}
+
+void GateManager::starterStartListen() {
+    Log.infoln("starterStartListen");
+    this->starterClient.getPtr().startListen();
 }
