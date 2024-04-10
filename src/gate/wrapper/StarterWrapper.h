@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Wrapper.h"
-#include <gate/Starter.h>
-#include <gate/StarterDev.h>
+#include "../Starter.h"
+#include "../StarterDev.h"
 
 class StarterWrapper : public Wrapper {
     public:

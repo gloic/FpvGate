@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IModule.h"
+#include "Module.h"
 
-class LedStrip : public IModule {
+class LedStrip : public Module {
     public:
         void setup() override;
         void loop() override;

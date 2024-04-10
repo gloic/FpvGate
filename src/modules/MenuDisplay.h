@@ -1,9 +1,9 @@
 #pragma once
 
 #include <config/GateConfig.h>
-#include "IModule.h"
+#include "Module.h"
 
-class MenuDisplay : public IModule {
+class MenuDisplay : public Module {
     public:
         void setup() override;
         void loop() override;

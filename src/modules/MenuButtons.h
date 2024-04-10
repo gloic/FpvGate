@@ -2,9 +2,9 @@
 
 #include <config/GateConfig.h>
 #include "OneButton.h"
-#include "IModule.h"
+#include "Module.h"
 
-class MenuButtons : public IModule {
+class MenuButtons : public Module {
     public:
      MenuButtons(): 
         buttonUp(PIN_MENU_UP),

@@ -4,9 +4,9 @@
 #include <NewPing.h>
 #include <ArduinoLog.h>
 #include <config/GateConfig.h>
-#include "IModule.h"
+#include "Module.h"
 
-class SonicSensor : public IModule {
+class SonicSensor : public Module {
   public:
     SonicSensor():
       sonar(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, 200),
