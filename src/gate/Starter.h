@@ -21,9 +21,6 @@ class Starter : public Gate {
         int doRegister();
         void doNotifyPassage();
     private:
-        static Starter *instance;
-        static Starter& getInstance();
-        
         OneButton* buttonReset;
 
         void setupButton();

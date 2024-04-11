@@ -10,8 +10,6 @@ GateManager& GateManager::getInstance() {
     return *instance;
 }
 
-// GateManager::GateManager() {}
-
 int GateManager::add(String ip) {
     GateClient& gate = findByIp(ip);
     if(&gate != nullptr) {

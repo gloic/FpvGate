@@ -25,7 +25,6 @@ private:
 
     // long duration;
     // float distance;
-    // boolean calibrationMode = false;
 
     long sendPulse();
     void updateThreshold();
