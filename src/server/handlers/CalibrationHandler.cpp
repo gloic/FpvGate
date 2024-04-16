@@ -1,6 +1,5 @@
 #include "CalibrationHandler.h"
 #include <ArduinoLog.h>
-
 #include <server/model/enums/ActionWhenPass.h>
 
 void CalibrationHandler::begin() {
@@ -16,6 +15,6 @@ void CalibrationHandler::end() {
 }
 
 void CalibrationHandler::reset() {
-    Log.infoln("Reset");
+    Log.infoln("Reset CalibrationHandler");
     this->begin();
 }

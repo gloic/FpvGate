@@ -7,29 +7,32 @@ const int step = 5;
 void SonicSensor::setup() {
   Log.infoln("SonicSensor setup");
   pinMode(potPin, INPUT);
-  pinMode(ledPin, OUTPUT);
+  led.setup();
+  buzzer.setup();
+
   updateThreshold();  
 }
 
 boolean SonicSensor::checkPass() {
   Log.infoln("SonicSensor::checkPass");
   updateThreshold();
-  ledOn();
+  led.on();
   
   boolean result = false;
   delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
   long distance = sonar.ping_cm(thresholdDistance);  
   if(distance > 0) {
     Log.infoln("Passage detected at %d cm", distance);
+    led.off();
+    buzzer.beep();
     result = true;
-    ledOff();
   }
   return result;
 }
 
 void SonicSensor::stop() {
   Log.infoln("SonicSensor::stop");
-  ledOff();
+  led.off();
 }
 
 void SonicSensor::updateThreshold() {
