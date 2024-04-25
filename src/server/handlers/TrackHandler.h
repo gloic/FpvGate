@@ -11,6 +11,8 @@ class TrackHandler : public HandlerBase {
         void handleStarterPassage(GateClient& gate) override;
         void handleGatePassage(GateClient& gate) override;
         void reset() override;
+        
+        String getName() override { return "Track"; }
     private:
         TrackManager& trackManager;
 };
