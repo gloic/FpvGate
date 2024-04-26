@@ -3,7 +3,7 @@
 #include <server/model/GateClient.h>
 #include <utils/WebUtils.h>
 #include <server/model/enums/ActionWhenPass.h>
-#include <server/services/GateManager.h>
+#include <server/managers/GateManager.h>
 
 class ListenExecutor {
     public:

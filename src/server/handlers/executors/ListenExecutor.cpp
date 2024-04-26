@@ -1,5 +1,5 @@
 #include "ListenExecutor.h"
-#include <server/services/GateManager.h>
+#include <server/managers/GateManager.h>
 #include <config/GateEndPoints.h>
 
 ListenExecutor* ListenExecutor::instance = nullptr;
