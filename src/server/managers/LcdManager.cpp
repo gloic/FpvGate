@@ -13,6 +13,6 @@ void LcdManager::setup() {
     display.setup();
 }
 
-void LcdManager::setTitle(String title) {
-    this->title = title;
-}
+// void LcdManager::setTitle(String title) {
+//     this->title = title;
+// }

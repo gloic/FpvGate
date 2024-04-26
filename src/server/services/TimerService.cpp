@@ -3,17 +3,14 @@
 
 TimerService* TimerService::instance = nullptr;
 
-long currentTime() {
-   return millis();
-}
 
 void TimerService::start() {
-   startTime = currentTime();
+   startTime = millis();
 }
 
 void TimerService::stop() {
    if (isRunning()) {
-       long endTime = currentTime();
+       long endTime = millis();
        lastLapTime = endTime - startTime;
        startTime = 0;
        if (bestLapTime < 0 || lastLapTime < bestLapTime) {

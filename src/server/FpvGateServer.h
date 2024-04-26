@@ -5,6 +5,7 @@
 #include "ServerRestController.h"
 #include <server/model/enums/ServerMode.h>
 
+#include <modules/LcdDisplay.h>
 #include <server/handlers/HandlerBase.h>
 #include <server/handlers/IdleHandler.h>
 #include <server/handlers/CalibrationHandler.h>
@@ -24,12 +25,12 @@ class FpvGateServer {
         void reset() {setMode(ServerMode::IDLE);};
         void setTrackMode() {setMode(ServerMode::TRACK);};
         void setCalibrationMode() {setMode(ServerMode::CALIBRATION);};
-    protected:
-        FpvGateServer(){};
     private:
         static FpvGateServer* instance;
+        FpvGateServer() : lcdDisplay(lcdDisplay) {};
         ServerRestController webController;
         ServerMode mode;
+        LcdDisplay lcdDisplay;
         std::shared_ptr<HandlerBase> currentHandler;
         std::map<ServerMode, std::shared_ptr<HandlerBase>> handlers = {
             {ServerMode::IDLE, std::make_shared<IdleHandler>()},
@@ -39,4 +40,5 @@ class FpvGateServer {
         };
         void setMode(ServerMode newMode);
         void switchHandler(ServerMode newMode);
+        // void refreshDisplay();
 };

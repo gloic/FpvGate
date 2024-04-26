@@ -17,11 +17,12 @@ void LcdDisplay::showTop(String title) {
     display.drawLine(0, 12, 128, 12, 1);
 }
 
-void LcdDisplay::showBottom(String line1, String line2, String line3) {
+void LcdDisplay::showBottom(String* lines) {
     display.setCursor(0, 15);
-    display.println(line1);
-    display.println(line2);
-    display.println(line3);
+    int numLines = sizeof(lines) / sizeof(lines[0]);
+    for (int i = 0; i < numLines; ++i) {
+        display.println(lines[i]);
+    }
 }
 
 // void LcdDisplay::display() {

@@ -9,9 +9,11 @@ class LcdManager {
             display.setup();
         };
         void setup();
-        void setTitle(String title);
+        void setTitle(String title) { this->title = title; }
+        void setContent(String* content) { this->content = content;}
     private:
         static LcdManager *instance;
         LcdDisplay display;
         String title;
+        String* content;
 };

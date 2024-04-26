@@ -1,6 +1,6 @@
 #include "FpvGateServer.h"
 #include <ArduinoLog.h>
-#include <server/services/GateManager.h>
+#include <server/managers/GateManager.h>
 
 FpvGateServer* FpvGateServer::instance = nullptr;
 
@@ -30,3 +30,4 @@ void FpvGateServer::switchHandler(ServerMode newMode) {
     currentHandler = handlers[newMode];
     currentHandler->begin();
 }
+

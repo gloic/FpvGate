@@ -10,7 +10,7 @@ class LcdDisplay : public Module {
         void setup() override;
         void clear();
         void showTop(String title);
-        void showBottom(String line1, String line2, String line3);
+        void showBottom(String* lines);
     private:
         Adafruit_SSD1306 display;
 };

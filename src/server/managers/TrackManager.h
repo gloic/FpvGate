@@ -1,7 +1,7 @@
 #pragma once
 #include <server/model/Track.h>
 #include <memory>
-#include <server/services/GateManager.h>
+#include <server/managers/GateManager.h>
 
 class TrackManager {
     public:

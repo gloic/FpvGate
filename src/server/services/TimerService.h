@@ -2,7 +2,7 @@
 
 class TimerService {
     public:
-    static TimerService &getInstance() {
+        static TimerService &getInstance() {
             if (!instance) {
                 instance = new TimerService();
             }
