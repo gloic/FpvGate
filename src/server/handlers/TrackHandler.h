@@ -4,7 +4,9 @@
 
 class TrackHandler : public HandlerBase {
     public:
-        TrackHandler() : HandlerBase(), trackManager(TrackManager::getInstance()) {}
+        TrackHandler() : HandlerBase(), 
+            trackManager(TrackManager::getInstance()) {}
+        
         void begin() override;
         void end() override;
         void onGatePassage(GateClient& gate) override;

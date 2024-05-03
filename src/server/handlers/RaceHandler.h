@@ -5,7 +5,10 @@
 
 class RaceHandler : public HandlerBase {
     public:
-        RaceHandler() : HandlerBase(), trackManager(TrackManager::getInstance()), timerService(TimerService::getInstance()) {} 
+        RaceHandler() : HandlerBase(), 
+            trackManager(TrackManager::getInstance()), 
+            timerService(TimerService::getInstance()) {} 
+            
         void begin() override;
         void end() override;
         void onGatePassage(GateClient& gate) override;

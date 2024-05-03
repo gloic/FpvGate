@@ -4,13 +4,14 @@
 Gate* Gate::instance = nullptr;
 
 void Gate::loop() {
-    if(!this->isListening) {
+    if(!isListening) {
         return;
     }
-
+    
     if(this->checkPass()) {
         Log.infoln("Passage detected");
-        doNotifyPassage();
+        this->stopListen();
+        this->doNotifyPassage();
     }
 }
 
@@ -49,6 +50,8 @@ void Gate::setupWebController(AsyncWebServer &webServer) {
 void Gate::setupModules() {
     Log.infoln("Gate::setupModules");
     sonicSensor.setup();
+    buzzer.setup();
+    led.setup();
 }
 
 String Gate::getIpStarter() {
@@ -71,9 +74,10 @@ void Gate::onStopListen(AsyncWebServerRequest *request) {
 
 void Gate::startListen() {
     Log.infoln("Start listen");
-    if(!this->isListening) {
+    if(!isListening) {
         Log.infoln("isListening = true");
-        this->isListening = true;
+        isListening = true;
+        led.on();
     } else {
         Log.warningln("Already listening");
     }
@@ -81,9 +85,11 @@ void Gate::startListen() {
 
 void Gate::stopListen() {
     Log.infoln("Stop listen");
-    if(this->isListening) {
-        this->isListening = false;
-        this->sonicSensor.stop();
+    if(isListening) {
+        isListening = false;
+        sonicSensor.stop();
+        led.off();
+        buzzer.beep();
     } else {
         Log.warningln("Already stopped listening");
     }

@@ -24,7 +24,7 @@ int GateManager::add(String ip) {
 
 GateClient GateManager::createGateClient(String ip) {
     int id = gates.size();
-    return GateClient{id, ip};
+    return GateClient(id, ip);
 }
 
 int GateManager::addGate(const GateClient &gate) {
@@ -42,6 +42,7 @@ int GateManager::setStarter(Starter& starterPtr, String ip) {
 }
 
 GateClient& GateManager::findByIp(String& ip) {
+    Log.infoln("GateManager::findByIp");
     auto it = std::find_if(gates.begin(), gates.end(), [&](const GateClient& gate){return gate.getIp() == ip;});
     if (it != gates.end()) {
         return *it;
@@ -52,6 +53,7 @@ GateClient& GateManager::findByIp(String& ip) {
 }
 
 GateClient& GateManager::findById(int id) {
+    Log.infoln("GateManager::findById");
     auto it = std::find_if(gates.begin(), gates.end(), [&](const GateClient& gate){return gate.getId() == id;});
     if (it != gates.end()) {
         return *it;
@@ -63,5 +65,5 @@ GateClient& GateManager::findById(int id) {
 
 void GateManager::starterStartListen() {
     Log.infoln("starterStartListen");
-    this->starterClient.getPtr().startListen();
+    starterClient.getPtr().startListen();
 }
