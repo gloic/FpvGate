@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Module.h"
+#include <config/GateConfig.h>
 
 class Buzzer : public Module {
     public:
-        Buzzer(int pin) : pin(pin) {}
+        Buzzer() : pin(PIN_BUZZER) {}
         void setup() override;
         void beep();
     private:

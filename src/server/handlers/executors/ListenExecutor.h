@@ -8,7 +8,7 @@
 class ListenExecutor {
     public:
         static ListenExecutor &getInstance();
-        ListenExecutor(): gateManager(GateManager::getInstance()) {};
+        ListenExecutor(): gateManager(GateManager::getInstance()), webUtils() {};
         void startStarter(ActionWhenPass whenPass);
         void stopStarter();
 

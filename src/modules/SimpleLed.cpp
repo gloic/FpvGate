@@ -1,11 +1,5 @@
 #include "SimpleLed.h"
 
-SimpleLed::SimpleLed(int pin) {
-    this->pin = pin;
-    this->state = false;
-    this->newState = false;
-}
-
 void SimpleLed::setup() {
     pinMode(pin, OUTPUT);
 }
