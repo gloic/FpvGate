@@ -31,16 +31,16 @@
 #define NUM_LEDS                    20
 
 // Menu buttons
-#define PIN_MENU_UP                 39
-#define PIN_MENU_DOWN               34
+#define PIN_MENU_UP                 32
 #define PIN_MENU_OK                 35
-#define PIN_MENU_CANCEL             32
+#define PIN_MENU_DOWN               34 // not used
+#define PIN_MENU_CANCEL             32 // not used
 
 // Lcd display
 #define PIN_SDA                     21
 #define PIN_SCL                     22
 #define PIN_OLED_RESET              -1          // -1 if sharing ESP32 reset pin
-#define SCREEN_ADDRESS              0x3D        // TODO - See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+#define SCREEN_ADDRESS              0x3C
 #define SCREEN_WIDTH                128
 #define SCREEN_HEIGHT               64
 

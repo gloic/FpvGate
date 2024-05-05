@@ -4,6 +4,8 @@
 
 FpvGateServer* FpvGateServer::instance = nullptr;
 
+const ServerMode FpvGateServer::modes[] = {ServerMode::IDLE, ServerMode::CALIBRATION, ServerMode::TRACK, ServerMode::RACE};
+
 FpvGateServer& FpvGateServer::getInstance() {
     if (!instance) {
         instance = new FpvGateServer();
@@ -31,3 +33,19 @@ void FpvGateServer::switchHandler(ServerMode newMode) {
     currentHandler->begin();
 }
 
+
+void FpvGateServer::selectNextMode() {
+    Log.infoln("selectNextMode");
+    nextModeIdx = (nextModeIdx + 1) % 4;
+    Log.infoln("nextModeIdx=%d", nextModeIdx);
+    lcdManager.clear();
+    String tempTitle = "(" + handlers[modes[nextModeIdx]]->getModeName() + ") OK ?";
+    lcdManager.setTitle(tempTitle);
+    lcdManager.show();
+}
+
+void FpvGateServer::confirmMode() {
+    Log.infoln("confirmMode");
+    Log.infoln("nextModeIdx=%d", nextModeIdx);
+    setMode(modes[nextModeIdx]);
+}

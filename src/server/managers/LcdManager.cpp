@@ -9,10 +9,14 @@ LcdManager& LcdManager::getInstance() {
     return *instance;
 }
 
-void LcdManager::setup() {
-    display.setup();
+void LcdManager::show() {
+    Log.infoln("LcdManager::show");
+    
+    display.showTop(title);
+    display.showBottom(content, numLines);
+    display.show();
 }
 
-// void LcdManager::setTitle(String title) {
-//     this->title = title;
-// }
+void LcdManager::clear() {
+    display.clear();
+}

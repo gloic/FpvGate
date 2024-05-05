@@ -9,7 +9,8 @@ class Starter : public Gate {
         void setup(AsyncWebServer &webServer) {
             setupWifi();
             setupWebController(webServer);
-            setupButton();
+            setupButtons();
+            setupModules();
             id = doRegister();
         }
         void loop();
@@ -22,9 +23,14 @@ class Starter : public Gate {
         void doNotifyPassage();
     private:
         OneButton* buttonReset;
+        OneButton* buttonNext;
+        OneButton* buttonOk;
 
-        void setupButton();
-        static void onButtonResetPress();
-        static void onButtonResetDoublePress();
-        static void onButtonResetLongPress();
+        void setupButtons();
+        static void onButtonResetClick();
+        static void onButtonResetDoubleClick();
+        static void onButtonResetLongClick();
+
+        static void onButtonNextClick();
+        static void onButtonOkClick();
 };

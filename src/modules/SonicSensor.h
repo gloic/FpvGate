@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Arduino.h"
-#include <ArduinoLog.h>
 #include <NewPing.h>
 
 #include <config/GateConfig.h>
@@ -21,11 +20,7 @@ class SonicSensor : public Module {
     NewPing sonar;
 
     int potPin;
-    int thresholdDistance = 0;
-
-    // long duration;
-    // float distance;
-
+    int thresholdDistance;
     long sendPulse();
     void updateThreshold();
 };

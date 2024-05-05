@@ -34,14 +34,19 @@ void Starter::setupWebController(AsyncWebServer &webServer) {
 
 void Starter::loop() {
     buttonReset->tick();
+    buttonNext->tick();
+    buttonOk->tick();
+
+    led.loop();
 
     if(!this->isListening) {
         return;
     }
 
     if (this->checkPass()) {
-        Log.infoln("passage detected on starter");
-        this->doNotifyPassage();
+        Log.infoln("Starter : passage detected");
+        buzzer.beep();
+        // this->doNotifyPassage();
     }
 }
 
@@ -57,25 +62,41 @@ void Starter::setupModules() {
     Gate::setupModules();
 }
 
-void Starter::setupButton() {
-    Log.infoln("Starter::setupButton");
+void Starter::setupButtons() {
+    Log.infoln("Starter::setupButtons");
     buttonReset = new OneButton(PIN_STARTER);
-    buttonReset->attachClick(&Starter::onButtonResetPress);
-    buttonReset->attachDoubleClick(&Starter::onButtonResetDoublePress);
-    buttonReset->attachLongPressStart(&Starter::onButtonResetLongPress);
+    buttonReset->attachClick(&Starter::onButtonResetClick);
+    buttonReset->attachDoubleClick(&Starter::onButtonResetDoubleClick);
+    buttonReset->attachLongPressStart(&Starter::onButtonResetLongClick);
+
+    buttonNext = new OneButton(PIN_MENU_UP);
+    buttonOk = new OneButton(PIN_MENU_OK);
+
+    buttonNext->attachClick(&Starter::onButtonNextClick);
+    buttonOk->attachClick(&Starter::onButtonOkClick);
 }
 
-void Starter::onButtonResetPress() {
+void Starter::onButtonResetClick() {
     Log.infoln("reset mode");
     FpvGateServer::getInstance().reset();
 }
 
-void Starter::onButtonResetDoublePress() {
+void Starter::onButtonResetDoubleClick() {
     Log.infoln("set track mode");
     FpvGateServer::getInstance().setTrackMode();
 }
 
-void Starter::onButtonResetLongPress() {
+void Starter::onButtonResetLongClick() {
     Log.infoln("set calibration mode");
     FpvGateServer::getInstance().setCalibrationMode();
+}
+
+void Starter::onButtonNextClick() {
+    Log.infoln("onButtonNextClick");
+    FpvGateServer::getInstance().selectNextMode();
+}
+
+void Starter::onButtonOkClick() {
+    Log.infoln("onButtonOkClick");
+    FpvGateServer::getInstance().confirmMode();
 }

@@ -15,7 +15,9 @@ class RaceHandler : public HandlerBase {
         void handleStarterPassage(GateClient& gate) override;
         void handleGatePassage(GateClient& gate) override;
         void reset() override;
-        String getName() override { return "Race"; };
+
+        String getModeName() override { return "Race"; };
+        
     private:
         TrackManager& trackManager;
         TimerService& timerService;

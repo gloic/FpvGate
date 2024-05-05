@@ -1,4 +1,5 @@
 #include "SonicSensor.h"
+#include <ArduinoLog.h>
 
 const float minDistance = 10.0;
 const float maxDistance = 300.0;
@@ -12,7 +13,6 @@ void SonicSensor::setup() {
 }
 
 boolean SonicSensor::checkPass() {
-  Log.infoln("SonicSensor::checkPass");
   updateThreshold();
   
   boolean result = false;

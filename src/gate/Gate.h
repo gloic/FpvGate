@@ -21,6 +21,7 @@ class Gate {
         void setup(AsyncWebServer &webServer) {
             setupWifi();
             setupWebController(webServer);
+            setupModules();
             id = doRegister();
         }
 
@@ -39,6 +40,8 @@ class Gate {
         void setupModules();
 
         boolean checkPass();
+        Buzzer buzzer;
+        SimpleLed led;
     private:
         static Gate *instance;
         String getIpStarter();
@@ -48,6 +51,4 @@ class Gate {
 
         WebUtils webUtils;
         SonicSensor sonicSensor;
-        Buzzer buzzer;
-        SimpleLed led;
 };
