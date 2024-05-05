@@ -11,10 +11,18 @@ void CalibrationHandler::begin() {
 void CalibrationHandler::end() {
     Log.infoln("End Calibration");
     listenExecutor.stopStarter();
-    listenExecutor.stopGates();
+    // listenExecutor.stopGates();
 }
 
 void CalibrationHandler::reset() {
     Log.infoln("Reset CalibrationHandler");
     this->begin();
+}
+
+void CalibrationHandler::refreshDisplay() {
+    this->lcdManager.setTitle(this->getModeName());
+    
+    String lines[] = {"This is calibration mode"};
+    this->lcdManager.setContent(lines, 1);
+    this->lcdManager.show();
 }

@@ -3,6 +3,7 @@
 
 void IdleHandler::begin() {
     Log.infoln("start idle");
+    this->refreshDisplay();
 }
 
 void IdleHandler::end() {
@@ -10,8 +11,9 @@ void IdleHandler::end() {
 }
 
 void IdleHandler::refreshDisplay() {
-    this->lcdManager.setTitle(this->getName());
+    this->lcdManager.setTitle(this->getModeName());
     
-    String lines[] = {"Line 1", "Line 2", "Line 3"};
-    this->lcdManager.setContent(lines);
+    String lines[] = {"Idle mode that does nothing", "Yeahhh"};
+    this->lcdManager.setContent(lines, 2);
+    this->lcdManager.show();
 }

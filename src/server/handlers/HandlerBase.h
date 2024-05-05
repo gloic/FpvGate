@@ -14,12 +14,14 @@ class HandlerBase {
         virtual void begin() = 0;
         virtual void end() = 0;
         virtual void reset() {}
-        virtual String getName() = 0;
+        
+        virtual String getModeName() = 0;
+
         //virtual String* getContent() {}
         
         virtual void refreshDisplay() {} // TODO - Make it purely virtual
 
-        void onGatePassage(int id) { onGatePassage(gateManager.findById(id)); }
+        virtual void onGatePassage(int id) { onGatePassage(gateManager.findById(id)); }
     protected:
         GateManager& gateManager;
         ListenExecutor& listenExecutor;

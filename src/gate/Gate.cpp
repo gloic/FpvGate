@@ -4,12 +4,15 @@
 Gate* Gate::instance = nullptr;
 
 void Gate::loop() {
+    led.loop();
+    
     if(!isListening) {
         return;
     }
     
     if(this->checkPass()) {
-        Log.infoln("Passage detected");
+        Log.infoln("Gate - Passage detected");
+        buzzer.beep();
         this->stopListen();
         this->doNotifyPassage();
     }
@@ -89,7 +92,6 @@ void Gate::stopListen() {
         isListening = false;
         sonicSensor.stop();
         led.off();
-        buzzer.beep();
     } else {
         Log.warningln("Already stopped listening");
     }

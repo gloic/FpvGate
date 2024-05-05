@@ -6,5 +6,10 @@ class CalibrationHandler : public HandlerBase {
         void begin() override;
         void end() override;
         void reset() override;
-        String getName() override { return "Calibration"; }
+
+        String getModeName() override { return "Calibration"; }
+        
+        void refreshDisplay() override;
+
+        void onGatePassage(int id) override {}
 };

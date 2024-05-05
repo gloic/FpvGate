@@ -14,7 +14,8 @@ class TrackHandler : public HandlerBase {
         void handleGatePassage(GateClient& gate) override;
         void reset() override;
         
-        String getName() override { return "Track"; }
+        String getModeName() override { return "Track"; }
+        
     private:
         TrackManager& trackManager;
 };

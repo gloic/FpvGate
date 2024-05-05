@@ -11,6 +11,8 @@
 #include <server/handlers/CalibrationHandler.h>
 #include <server/handlers/TrackHandler.h>
 #include <server/handlers/RaceHandler.h>
+#include <server/managers/LcdManager.h>
+
 #include <map>
 
 class FpvGateServer {
@@ -25,12 +27,16 @@ class FpvGateServer {
         void reset() {setMode(ServerMode::IDLE);};
         void setTrackMode() {setMode(ServerMode::TRACK);};
         void setCalibrationMode() {setMode(ServerMode::CALIBRATION);};
+
+        void selectNextMode();
+        void confirmMode();
+
     private:
         static FpvGateServer* instance;
-        FpvGateServer() : lcdDisplay(lcdDisplay) {};
+        FpvGateServer() : lcdManager(LcdManager::getInstance()) {};
         ServerRestController webController;
         ServerMode mode;
-        LcdDisplay lcdDisplay;
+        LcdManager lcdManager;
         std::shared_ptr<HandlerBase> currentHandler;
         std::map<ServerMode, std::shared_ptr<HandlerBase>> handlers = {
             {ServerMode::IDLE, std::make_shared<IdleHandler>()},
@@ -41,4 +47,8 @@ class FpvGateServer {
         void setMode(ServerMode newMode);
         void switchHandler(ServerMode newMode);
         // void refreshDisplay();
+
+
+        static const ServerMode modes[4];
+        int nextModeIdx = 0;
 };

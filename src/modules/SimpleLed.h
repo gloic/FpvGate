@@ -12,6 +12,6 @@ class SimpleLed : public Module {
         void off();
     private:
         int pin;
-        bool state;
-        bool newState;
+        boolean state;
+        boolean newState;
 };
