@@ -8,7 +8,7 @@
 class HandlerBase {
     public:
         HandlerBase(): 
-            gateManager(GateManager::getInstance()), 
+            gateManager(GateManager::getInstance()),
             listenExecutor(ListenExecutor::getInstance()), 
             lcdManager(LcdManager::getInstance()) { }
         virtual void begin() = 0;

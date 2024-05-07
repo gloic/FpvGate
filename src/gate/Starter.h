@@ -3,6 +3,7 @@
 #include "Gate.h"
 #include "OneButton.h"
 
+
 class Starter : public Gate {
     public:
         Starter(): Gate() {}
@@ -25,7 +26,7 @@ class Starter : public Gate {
         OneButton* buttonReset;
         OneButton* buttonNext;
         OneButton* buttonOk;
-
+        // FpvGateServer& server;
         void setupButtons();
         static void onButtonResetClick();
         static void onButtonResetDoubleClick();

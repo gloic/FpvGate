@@ -4,14 +4,14 @@
 #include "../Gate.h"
 
 class GateWrapper : public Wrapper {
-private:
-    Gate gate;
-public:
-    void setup(AsyncWebServer &webServer) override {
-        gate.setup(webServer);
-    }
-
-    void loop() override {
-        gate.loop();
-    }
+    public:
+        GateWrapper() : gate(new Gate()) {}
+        void setup(AsyncWebServer &webServer) override {
+            gate->setup(webServer);
+        }
+        void loop() override {
+            gate->loop();
+        }
+    private:
+        Gate* gate;
 };

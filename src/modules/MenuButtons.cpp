@@ -2,26 +2,35 @@
 
 #include <ArduinoLog.h>
 
+MenuButtons::MenuButtons(int pinBtnNext, int pinBtnOk) {
+    buttonNext = new OneButton(pinBtnNext);
+    buttonOk = new OneButton(pinBtnOk);
+}
+
 void MenuButtons::setup() {
-    // buttonUp.attachClick(&MenuButtons::onUpPressed);
+    buttonNext->attachClick(&MenuButtons::onNext);
+    buttonNext->attachLongPressStop(&MenuButtons::onPrevious);
+    buttonOk->attachClick(&MenuButtons::onOk);
+    buttonOk->attachLongPressStop(&MenuButtons::onCancel);
 }
 
 void MenuButtons::loop() {
-
+    buttonNext->tick();
+    buttonOk->tick();
 }
 
-void MenuButtons::onUpPressed() {
-    Log.infoln("onUpPressed");
+void MenuButtons::onNext() {
+    Log.infoln("onNext");
 }
 
-void MenuButtons::onDownPressed() {
-    Log.infoln("onDownPressed");
+void MenuButtons::onPrevious() {
+    Log.infoln("onPrevious");
 }
 
-void MenuButtons::onOkPressed() {
-    Log.infoln("onOkPressed");
+void MenuButtons::onOk() {
+    Log.infoln("onOk");
 }
 
-void MenuButtons::onCancelPressed() {
-    Log.infoln("onCancelPressed");
+void MenuButtons::onCancel() {
+    Log.infoln("onCancel");
 }
