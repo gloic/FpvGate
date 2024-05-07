@@ -12,7 +12,6 @@
 #include <server/handlers/TrackHandler.h>
 #include <server/handlers/RaceHandler.h>
 #include <server/managers/LcdManager.h>
-
 #include <map>
 
 class FpvGateServer {
