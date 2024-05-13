@@ -4,17 +4,17 @@
 
 class TrackHandler : public HandlerBase {
     public:
-        TrackHandler() : HandlerBase(), 
+        TrackHandler() : 
+            HandlerBase(),
             trackManager(TrackManager::getInstance()) {}
-        
+
+        String getModeName() override { return "Track";}
+
         void begin() override;
         void end() override;
-        void onGatePassage(GateClient& gate) override;
         void handleStarterPassage(GateClient& gate) override;
         void handleGatePassage(GateClient& gate) override;
         void reset() override;
-        
-        String getModeName() override { return "Track"; }
         
     private:
         TrackManager& trackManager;

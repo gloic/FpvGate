@@ -4,7 +4,7 @@
 
 ListenExecutor* ListenExecutor::instance = nullptr;
 
-ListenExecutor &ListenExecutor::getInstance() {
+ListenExecutor& ListenExecutor::getInstance() {
     if (!instance) {
         instance = new ListenExecutor();
     }

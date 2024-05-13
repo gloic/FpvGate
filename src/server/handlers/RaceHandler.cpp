@@ -13,14 +13,6 @@ void RaceHandler::end() {
     listenExecutor.stopGates();
 }
 
-void RaceHandler::onGatePassage(GateClient& gate) {
-    if (gate.isStarter()) {
-        this->handleStarterPassage(gate);
-    }
-    
-    this->handleGatePassage(gate);
-}
-
 void RaceHandler::reset() {
     Log.infoln("RaceHandler Reset");
     this->end();

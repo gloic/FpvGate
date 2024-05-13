@@ -11,15 +11,9 @@ void TrackHandler::end() {
     listenExecutor.stopGates();
 }
 
-void TrackHandler::onGatePassage(GateClient& gate) {
-    if (gate.isStarter()) {
-        this->handleStarterPassage(gate);
-    } else {
-        this->handleGatePassage(gate);
-    }
-}
-
 void TrackHandler::handleStarterPassage(GateClient& gate) {
+    Log.infoln("TrackHandler::handleStarterPassage");
+
     if (trackManager.isTrackEmpty()) {
         trackManager.addGate(gate);
         listenExecutor.startGates(ActionWhenPass::STOP);
@@ -29,6 +23,8 @@ void TrackHandler::handleStarterPassage(GateClient& gate) {
 }
 
 void TrackHandler::handleGatePassage(GateClient& gate) {
+    Log.infoln("TrackHandler::handleGatePassage");
+
     trackManager.addGate(gate);
     // TODO - once first gate passed, send listen to starter (do not send it at each passage)
     if (trackManager.getTrackSize() == 1) {
@@ -37,6 +33,7 @@ void TrackHandler::handleGatePassage(GateClient& gate) {
 }
 
 void TrackHandler::reset() {
+    Log.infoln("TrackHandler::reset");
     trackManager.clearTrack();
     this->begin();
 }

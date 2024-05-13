@@ -7,28 +7,27 @@
 
 class HandlerBase {
     public:
-        HandlerBase(): 
+        HandlerBase() :
             gateManager(GateManager::getInstance()),
-            listenExecutor(ListenExecutor::getInstance()), 
-            lcdManager(LcdManager::getInstance()) { }
+            listenExecutor(ListenExecutor::getInstance()),
+            lcdManager(LcdManager::getInstance()) {}
+
+        void onGatePassage(int id);
+        // virtual void onGatePassage(int id) { onGatePassage(gateManager.findById(id)); }
+        // void onGatePassage(GateClient& gate) {};
         virtual void begin() = 0;
         virtual void end() = 0;
         virtual void reset() {}
-        
         virtual String getModeName() = 0;
-
         //virtual String* getContent() {}
-        
         virtual void refreshDisplay() {} // TODO - Make it purely virtual
-
-        virtual void onGatePassage(int id) { onGatePassage(gateManager.findById(id)); }
+        // virtual void onGatePassage(int id) { onGatePassage(gateManager.findById(id)); }
     protected:
         GateManager& gateManager;
         ListenExecutor& listenExecutor;
         LcdManager& lcdManager;
         boolean isActive;
 
-        virtual void onGatePassage(GateClient& gate) {}
-        virtual void handleStarterPassage(GateClient& gate) {}
-        virtual void handleGatePassage(GateClient& gate) {}
+        virtual void handleStarterPassage(GateClient& gate) = 0;
+        virtual void handleGatePassage(GateClient& gate) = 0;
 };
