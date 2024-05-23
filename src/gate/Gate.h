@@ -14,7 +14,7 @@
 
 class Gate {
     public:
-        Gate(): sonicSensor(), buzzer(), led(), webUtils()  {
+        Gate(): sonicSensor(), buzzer(), webUtils()  {
             Gate::instance = this;
         }
 
@@ -29,7 +29,6 @@ class Gate {
         void startListen();
         void stopListen();
     protected:
-        boolean isListening = false;
         int id;
         
         void setupWifi();
@@ -41,7 +40,6 @@ class Gate {
 
         boolean checkPass();
         Buzzer buzzer;
-        SimpleLed led;
     private:
         static Gate *instance;
         String getIpStarter();

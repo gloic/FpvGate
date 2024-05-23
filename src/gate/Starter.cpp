@@ -37,12 +37,6 @@ void Starter::loop() {
     buttonNext->tick();
     buttonOk->tick();
 
-    led.loop();
-
-    if(!this->isListening) {
-        return;
-    }
-
     if (this->checkPass()) {
         Log.infoln("Starter : passage detected");
         buzzer.beep();
