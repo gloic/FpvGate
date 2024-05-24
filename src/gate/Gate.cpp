@@ -4,16 +4,11 @@
 Gate* Gate::instance = nullptr;
 
 void Gate::loop() {
-    if(this->checkPass()) {
-        Log.infoln("Gate - Passage detected");
-        buzzer.beep();
-        this->stopListen();
+    if(sonicSensor.checkPass()) {
+        Log.infoln("Passage detected");
+        this->stopListen(); // Stop or not regarding parameter received when listen instruction received
         this->doNotifyPassage();
     }
-}
-
-boolean Gate::checkPass() {
-    return sonicSensor.checkPass();
 }
 
 int Gate::doRegister() {
@@ -47,7 +42,6 @@ void Gate::setupWebController(AsyncWebServer &webServer) {
 void Gate::setupModules() {
     Log.infoln("Gate::setupModules");
     sonicSensor.setup();
-    buzzer.setup();
 }
 
 String Gate::getIpStarter() {

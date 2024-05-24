@@ -9,6 +9,7 @@ void SonicSensor::setup() {
   Log.infoln("SonicSensor setup");
   pinMode(potPin, INPUT);
   led.setup();
+  buzzer.setup();
   updateThreshold();  
 }
 
@@ -24,6 +25,7 @@ boolean SonicSensor::checkPass() {
   if (distance > 0) {
     Log.infoln("Passage detected at %d cm", distance);
     result = true;
+    buzzer.beep();
   }
   return result;
 }

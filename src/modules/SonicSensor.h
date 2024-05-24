@@ -14,6 +14,7 @@ class SonicSensor : public Module {
     SonicSensor():
       sonar(PIN_SONIC_SENSOR_TRIGGER, PIN_SONIC_SENSOR_ECHO, 200),
       potPin(PIN_SONIC_SENSOR_POT_RANGE),
+      buzzer(),
       _isListening(false),
       thresholdDistance(0), 
       led() {}
@@ -24,6 +25,7 @@ class SonicSensor : public Module {
   private:
     NewPing sonar;
     SimpleLed led;
+    Buzzer buzzer;
 
     int potPin;
     int thresholdDistance;

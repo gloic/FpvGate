@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Gate.h"
-#include "OneButton.h"
 
 
 class Starter : public Gate {
@@ -10,28 +9,16 @@ class Starter : public Gate {
         void setup(AsyncWebServer &webServer) {
             setupWifi();
             setupWebController(webServer);
-            setupButtons();
-            setupModules();
+            Gate::setupModules();
             id = doRegister();
         }
-        void loop();
+        void loop() { Gate::loop(); }
         void startListen() { Gate::startListen(); }
     protected:
         void setupWifi();
         void setupWebController(AsyncWebServer &webServer);
-        void setupModules();
         int doRegister();
         void doNotifyPassage();
     private:
-        OneButton* buttonReset;
-        OneButton* buttonNext;
-        OneButton* buttonOk;
         // FpvGateServer& server;
-        void setupButtons();
-        static void onButtonResetClick();
-        static void onButtonResetDoubleClick();
-        static void onButtonResetLongClick();
-
-        static void onButtonNextClick();
-        static void onButtonOkClick();
 };

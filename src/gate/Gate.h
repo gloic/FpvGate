@@ -2,7 +2,6 @@
 
 #include <config/GateConfig.h>
 #include <modules/SonicSensor.h>
-#include <modules/Buzzer.h>
 
 #include <Secrets.h>
 #include <WiFi.h>
@@ -10,11 +9,10 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoLog.h>
 #include <utils/WebUtils.h>
-#include <modules/SimpleLed.h>
 
 class Gate {
     public:
-        Gate(): sonicSensor(), buzzer(), webUtils()  {
+        Gate(): sonicSensor(), webUtils()  {
             Gate::instance = this;
         }
 
@@ -38,8 +36,7 @@ class Gate {
         void doNotifyPassage();
         void setupModules();
 
-        boolean checkPass();
-        Buzzer buzzer;
+        SonicSensor sonicSensor;
     private:
         static Gate *instance;
         String getIpStarter();
@@ -47,6 +44,5 @@ class Gate {
         static void onStartListen(AsyncWebServerRequest *request);
         static void onStopListen(AsyncWebServerRequest *request);
 
-        WebUtils webUtils;
-        SonicSensor sonicSensor;
+        WebUtils webUtils;        
 };
