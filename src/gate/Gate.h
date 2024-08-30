@@ -4,15 +4,15 @@
 #include <modules/SonicSensor.h>
 
 #include <Secrets.h>
-#include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoLog.h>
 #include <utils/WebUtils.h>
+#include <utils/WifiUtils.h>
 
 class Gate {
     public:
-        Gate(): sonicSensor(), webUtils()  {
+        Gate(): sonicSensor(), webUtils(), wifiUtils()  {
             Gate::instance = this;
         }
 
@@ -37,6 +37,7 @@ class Gate {
         void setupModules();
 
         SonicSensor sonicSensor;
+        WifiUtils wifiUtils;
     private:
         static Gate *instance;
         String getIpStarter();
@@ -44,5 +45,5 @@ class Gate {
         static void onStartListen(AsyncWebServerRequest *request);
         static void onStopListen(AsyncWebServerRequest *request);
 
-        WebUtils webUtils;        
+        WebUtils webUtils;
 };

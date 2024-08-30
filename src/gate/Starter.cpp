@@ -3,10 +3,7 @@
 #include <server/FpvGateServer.h>
 
 void Starter::setupWifi() {
-    Log.infoln("Setup Wifi for Starter as AP");
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP(SECRET_SSID, SECRET_PASS);
-    Log.infoln("Wifi AP created. IP=%s", WiFi.softAPIP().toString());
+    wifiUtils.createAccessPoint(SECRET_SSID, SECRET_PASS);
 }
 
 void Starter::setupWebController(AsyncWebServer &webServer) {

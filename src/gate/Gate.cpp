@@ -21,16 +21,7 @@ void Gate::doNotifyPassage() {
 
 void Gate::setupWifi() {
     Log.infoln("Setup Wifi for Gate");
-    WiFi.begin(SECRET_SSID, SECRET_PASS);
-    
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-  
-    Log.infoln("Wifi connected");
-    Log.infoln("IP= %s", WiFi.localIP().toString());
-    Log.infoln("Gateway=%s", WiFi.gatewayIP().toString());
+    wifiUtils.connect(SECRET_SSID, SECRET_PASS);
 }
 
 void Gate::setupWebController(AsyncWebServer &webServer) {
@@ -48,7 +39,7 @@ String Gate::getIpStarter() {
     if (DEV_MODE) {
         return DEV_IP_STARTER;
     } else {
-        return WiFi.gatewayIP().toString();
+        return wifiUtils.getGatewayIP();
     }
 }
 
